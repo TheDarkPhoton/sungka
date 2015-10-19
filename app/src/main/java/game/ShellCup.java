@@ -1,0 +1,28 @@
+package game;
+
+/**
+ * Created by Dovydas Rupsys on 19/10/15.
+ */
+
+/**
+ * Describes the sungka Shell Cup
+ */
+public class ShellCup extends Cup {
+
+    /**
+     * Sets the default cup attributes.
+     * @param shells The initial number of shells in the cup.
+     */
+    ShellCup(int shells){
+        _shells = shells;
+    }
+
+    /**
+     * Checks if current cup is not the player cup.
+     * @return true if this cup is not a PlayerCup.
+     */
+    @Override
+    public boolean isNotPlayerCup() {
+        return false;
+    }
+}
