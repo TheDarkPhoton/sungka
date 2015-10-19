@@ -1,10 +1,6 @@
 package game;
 
 /**
- * Created by Dovydas Rupsys on 19/10/15.
- */
-
-/**
  * An object that describes the state of the current game board
  */
 public class Board {
@@ -14,18 +10,24 @@ public class Board {
     /**
      * Constructs board with default attributes.
      */
-    Board(){
+    Board(Player a, Player b){
         _cups = new Cup[16];
 
         //define player a cups
-        for (int i = 0; i < 7; i++)
+        for (int i = 0; i < 7; i++) {
             _cups[i] = new ShellCup(7);
-        _cups[7] = new PlayerCup();
+            a.bindShellCup(_cups[i], i);
+        }
+        _cups[7] = new PlayerCup(a);
+        a.bindStore(_cups[7]);
 
         //define player b cups
-        for (int i = 8; i < 16; i++)
+        for (int i = 8; i < 16; i++) {
             _cups[i] = new ShellCup(7);
-        _cups[16] = new PlayerCup();
+            b.bindShellCup(_cups[i], i - 8);
+        }
+        _cups[16] = new PlayerCup(a);
+        b.bindStore(_cups[16]);
     }
 
     /**

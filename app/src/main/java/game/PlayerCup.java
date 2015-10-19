@@ -1,18 +1,26 @@
 package game;
 
 /**
- * Created by Dovydas Rupsys on 19/10/15.
- */
-
-/**
  * Describes the sungka Player Cup
  */
 public class PlayerCup extends Cup {
-//    private Player _player;
+    private Player _player;
 
-//    public Player getPlayer(){
-//        return _player;
-//    }
+    /**
+     * Constructs a players cup with a reference to the player.
+     * @param p owner of the cup.
+     */
+    PlayerCup(Player p){
+        _player = p;
+    }
+
+    /**
+     * Returns reference to the player.
+     * @return cup owner.
+     */
+    public Player getPlayer(){
+        return _player;
+    }
 
     /**
      * Checks if current cup is not the player cup.

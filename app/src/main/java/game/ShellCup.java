@@ -1,10 +1,6 @@
 package game;
 
 /**
- * Created by Dovydas Rupsys on 19/10/15.
- */
-
-/**
  * Describes the sungka Shell Cup
  */
 public class ShellCup extends Cup {

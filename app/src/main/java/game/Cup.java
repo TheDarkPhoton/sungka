@@ -1,10 +1,6 @@
 package game;
 
 /**
- * Created by Dovydas Rupsys on 19/10/15.
- */
-
-/**
  * Describes the sungka Cup
  */
 public abstract class Cup {
@@ -38,6 +34,14 @@ public abstract class Cup {
         int shells = _shells;
         _shells = 0;
         return shells;
+    }
+
+    /**
+     * Gets the count of shells.
+     * @return shell count.
+     */
+    public int getCount(){
+        return _shells;
     }
 
     /**
