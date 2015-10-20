@@ -19,6 +19,6 @@ public class ShellCup extends Cup {
      */
     @Override
     public boolean isNotPlayerCup() {
-        return false;
+        return true;
     }
 }
