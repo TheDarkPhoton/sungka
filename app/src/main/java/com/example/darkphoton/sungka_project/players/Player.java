@@ -1,5 +1,9 @@
 package com.example.darkphoton.sungka_project.players;
 
+import game.Cup;
+import game.PlayerCup;
+import game.ShellCup;
+
 /**
  * Player Class which represents a Player. This class will be inherited to form a
  * Human player and a AI player.
@@ -26,7 +30,7 @@ public class Player {
      * @return the current amount of shells a Player has in their store
      */
     public int getScore(){
-        return store.getShells();
+        return store.getCount();
     }
 
     /**
@@ -67,7 +71,7 @@ public class Player {
      */
     public boolean equals(Object object){
         try{
-            Player otherPlayer = (Player) o;
+            Player otherPlayer = (Player) object;
             if(otherPlayer.getName().equals(name)){
                 return true;
             }
