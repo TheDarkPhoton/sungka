@@ -56,16 +56,17 @@ public class Board {
 
             // if cup is not a player cup OR the cup is the player's store,
             // then add a shell to that cup
-            if (cup.isNotPlayerCup() || _currentPlayer.isStore(cup)) {
+            if (cup.isNotPlayerCup() || _currentPlayer.isStoreCup(cup)) {
                 cup.addShell();
                 --shells;
             }
         }
 
         // need to check a few things with the last used cup
-        Cup lastCup = _cups[--index];
+        int lastIndex = (index - 1) % 16;
+        Cup lastCup = _cups[lastIndex];
 
-        if (lastCup.getCount() == 1 && _currentPlayer.isShellCup(lastCup, index)) {
+        if (lastCup.getCount() == 1 && _currentPlayer.isShellCup(lastCup, lastIndex)) {
 
             // the last shell fell into an empty cup belonging to the player, so capture shells
             int numShells = lastCup.pickUpShells();
@@ -74,11 +75,28 @@ public class Board {
         }
 
         // will possibly change in future
-        if (!_currentPlayer.isStore(lastCup)) {
+        if (!_currentPlayer.isStoreCup(lastCup)) {
 
             // the last cup isn't the current player's store, so switch players
             _currentPlayer = (_currentPlayer == _playerOne) ? _playerTwo : _playerOne;
         }
+    }
+
+    /**
+     * Checks if a provided cup belongs to the opponent of the current player.
+     * @param index the location of the cup in question
+     * @return true if the indicated cup belongs to the current player's opponent
+     */
+    public boolean isOpponentStore(int index) {
+        if (_currentPlayer.isStoreCup(getPlayerCupA())) {
+            // PlayerB's store is at 15
+            return index == 15;
+        } else if (_currentPlayer.isStoreCup(getPlayerCupB())) {
+            // PlayerA's store is at 7
+            return index == 7;
+        }
+
+        return false;
     }
 
     /**
@@ -87,7 +105,7 @@ public class Board {
      */
     public boolean isGameOver(){
         return false;
-    }
+    } // TODO
 
     /**
      * Gets the PlayerA cup
