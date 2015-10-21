@@ -1,5 +1,7 @@
 package game;
 
+import java.util.ArrayList;
+
 /**
  * Player Class which represents a Player. This class will be inherited to form a
  * Human player and a AI player.
@@ -10,16 +12,18 @@ public class Player {
     private int score;
     private Cup store;
     private Cup[] shellCups;
+    private ArrayList<MoveInfo> moveInfos;//arraylist to store the users moves in a game
 
     /**
      * Initializes the Player Object, along with initializing the values of the Player's store and their respective
-     * shell cups
+     * shell cups. Also initializes the list that will hold the Player's Moves the game.
      * @param name the name of the player
      */
     public Player(String name){
         this.name = name;
         this.shellCups = new Cup[7];
         this.store = null;
+        moveInfos = new ArrayList<MoveInfo>();
     }
 
     /**
@@ -124,5 +128,21 @@ public class Player {
             return false;
         }
         return false;
+    }
+
+    /**
+     * Add the information of a move to the Player
+     * @param moveInfo the information of the move that the player just finished
+     */
+    public void addMoveInfo(MoveInfo moveInfo){
+        moveInfos.add(moveInfo);
+    }
+
+    /**
+     * Get the list of all the Moves the Player has made up to this point
+     * @return an ArrayList that contains the Player's moves
+     */
+    public ArrayList<MoveInfo> getMoveInfos(){
+        return moveInfos;
     }
 }
