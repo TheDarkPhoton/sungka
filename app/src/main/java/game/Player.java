@@ -67,7 +67,7 @@ public class Player {
      * @param cup the Cup to check
      * @return true if the cup is the Player's store
      */
-    public boolean isStore(Cup cup) {
+    public boolean isStoreCup(Cup cup) {
         return cup == store;
     }
 
@@ -87,6 +87,12 @@ public class Player {
         this.shellCups = shellCups;
     }
 
+    /**
+     * Checks if a Cup is one of the Player's ShellCups.
+     * @param cup the Cup to check against
+     * @param i the location in a Player's individual Cup array (0 - 6)
+     * @return true if the provided Cup is belongs to the Player's ShellCups
+     */
     public boolean isShellCup(Cup cup, int i) {
         if (cup.isNotPlayerCup()) {
             return shellCups[i % 8] == cup;
