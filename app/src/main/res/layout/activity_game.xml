@@ -13,6 +13,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:rowCount="7"
+    android:background="@drawable/background"
     tools:context=".GameActivity">
 
     <Button
@@ -98,7 +99,7 @@
         android:clickable="false"
         android:text="@string/str_Zero"
         android:textColor="#ffffff"
-        android:textSize="30sp" />
+        android:textSize="170sp" />
 
     <Button
         android:id="@+id/cup1_1"
@@ -189,7 +190,7 @@
         android:background="@drawable/player_bigcup"
         android:clickable="false"
         android:text="@string/str_Zero"
-        android:textSize="30sp" />
+        android:textSize="70sp" />
 
 
     <Space

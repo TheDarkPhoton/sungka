@@ -34,6 +34,7 @@ public class GameActivity extends Activity {
         layout = new GridLayout(this);
         layout.setColumnCount(9);
         layout.setRowCount(3);
+        layout.setBackgroundResource(R.drawable.background);
 
         LayoutParams params = new LayoutParams();
         params.height = LayoutParams.MATCH_PARENT;
@@ -156,6 +157,7 @@ public class GameActivity extends Activity {
             Button button = cupButtons[i];
             button.setTextColor(Color.parseColor("#FFFFFF"));
             button.setText(String.valueOf(i));
+            button.setTextSize(30);
             button.setBackgroundResource(R.drawable.player_smallcup);
 
             //Set params and add to view
@@ -175,6 +177,7 @@ public class GameActivity extends Activity {
         for(int i = 14; i > 7; i--) {
             Button button = cupButtons[i];
             button.setText(String.valueOf(i));
+            button.setTextSize(30);
             button.setBackgroundResource(R.drawable.opponent_smallcup);
 
             //Set params and add to view
@@ -195,7 +198,7 @@ public class GameActivity extends Activity {
         Button playerStore = cupButtons[7];
         playerStore.setBackgroundResource(R.drawable.player_bigcup);
         playerStore.setText(String.valueOf(7));
-        playerStore.setTextSize(30);
+        playerStore.setTextSize(50);
 
         //Set params and add to view
         LayoutParams playerParams = new LayoutParams();
@@ -215,7 +218,7 @@ public class GameActivity extends Activity {
         opponentStore.setBackgroundResource(R.drawable.opponent_bigcup);
         opponentStore.setText(String.valueOf(15));
         opponentStore.setTextColor(Color.parseColor("#FFFFFF"));
-        opponentStore.setTextSize(30);
+        opponentStore.setTextSize(50);
 
         //Set params and add to view
         LayoutParams opponentParams = new LayoutParams();
