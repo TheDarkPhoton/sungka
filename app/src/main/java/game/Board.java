@@ -5,7 +5,7 @@ package game;
  */
 public class Board {
     private Cup[] _cups;                                    //an array of board cups
-    private Player _current_player;                        // the player whose turn it is
+    private Player _currentPlayer;                        // the player whose turn it is
     private Player _playerOne;
     private Player _playerTwo;
 
@@ -42,7 +42,7 @@ public class Board {
      * @param index of the cup in the array.
      */
     public void distribute(int index){
-        if (((PlayerCup) _cups[index]).getPlayer() != _current_player)
+        if (((PlayerCup) _cups[index]).getPlayer() != _currentPlayer)
             return;
 
         //get the number of shells in the cup and remove them, then increment index
@@ -82,6 +82,11 @@ public class Board {
             _currentPlayer = (_currentPlayer == _playerOne) ? _playerTwo : _playerOne;
         }
     }
+
+    /**
+     * Checks if the game over condition is met.
+     * @return return true of game should end, false otherwise
+     */
     public boolean isGameOver(){
         return false;
     }
@@ -94,13 +99,7 @@ public class Board {
         return _cups[7];
     }
 
-    /**
-     /**
-     * Checks if the game over condition is met.
-     * @return return true of game should end, false otherwise
-     */
-
-    * Gets the PlayerB cup
+    /** Gets the PlayerB cup
      * @return returns player cup object.
      */
     public Cup getPlayerCupB(){
