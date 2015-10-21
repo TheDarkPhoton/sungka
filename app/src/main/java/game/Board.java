@@ -5,7 +5,7 @@ package game;
  */
 public class Board {
     private Cup[] _cups;                                    //an array of board cups
-    //define current player variables here
+    private Player _current_player;
 
     /**
      * Constructs board with default attributes.
@@ -22,12 +22,12 @@ public class Board {
         a.bindStore(_cups[7]);
 
         //define player b cups
-        for (int i = 8; i < 16; i++) {
+        for (int i = 8; i < 15; i++) {
             _cups[i] = new ShellCup(7);
             b.bindShellCup(_cups[i], i - 8);
         }
-        _cups[16] = new PlayerCup(a);
-        b.bindStore(_cups[16]);
+        _cups[15] = new PlayerCup(b);
+        b.bindStore(_cups[15]);
     }
 
     /**
@@ -35,6 +35,9 @@ public class Board {
      * @param index of the cup in the array.
      */
     public void distribute(int index){
+        if (((PlayerCup) _cups[index]).getPlayer() != _current_player)
+            return;
+
         //get the number of shells in the cup and remove them, then increment index
         int shells = _cups[index++].pickUpShells();
 
