@@ -63,6 +63,15 @@ public class Player {
     }
 
     /**
+     * Checks if the provided cup is the Player's store.
+     * @param cup the Cup to check
+     * @return true if the cup is the Player's store
+     */
+    public boolean isStore(Cup cup) {
+        return cup == store;
+    }
+
+    /**
      * Stores the Player's Store to them
      * @param store the Player's store
      */
@@ -76,6 +85,28 @@ public class Player {
      */
     public void setShellCups(ShellCup[] shellCups){
         this.shellCups = shellCups;
+    }
+
+    /**
+     * Determines if a Cup is one of the Player's Shell Cups
+     * @param cup the Cup to check
+     * @param i the position of the Cup in the array
+     * @return true if the provided Shell Cup belongs to the Player
+     */
+    public boolean isShellCup(Cup cup, int i) {
+        if (cup.isNotPlayerCup()) {
+            return shellCups[i % 8] == cup;
+        }
+        return false;
+    }
+
+    /**
+     * Capture shells from opponent's cup
+     * @param numShells the number of shells to put in the store
+     */
+    public void captureShells(int numShells) {
+        // need to cast to PlayerCup in order to be able to use this method
+        ((PlayerCup) store).addCapturedShells(numShells);
     }
 
     /**
