@@ -151,14 +151,26 @@ public class GameActivity extends Activity {
         //Create buttons
         for(int i = 0; i < 16; i++) cupButtons[i] = new Button(this);
 
+        // A scale factor for text sizes
+        float scaleFactor = cupSize / 199.0f;
+
         //Set params for small cups
         //Player
         for(int i = 0; i < 7; i++) {
             Button button = cupButtons[i];
             button.setTextColor(Color.parseColor("#FFFFFF"));
             button.setText(String.valueOf(i));
-            button.setTextSize(30);
+            button.setTextSize(30 * scaleFactor);
             button.setBackgroundResource(R.drawable.player_smallcup);
+
+            // Add listener for click
+            final int id = i;
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    handleButton(id);
+                }
+            });
 
             //Set params and add to view
             LayoutParams params = new LayoutParams();
@@ -177,8 +189,17 @@ public class GameActivity extends Activity {
         for(int i = 14; i > 7; i--) {
             Button button = cupButtons[i];
             button.setText(String.valueOf(i));
-            button.setTextSize(30);
+            button.setTextSize(30 * scaleFactor);
             button.setBackgroundResource(R.drawable.opponent_smallcup);
+
+            // Add listener for click
+            final int id = i;
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    handleButton(id);
+                }
+            });
 
             //Set params and add to view
             LayoutParams params = new LayoutParams();
@@ -198,7 +219,7 @@ public class GameActivity extends Activity {
         Button playerStore = cupButtons[7];
         playerStore.setBackgroundResource(R.drawable.player_bigcup);
         playerStore.setText(String.valueOf(7));
-        playerStore.setTextSize(50);
+        playerStore.setTextSize(50 * scaleFactor);
 
         //Set params and add to view
         LayoutParams playerParams = new LayoutParams();
@@ -218,7 +239,7 @@ public class GameActivity extends Activity {
         opponentStore.setBackgroundResource(R.drawable.opponent_bigcup);
         opponentStore.setText(String.valueOf(15));
         opponentStore.setTextColor(Color.parseColor("#FFFFFF"));
-        opponentStore.setTextSize(50);
+        opponentStore.setTextSize(50 * scaleFactor);
 
         //Set params and add to view
         LayoutParams opponentParams = new LayoutParams();
@@ -244,5 +265,9 @@ public class GameActivity extends Activity {
 
     public void setButtonCount(int id, int count) {
         cupButtons[id].setText(String.valueOf(count));
+    }
+
+    public void handleButton(int id) {
+        System.out.println("Hole " + id + " was pressed.");
     }
 }
