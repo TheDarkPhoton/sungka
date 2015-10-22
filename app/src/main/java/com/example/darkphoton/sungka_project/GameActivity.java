@@ -8,11 +8,15 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.res.ResourcesCompat;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
@@ -431,6 +435,53 @@ public class GameActivity extends Activity {
     }
 
     /**
+     * Distribute shells from a cup
+     * @param id The id of the cup
+     */
+    public void distributeShells(int id) {
+        ArrayList<ImageView> shells = cupShells.get(id);
+
+        int[] currentCoords = new int[2];
+        cupButtons[id].getLocationInWindow(currentCoords);
+
+        int[] nextCoords = new int[2];
+        cupButtons[(id+1)%16].getLocationInWindow(nextCoords);
+
+        long delay = 0;
+
+
+        for (ImageView shellView: shells) {
+            AnimationSet animationSet = new AnimationSet(true);
+            TranslateAnimation horizontalAnimation = new TranslateAnimation(
+                    Animation.ABSOLUTE,0, Animation.ABSOLUTE, nextCoords[0] - currentCoords[0],
+                    Animation.ABSOLUTE,0, Animation.ABSOLUTE, nextCoords[1] - currentCoords[1]);
+            horizontalAnimation.setDuration(1000);
+
+//            TranslateAnimation verticalAnimationUp = new TranslateAnimation(
+//                    Animation.ABSOLUTE,0, Animation.ABSOLUTE, 0,
+//                    Animation.ABSOLUTE,0, Animation.ABSOLUTE, -200
+//            );
+//            verticalAnimationUp.setDuration(500);
+//
+//            TranslateAnimation verticalAnimationDown = new TranslateAnimation(
+//                    Animation.ABSOLUTE,0, Animation.ABSOLUTE, 0,
+//                    Animation.ABSOLUTE,0, Animation.ABSOLUTE, -200
+//            );
+//            verticalAnimationUp.setDuration(500);
+
+            animationSet.addAnimation(horizontalAnimation);
+//            animationSet.addAnimation(verticalAnimationUp);
+
+            animationSet.setStartOffset(delay);
+            animationSet.setFillAfter(true);
+
+            shellView.startAnimation(animationSet);
+
+            delay += 100;
+        }
+    }
+
+    /**
      * Get array of buttons
      * @return - button array for all cups
      */
@@ -454,6 +505,7 @@ public class GameActivity extends Activity {
      */
     public void handleButton(int id) {
         System.out.println("Hole " + id + " was pressed.");
+        distributeShells(id);
     }
 
     public void test() {
