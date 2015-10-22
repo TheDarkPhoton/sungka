@@ -14,6 +14,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
@@ -198,19 +201,6 @@ public class GameActivity extends Activity {
 
         // initialise shellcups with 7 shells each
         initialiseCups();
-
-        for (int i = 0; i <= 8; i += 8) {
-            for (int j = 0; i < 7; i++) {
-                setButtonCount(i + j, 7, false);
-//                updateCup(i + j, false);
-            }
-        }
-
-        // initialise Player stores with 0 shells each
-        for (int i = 7; i <= 15; i += 8) {
-            setButtonCount(i, 0, true);
-//            updateCup(i, true);
-        }
     }
 
     private void formatView(int storeSize, int cupSize, int spaceTop, int spaceLeft, int spaceSmall, int spaceStoreTop, float scaleFactor) {
@@ -393,7 +383,7 @@ public class GameActivity extends Activity {
         opponentStore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println("Store pressed");
+                Log.i(TAG, "Store pressed");
 //                test();
             }
         });
@@ -463,6 +453,56 @@ public class GameActivity extends Activity {
     }
 
     /**
+     * Distribute shells from a cup
+     * @param id The id of the cup
+     */
+    public void distributeShells(int id) {
+        // TODO: merge functionality of this method with that
+        // TODO: of handleButton(), and then use this method
+        // TODO: with the onClickListener instead of handleButton()
+        ArrayList<ImageView> shells = cupShells.get(id);
+
+        int[] currentCoords = new int[2];
+        cupButtons[id].getLocationInWindow(currentCoords);
+
+        int[] nextCoords = new int[2];
+        cupButtons[(id+1)%16].getLocationInWindow(nextCoords);
+
+        long delay = 0;
+
+
+        for (ImageView shellView: shells) {
+            AnimationSet animationSet = new AnimationSet(true);
+            TranslateAnimation horizontalAnimation = new TranslateAnimation(
+                    Animation.ABSOLUTE,0, Animation.ABSOLUTE, nextCoords[0] - currentCoords[0],
+                    Animation.ABSOLUTE,0, Animation.ABSOLUTE, nextCoords[1] - currentCoords[1]);
+            horizontalAnimation.setDuration(1000);
+
+//            TranslateAnimation verticalAnimationUp = new TranslateAnimation(
+//                    Animation.ABSOLUTE,0, Animation.ABSOLUTE, 0,
+//                    Animation.ABSOLUTE,0, Animation.ABSOLUTE, -200
+//            );
+//            verticalAnimationUp.setDuration(500);
+//
+//            TranslateAnimation verticalAnimationDown = new TranslateAnimation(
+//                    Animation.ABSOLUTE,0, Animation.ABSOLUTE, 0,
+//                    Animation.ABSOLUTE,0, Animation.ABSOLUTE, -200
+//            );
+//            verticalAnimationUp.setDuration(500);
+
+            animationSet.addAnimation(horizontalAnimation);
+//            animationSet.addAnimation(verticalAnimationUp);
+
+            animationSet.setStartOffset(delay);
+            animationSet.setFillAfter(true);
+
+            shellView.startAnimation(animationSet);
+
+            delay += 100;
+        }
+    }
+
+    /**
      * Get array of buttons
      * @return - button array for all cups
      */
@@ -515,17 +555,7 @@ public class GameActivity extends Activity {
         }
     }
 
-    public void initialiseCups() {
-        /*for (int i = 0; i <= 8; i += 8) {
-            for (int j = 0; i < 7; i++) {
-                setButtonCount(i + j, 7, false);
-            }
-        }
-
-        // initialise Player stores with 0 shells each
-        for (int i = 7; i <= 15; i += 8) {
-            setButtonCount(i, 0, true);
-        }*/
+    public void test() {
         setButtonCount(0, 7, false);
         setButtonCount(1, 7, false);
         setButtonCount(2, 7, false);
