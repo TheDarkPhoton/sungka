@@ -555,7 +555,7 @@ public class GameActivity extends Activity {
         }
     }
 
-    public void test() {
+    public void initialiseCups() {
         setButtonCount(0, 7, false);
         setButtonCount(1, 7, false);
         setButtonCount(2, 7, false);
