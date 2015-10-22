@@ -192,8 +192,10 @@ public class GameActivity extends Activity {
         }
         //Add shell types to array
         shells = new Drawable[]{
-                ResourcesCompat.getDrawable(getResources(), R.drawable.shelldown, null),
-                ResourcesCompat.getDrawable(getResources(), R.drawable.shellup, null)
+                ResourcesCompat.getDrawable(getResources(), R.drawable.shell1, null),
+                ResourcesCompat.getDrawable(getResources(), R.drawable.shell2, null),
+                ResourcesCompat.getDrawable(getResources(), R.drawable.shell3, null),
+                ResourcesCompat.getDrawable(getResources(), R.drawable.shell4, null),
         };
 
         //Create buttons + texts
@@ -375,8 +377,8 @@ public class GameActivity extends Activity {
         int coords[] = new int[2];
         cup.getLocationInWindow(coords);
         int x = coords[0]; int y = coords[1];
-        int shellHeight = (int) (cupSize * 0.3);
-        int shellWidth = (int) (shellHeight * 0.65);
+        int shellHeight = (int) (cupSize * 0.2);
+        int shellWidth = (int) (cupSize * 0.2);
         int radius = cupSize/2 - shellHeight;
         int x1 = x + cupSize/2;
         int y1 = y + cupSize/2;
@@ -399,7 +401,7 @@ public class GameActivity extends Activity {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     shell.setBackground(shells[new Random().nextInt(shells.length)]);
                 } else {
-                    shell.setBackgroundResource(R.drawable.shellup);
+                    shell.setBackgroundResource(R.drawable.shell1);
                 }
                 double angle = new Random().nextDouble() * (Math.PI * 2);
                 double r = new Random().nextDouble();
@@ -410,8 +412,8 @@ public class GameActivity extends Activity {
                 params.leftMargin = shellX;
                 params.topMargin = shellY;
                 shell.setLayoutParams(params);
-                shell.setPivotX(shellWidth/2);
-                shell.setPivotY(shellHeight/2);
+                shell.setPivotX(shellWidth / 2);
+                shell.setPivotY(shellHeight / 2);
                 shell.setRotation(new Random().nextInt(360));
                 shellList.add(shell);
                 layoutTop.addView(shell);
