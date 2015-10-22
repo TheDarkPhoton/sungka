@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.res.ResourcesCompat;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,7 +25,12 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Random;
 
+import game.Game;
+import game.HandOfShells;
+
 public class GameActivity extends Activity {
+
+    private static final String TAG = "GameActivity";
 
     //Master layout
     private FrameLayout layoutMaster;
@@ -44,6 +50,8 @@ public class GameActivity extends Activity {
     private Drawable[] shells;
     private int cupSize, storeSize;
 
+    private Game game;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +70,8 @@ public class GameActivity extends Activity {
 
         //Programmatically create and lay out elements
         initView();
+
+        game = new Game();
     }
 
     @Override
@@ -80,6 +90,12 @@ public class GameActivity extends Activity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) { return true; }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        game.start();
     }
 
     /**
@@ -179,6 +195,22 @@ public class GameActivity extends Activity {
 
         //Send sizes and spaces to create and lay out all buttons
         formatView(storeSize, cupSize, spaceTop, spaceLeft, spaceSmall, spaceStoreTop, scaleFactor);
+
+        // initialise shellcups with 7 shells each
+        initialiseCups();
+
+        for (int i = 0; i <= 8; i += 8) {
+            for (int j = 0; i < 7; i++) {
+                setButtonCount(i + j, 7, false);
+//                updateCup(i + j, false);
+            }
+        }
+
+        // initialise Player stores with 0 shells each
+        for (int i = 7; i <= 15; i += 8) {
+            setButtonCount(i, 0, true);
+//            updateCup(i, true);
+        }
     }
 
     private void formatView(int storeSize, int cupSize, int spaceTop, int spaceLeft, int spaceSmall, int spaceStoreTop, float scaleFactor) {
@@ -323,8 +355,8 @@ public class GameActivity extends Activity {
         playerStore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println("pressed");
-                test1();
+                Log.d(TAG, "Store pressed");
+//                test1();
             }
         });
 
@@ -361,8 +393,8 @@ public class GameActivity extends Activity {
         opponentStore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println("pressed");
-                test();
+                System.out.println("Store pressed");
+//                test();
             }
         });
     }
@@ -390,7 +422,7 @@ public class GameActivity extends Activity {
 
         ArrayList<ImageView> shellList = cupShells.get(id);
         int currentShellCount = shellList.size();
-        System.out.println("New count = " + count + ", current shell count = " + currentShellCount);
+        Log.d(TAG, "New count = " + count + ", current shell count = " + currentShellCount);
 
         if(currentShellCount < count) {
             //increase number of shells
@@ -425,7 +457,7 @@ public class GameActivity extends Activity {
                 ImageView shell = shellList.get(i);
                 layoutTop.removeView(shell);
                 shellList.remove(i);
-                System.out.println("removed");
+                Log.d(TAG, "removed");
             }
         }
     }
@@ -448,31 +480,68 @@ public class GameActivity extends Activity {
         updateCup(id, isStore);
     }
 
+    public void addButtonCount(int id, boolean isStore) {
+        int count = Integer.valueOf(cupTexts[id].getText().toString());
+        setButtonCount(id, count + 1, isStore);
+    }
+
     /**
      * Test for button press
      * @param id - array index of button
      */
     public void handleButton(int id) {
-        System.out.println("Hole " + id + " was pressed.");
+        Log.i(TAG, "Hole " + id + " was pressed.");
+
+        if (game.isValidMove(id)) {
+            HandOfShells hand = game.fetchHand(id);
+            setButtonCount(id, 0, false);
+
+            while (hand.isNotEmpty()) {
+                id = hand.next();
+                hand.dropShell();
+
+                if (id % 8 == 7) {
+                    // cup is PlayerCup
+                    addButtonCount(id, true);
+                } else {
+                    // cup is ShellCup
+                    addButtonCount(id, false);
+                }
+
+//                wait(500);
+            }
+        } else {
+            Log.i(TAG, "Invalid move");
+        }
     }
 
-    public void test() {
-        setButtonCount(0, 7, false);
-        setButtonCount(1, 7, false);
-        setButtonCount(2, 7, false);
-        setButtonCount(3, 7, false);
-        setButtonCount(4, 7, false);
-        setButtonCount(5, 7, false);
-        setButtonCount(6, 7, false);
-        setButtonCount(7, 0, true);
-        setButtonCount(8, 7, false);
-        setButtonCount(9, 7, false);
-        setButtonCount(10, 7, false);
-        setButtonCount(11, 7, false);
-        setButtonCount(12, 7, false);
-        setButtonCount(13, 7, false);
-        setButtonCount(14, 7, false);
-        setButtonCount(15, 0, true);
+    public void initialiseCups() {
+        for (int i = 0; i <= 8; i += 8) {
+            for (int j = 0; i < 7; i++) {
+                setButtonCount(i + j, 7, false);
+            }
+        }
+
+        // initialise Player stores with 0 shells each
+        for (int i = 7; i <= 15; i += 8) {
+            setButtonCount(i, 0, true);
+        }
+//        setButtonCount(0, 7, false);
+//        setButtonCount(1, 7, false);
+//        setButtonCount(2, 7, false);
+//        setButtonCount(3, 7, false);
+//        setButtonCount(4, 7, false);
+//        setButtonCount(5, 7, false);
+//        setButtonCount(6, 7, false);
+//        setButtonCount(7, 0, true);
+//        setButtonCount(8, 7, false);
+//        setButtonCount(9, 7, false);
+//        setButtonCount(10, 7, false);
+//        setButtonCount(11, 7, false);
+//        setButtonCount(12, 7, false);
+//        setButtonCount(13, 7, false);
+//        setButtonCount(14, 7, false);
+//        setButtonCount(15, 0, true);
     }
 
     public void test1() {

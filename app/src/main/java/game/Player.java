@@ -109,6 +109,7 @@ public class Player {
         ((PlayerCup) store).addCapturedShells(numShells);
     }
 
+
     /**
      * Method used to be able to identify between Player objects
      * @param object the Object which we are checking if it is equal to this Player Object

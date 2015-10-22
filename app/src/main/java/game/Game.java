@@ -5,5 +5,26 @@ package game;
  */
 public class Game {
 
-    // TODO: control game flow, track player statistics
+    private Board board;
+
+    public Game() {
+
+        // for now, assume human players
+        Player playerOne = new Human("Shell Master");
+        Player playerTwo = new Human("Angry Gull");
+
+        board = new Board(playerOne, playerTwo);
+    }
+
+    public void start() {
+//        board.giveMove();
+    }
+
+    public boolean isValidMove(int i) {
+        return board.isValidMove(i);
+    }
+
+    public HandOfShells fetchHand(int i) {
+        return board.makeHand(i);
+    }
 }

@@ -37,14 +37,34 @@ public class Board {
         _currentPlayer = a;
     }
 
+    public boolean isValidMove(int index) {
+
+        // make sure selected cup belongs to current player and is a non-empty ShellCup
+        if (_currentPlayer.isShellCup(_cups[index], index) && _cups[index].getCount() > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public HandOfShells makeHand(int index) {
+        int shells = _cups[index].pickUpShells();
+        return new HandOfShells(index, shells, this);
+    }
+
+    public void addShell(int index) {
+        _cups[index].addShell();
+    }
+
+
     /**
      * Distributes shells of the cup indicated by the index.
      * @param index of the cup in the array.
      */
     public void distribute(int index){
         // don't allow a Player to select an opponent's Cup
-        if (((PlayerCup) _cups[index]).getPlayer() != _currentPlayer)
+        if (((PlayerCup) _cups[index]).getPlayer() != _currentPlayer) {
             return;
+        }
 
         //get the number of shells in the cup and remove them, then increment index
         int shells = _cups[index++].pickUpShells();
@@ -103,13 +123,20 @@ public class Board {
         return false;
     }
 
+    public void giveMove() {
+
+    }
+
     /**
      * Checks if the game over condition is met.
      * @return return true of game should end, false otherwise
      */
     public boolean isGameOver(){
+        if (getPlayerCupA().getCount() + getPlayerCupB().getCount() == 98) {
+            return true;
+        }
         return false;
-    } // TODO
+    }
 
     /**
      * Gets the PlayerA cup
