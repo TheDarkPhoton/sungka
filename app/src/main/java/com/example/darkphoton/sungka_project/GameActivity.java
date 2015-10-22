@@ -516,7 +516,7 @@ public class GameActivity extends Activity {
     }
 
     public void initialiseCups() {
-        for (int i = 0; i <= 8; i += 8) {
+        /*for (int i = 0; i <= 8; i += 8) {
             for (int j = 0; i < 7; i++) {
                 setButtonCount(i + j, 7, false);
             }
@@ -525,23 +525,23 @@ public class GameActivity extends Activity {
         // initialise Player stores with 0 shells each
         for (int i = 7; i <= 15; i += 8) {
             setButtonCount(i, 0, true);
-        }
-//        setButtonCount(0, 7, false);
-//        setButtonCount(1, 7, false);
-//        setButtonCount(2, 7, false);
-//        setButtonCount(3, 7, false);
-//        setButtonCount(4, 7, false);
-//        setButtonCount(5, 7, false);
-//        setButtonCount(6, 7, false);
-//        setButtonCount(7, 0, true);
-//        setButtonCount(8, 7, false);
-//        setButtonCount(9, 7, false);
-//        setButtonCount(10, 7, false);
-//        setButtonCount(11, 7, false);
-//        setButtonCount(12, 7, false);
-//        setButtonCount(13, 7, false);
-//        setButtonCount(14, 7, false);
-//        setButtonCount(15, 0, true);
+        }*/
+        setButtonCount(0, 7, false);
+        setButtonCount(1, 7, false);
+        setButtonCount(2, 7, false);
+        setButtonCount(3, 7, false);
+        setButtonCount(4, 7, false);
+        setButtonCount(5, 7, false);
+        setButtonCount(6, 7, false);
+        setButtonCount(7, 0, true);
+        setButtonCount(8, 7, false);
+        setButtonCount(9, 7, false);
+        setButtonCount(10, 7, false);
+        setButtonCount(11, 7, false);
+        setButtonCount(12, 7, false);
+        setButtonCount(13, 7, false);
+        setButtonCount(14, 7, false);
+        setButtonCount(15, 0, true);
     }
 
     public void test1() {
