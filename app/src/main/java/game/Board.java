@@ -4,8 +4,8 @@ package game;
  * An object that describes the state of the current game board
  */
 public class Board {
-    private Cup[] _cups;                                    //an array of board cups
-    private Player _currentPlayer;                        // the player whose turn it is
+    private Cup[] _cups;                                    // an array of board cups
+    private Player _currentPlayer;                          // the player whose turn it is
     private Player _playerOne;
     private Player _playerTwo;
 
@@ -42,6 +42,7 @@ public class Board {
      * @param index of the cup in the array.
      */
     public void distribute(int index){
+        // don't allow a Player to select an opponent's Cup
         if (((PlayerCup) _cups[index]).getPlayer() != _currentPlayer)
             return;
 
@@ -66,9 +67,11 @@ public class Board {
         }
 
         // need to check a few things with the last used cup
-        Cup lastCup = _cups[--index];
+        int lastIndex = (index - 1) % 16;
+        Cup lastCup = _cups[lastIndex];
 
-        if (lastCup.getCount() == 1 && _currentPlayer.isShellCup(lastCup, index)) {
+        if (lastCup.getCount() == 1 && _currentPlayer.isShellCup(lastCup, lastIndex)) {
+
             // the last shell fell into an empty cup belonging to the player, so capture shells
             int numShells = lastCup.pickUpShells();
             numShells += _cups[index % 8].pickUpShells();
@@ -84,12 +87,29 @@ public class Board {
     }
 
     /**
+     * Checks if a provided cup belongs to the opponent of the current player.
+     * @param index the location of the cup in question
+     * @return true if the indicated cup belongs to the current player's opponent
+     */
+    public boolean isOpponentStore(int index) {
+        if (_currentPlayer.isStore(getPlayerCupA())) {
+            // PlayerB's store is at 15
+            return index == 15;
+        } else if (_currentPlayer.isStore(getPlayerCupB())) {
+            // PlayerA's store is at 7
+            return index == 7;
+        }
+
+        return false;
+    }
+
+    /**
      * Checks if the game over condition is met.
      * @return return true of game should end, false otherwise
      */
     public boolean isGameOver(){
         return false;
-    }
+    } // TODO
 
     /**
      * Gets the PlayerA cup
@@ -99,7 +119,8 @@ public class Board {
         return _cups[7];
     }
 
-    /** Gets the PlayerB cup
+    /**
+     * Gets the PlayerB cup
      * @return returns player cup object.
      */
     public Cup getPlayerCupB(){
