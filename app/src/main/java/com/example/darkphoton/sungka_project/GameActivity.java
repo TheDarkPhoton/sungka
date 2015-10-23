@@ -13,6 +13,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
@@ -199,8 +200,16 @@ public class GameActivity extends Activity {
         //Send sizes and spaces to create and lay out all buttons
         formatView(storeSize, cupSize, spaceTop, spaceLeft, spaceSmall, spaceStoreTop, scaleFactor);
 
-        // initialise shellcups with 7 shells each
-        initialiseCups();
+        // Wait for gridLayout to finish drawing so that we can get co-ordinates of subviews.
+        layoutBase.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                // initialise shellcups with 7 shells each
+                initialiseCups();
+            }
+        });
+
+
     }
 
     private void formatView(int storeSize, int cupSize, int spaceTop, int spaceLeft, int spaceSmall, int spaceStoreTop, float scaleFactor) {
@@ -533,26 +542,113 @@ public class GameActivity extends Activity {
         Log.i(TAG, "Hole " + id + " was pressed.");
 
         if (game.isValidMove(id)) {
-            HandOfShells hand = game.fetchHand(id);
-            setButtonCount(id, 0, false);
+            final HandOfShells hand = game.fetchHand(id);
+            animateCupTransfer(hand, cupShells.get(id).size());
 
-            while (hand.isNotEmpty()) {
-                id = hand.next();
-                hand.dropShell();
-
-                if (id % 8 == 7) {
-                    // cup is PlayerCup
-                    addButtonCount(id, true);
-                } else {
-                    // cup is ShellCup
-                    addButtonCount(id, false);
-                }
-
-//                wait(500);
-            }
         } else {
             Log.i(TAG, "Invalid move");
         }
+    }
+
+    /**
+     * Recursive function to animate the transfer a set number of shells from a cup depending on the
+     * state of the HandOfShells
+     * @param hand The HandOfShells which captures the state of the hand after a move
+     * @param remainingShellsInHand The number of shells that will be transfered from the set cup.
+     */
+    public void animateCupTransfer(final HandOfShells hand, final int remainingShellsInHand) {
+        if (hand.isNotEmpty()) {
+            final int nextId = hand.next() % 16;
+            final int currentId = (nextId - 1) % 16;
+
+            // TODO: Check for whether next id is opponents store
+
+            // Get the shell image views to animate
+            ArrayList<ImageView> shellsInCup = cupShells.get(currentId);
+            final ArrayList<ImageView> shells = new ArrayList<>(remainingShellsInHand);
+
+            // Only get the correct amount of shell imageviews from the cup
+            for (int i = 0; i < remainingShellsInHand; i++) {
+                shells.set(i, shellsInCup.get(i));
+            }
+
+            // Transfer shells programatically
+
+            // Get coordinates of current cup
+            int[] currentCoords = new int[2];
+            cupButtons[currentId].getLocationInWindow(currentCoords);
+
+            // Get coordinates of next cup
+            int[] nextCoords = new int[2];
+            cupButtons[nextId].getLocationInWindow(nextCoords);
+
+            // Add delay to each shell animation to create "train" effect
+            long delay = 0;
+
+            for (ImageView shellView: shells) {
+                hand.dropShell();
+
+                // Setup animation for shell
+                AnimationSet animationSet = new AnimationSet(true);
+
+                TranslateAnimation horizontalAnimation = new TranslateAnimation(
+                    Animation.ABSOLUTE, 0, Animation.ABSOLUTE, nextCoords[0] - currentCoords[0],
+                    Animation.ABSOLUTE, 0, Animation.ABSOLUTE, nextCoords[1] - currentCoords[1]);
+                horizontalAnimation.setDuration(1000);
+
+                animationSet.addAnimation(horizontalAnimation);
+
+                // Temporary vertical jump solution
+                // TODO: Make shells follow a quadratic curve
+//            TranslateAnimation verticalAnimationUp = new TranslateAnimation(
+//                    Animation.ABSOLUTE,0, Animation.ABSOLUTE, 0,
+//                    Animation.ABSOLUTE,0, Animation.ABSOLUTE, -200
+//            );
+//            verticalAnimationUp.setDuration(500);
+//
+//            TranslateAnimation verticalAnimationDown = new TranslateAnimation(
+//                    Animation.ABSOLUTE,0, Animation.ABSOLUTE, 0,
+//                    Animation.ABSOLUTE,0, Animation.ABSOLUTE, 200
+//            );
+//            verticalAnimationUp.setDuration(500);
+
+//            animationSet.addAnimation(verticalAnimationUp);
+//            animationSet.addAnimation(verticalAnimationDown);
+
+                animationSet.setStartOffset(delay);
+                animationSet.setFillAfter(true);
+                shellView.startAnimation(animationSet);
+
+                delay += 100;
+
+                // Only apply listener after first shell ends animation
+                if (delay != 100)
+                    continue;
+
+                animationSet.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        // Transfer Shell ImageViews to correct cup container
+                        cupShells.get(currentId).removeAll(shells);
+                        cupShells.get(nextId).addAll(shells);
+
+                        animateCupTransfer(hand, remainingShellsInHand - 1);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+            }
+        }
+
+
     }
 
     public void initialiseCups() {
