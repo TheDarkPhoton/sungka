@@ -204,12 +204,11 @@ public class GameActivity extends Activity {
         layoutBase.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
+                layoutBase.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                 // initialise shellcups with 7 shells each
                 initialiseCups();
             }
         });
-
-
     }
 
     private void formatView(int storeSize, int cupSize, int spaceTop, int spaceLeft, int spaceSmall, int spaceStoreTop, float scaleFactor) {
@@ -568,7 +567,7 @@ public class GameActivity extends Activity {
             final ArrayList<ImageView> shells = new ArrayList<>(remainingShellsInHand);
 
             // Only get the correct amount of shell imageviews from the cup
-            for (int i = 0; i < remainingShellsInHand; i++) {
+            for (int i = 0; i < Math.min(remainingShellsInHand, shellsInCup.size()); i++) {
                 shells.set(i, shellsInCup.get(i));
             }
 
