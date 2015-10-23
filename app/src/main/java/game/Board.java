@@ -87,6 +87,21 @@ public class Board {
     }
 
     /**
+     * Picks up shells from the selected cup.
+     * @param index of the cup.
+     * @return Hand of shells object.
+     */
+    public HandOfShells pickUpShells(int index){
+        Cup cup = _cups[index];
+        HandOfShells hand = new HandOfShells(index, cup.pickUpShells());
+
+        //send to the other user
+
+        hand.bindBoard(this);
+        return hand;
+    }
+
+    /**
      * Checks if a provided cup belongs to the opponent of the current player.
      * @param index the location of the cup in question
      * @return true if the indicated cup belongs to the current player's opponent

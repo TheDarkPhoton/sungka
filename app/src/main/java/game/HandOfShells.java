@@ -15,11 +15,17 @@ public class HandOfShells {
      *
      * @param cup the index location of a cup that a player has selected
      * @param shells the number of shells in that cup
-     * @param board the current board being played on
      */
-    public HandOfShells(int cup, int shells, Board board) {
+    public HandOfShells(int cup, int shells) {
         _cup_index = cup;
         _shells = shells;
+    }
+
+    /**
+     * Saves the reference to the board of the player.
+     * @param board of the players.
+     */
+    public void bindBoard(Board board){
         _board = board;
     }
 
