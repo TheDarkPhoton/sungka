@@ -542,8 +542,8 @@ public class GameActivity extends Activity {
 
         if (game.isValidMove(id)) {
             final HandOfShells hand = game.fetchHand(id);
-            animateCupTransfer(hand, cupShells.get(id).size());
 
+            animateCupTransfer(hand, cupShells.get(id).size());
         } else {
             Log.i(TAG, "Invalid move");
         }
@@ -556,22 +556,25 @@ public class GameActivity extends Activity {
      * @param remainingShellsInHand The number of shells that will be transfered from the set cup.
      */
     public void animateCupTransfer(final HandOfShells hand, final int remainingShellsInHand) {
+        Log.i(TAG, "animateCupTransfer("+hand+", "+remainingShellsInHand+")");
         if (hand.isNotEmpty()) {
             final int nextId = hand.next() % 16;
             final int currentId = (nextId - 1) % 16;
 
-            // TODO: Check for whether next id is opponents store
-
             // Get the shell image views to animate
             ArrayList<ImageView> shellsInCup = cupShells.get(currentId);
-            final ArrayList<ImageView> shells = new ArrayList<>(remainingShellsInHand);
+            final ArrayList<ImageView> shellsInHand = new ArrayList<>(remainingShellsInHand);
+            Log.i(TAG, "shellsInHand: " + shellsInHand.size());
+//            Log.i(TAG, nextId + ": " + cupShells.get(currentId ).size() + ", " + currentId + ": " + shellsInCup.size() + ", " + nextId + ": " + cupShells.get(nextId).size());
+//            Log.i(TAG, "shellsInCurrentCup: " + );
+//            Log.i(TAG, "nextId: " + );
+//            Log.i(TAG, "shellsInNextCup: " + );
 
             // Only get the correct amount of shell imageviews from the cup
             for (int i = 0; i < Math.min(remainingShellsInHand, shellsInCup.size()); i++) {
-                shells.set(i, shellsInCup.get(i));
+                ImageView tempShell = shellsInCup.get(i);
+                shellsInHand.add(tempShell);
             }
-
-            // Transfer shells programatically
 
             // Get coordinates of current cup
             int[] currentCoords = new int[2];
@@ -581,18 +584,22 @@ public class GameActivity extends Activity {
             int[] nextCoords = new int[2];
             cupButtons[nextId].getLocationInWindow(nextCoords);
 
+            int xChange = nextCoords[0] - currentCoords[0];
+            int yChange = nextCoords[1] - currentCoords[1];
+
             // Add delay to each shell animation to create "train" effect
             long delay = 0;
 
-            for (ImageView shellView: shells) {
-                hand.dropShell();
+            for (ImageView shellView: shellsInHand) {
 
                 // Setup animation for shell
                 AnimationSet animationSet = new AnimationSet(true);
 
+
+
                 TranslateAnimation horizontalAnimation = new TranslateAnimation(
-                    Animation.ABSOLUTE, 0, Animation.ABSOLUTE, nextCoords[0] - currentCoords[0],
-                    Animation.ABSOLUTE, 0, Animation.ABSOLUTE, nextCoords[1] - currentCoords[1]);
+                    Animation.ABSOLUTE, 0, Animation.ABSOLUTE, xChange,
+                    Animation.ABSOLUTE, 0, Animation.ABSOLUTE, yChange);
                 horizontalAnimation.setDuration(1000);
 
                 animationSet.addAnimation(horizontalAnimation);
@@ -624,6 +631,8 @@ public class GameActivity extends Activity {
                 if (delay != 100)
                     continue;
 
+                hand.dropShell();
+
                 animationSet.setAnimationListener(new Animation.AnimationListener() {
                     @Override
                     public void onAnimationStart(Animation animation) {
@@ -633,8 +642,8 @@ public class GameActivity extends Activity {
                     @Override
                     public void onAnimationEnd(Animation animation) {
                         // Transfer Shell ImageViews to correct cup container
-                        cupShells.get(currentId).removeAll(shells);
-                        cupShells.get(nextId).addAll(shells);
+                        cupShells.get(nextId).removeAll(shellsInHand);
+                        cupShells.get(nextId).addAll(shellsInHand);
 
                         animateCupTransfer(hand, remainingShellsInHand - 1);
                     }
