@@ -33,6 +33,12 @@ import game.Game;
 import game.HandOfShells;
 
 public class GameActivity extends Activity {
+    public enum PlayerType{
+        A, B
+    }
+    public enum CupType {
+        Player, Shell
+    }
 
     private static final String TAG = "GameActivity";
 
@@ -173,45 +179,21 @@ public class GameActivity extends Activity {
      */
     private void initView() {
         //Calculate sizes of store cups and small cups
-        //Store cups are 15.6% of the screen width
-        storeSize = (int) (_screenWidth * 0.156);
-
-        //Small cups are 7.8% of the screen width
-        cupSize = (int) (_screenWidth * 0.078);
-
-        // A scale factor for text sizes
-        float scaleFactor = cupSize / 199.0f;
-
-        //Calculate spacings
-        int spaceTop, spaceLeft, spaceSmall, spaceStoreTop;
-
-        //Space from store inner edge
-        spaceSmall = (int) (_screenWidth * 0.005);
-
-        //Space from store top
-        spaceStoreTop = (int) (_screenHeight * 0.05);
-
-        //Space from left
-        spaceLeft = (_screenWidth - (((storeSize * 2) + (cupSize * 7) + (spaceSmall * 14)))) / 2;
-
-        //Space from top
-        spaceTop = ((_screenHeight - ((storeSize + (cupSize * 2) + (spaceStoreTop * 2)))) / 2) - cupSize / 2;
+        CupMargins sizes = new CupMargins(_screenWidth, _screenHeight, cupSize);
 
         //Send sizes and spaces to create and lay out all buttons
-        formatView(storeSize, cupSize, spaceTop, spaceLeft, spaceSmall, spaceStoreTop, scaleFactor);
+        formatView(sizes);
 
         // Wait for gridLayout to finish drawing so that we can get co-ordinates of subviews.
         layoutBase.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                layoutBase.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                // initialise shellcups with 7 shells each
-                initialiseCups();
+                initialiseCups();                                                                   // initialise shellcups with 7 shells each
             }
         });
     }
 
-    private void formatView(int storeSize, int cupSize, int spaceTop, int spaceLeft, int spaceSmall, int spaceStoreTop, float scaleFactor) {
+    private void formatView(CupMargins sizes) {
         //Initialise button array
         cupButtons = new Button[16];
         cupTexts = new TextView[16];
@@ -235,166 +217,145 @@ public class GameActivity extends Activity {
         //Set params for small cups
         //Player
         for(int i = 0; i < 7; i++) {
-            //Button
-            Button button = cupButtons[i];
-            button.setBackgroundResource(R.drawable.player_smallcup);
-            //Text
-            TextView text = cupTexts[i];
-            text.setTextColor(Color.parseColor("#FFFFFF"));
-            text.setText(String.valueOf(i));
-            text.setTextSize(30 * scaleFactor);
-
-            // Add listener for click
-            final int id = i;
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    handleButton(id);
-                }
-            });
-
-            //Set params and add to view
-            LayoutParams params = new LayoutParams();
-            params.width = cupSize;
-            params.height = cupSize;
-            params.columnSpec = GridLayout.spec(i + 1);
-            params.rowSpec = GridLayout.spec(3);
-            params.leftMargin = spaceSmall;
-            params.rightMargin = spaceSmall;
-            button.setLayoutParams(params);
-            layoutBase.addView(button);
-
-            LayoutParams paramsText = new LayoutParams();
-            paramsText.width = LayoutParams.WRAP_CONTENT;
-            paramsText.height = LayoutParams.WRAP_CONTENT;
-            paramsText.columnSpec = GridLayout.spec(i + 1);
-            paramsText.rowSpec = GridLayout.spec(4);
-            paramsText.bottomMargin = spaceTop;
-            paramsText.setGravity(Gravity.CENTER);
-            text.setLayoutParams(paramsText);
-            layoutBase.addView(text);
+            CupButton btn = new CupButton(this, PlayerType.A, CupType.Shell, sizes, i);
+            btn.addToLayout(layoutBase, i, 3, 4);
+            cupButtons[i] = btn;
         }
+        CupButton btnPlayerA = new CupButton(this, PlayerType.A, CupType.Player, sizes, 7);
+        btnPlayerA.addToLayout(layoutBase, 8, 2, 3);
+        cupButtons[7] = btnPlayerA;
+
+
         //Opponent
         int columnIndex = 1;
         for(int i = 14; i > 7; i--) {
-            //Button
-            Button button = cupButtons[i];
-            button.setBackgroundResource(R.drawable.opponent_smallcup);
-            //Text
-            TextView text = cupTexts[i];
-            text.setText(String.valueOf(i));
-            text.setTextSize(30 * scaleFactor);
-
-            // Add listener for click
-            final int id = i;
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    handleButton(id);
-                }
-            });
-
-            //Set params and add to view
-            LayoutParams params = new LayoutParams();
-            params.width = cupSize;
-            params.height = cupSize;
-            params.columnSpec = GridLayout.spec(columnIndex);
-            params.rowSpec = GridLayout.spec(1);
-            params.leftMargin = spaceSmall;
-            params.rightMargin = spaceSmall;
-            button.setLayoutParams(params);
-            layoutBase.addView(button);
-
-            LayoutParams paramsText = new LayoutParams();
-            paramsText.width = LayoutParams.WRAP_CONTENT;
-            paramsText.height = LayoutParams.WRAP_CONTENT;
-            paramsText.columnSpec = GridLayout.spec(columnIndex);
-            paramsText.rowSpec = GridLayout.spec(0);
-            paramsText.topMargin = spaceTop;
-            paramsText.setGravity(Gravity.CENTER);
-            text.setLayoutParams(paramsText);
-            layoutBase.addView(text);
+            CupButton btn = new CupButton(this, PlayerType.B, CupType.Shell, sizes, i);
+            btn.addToLayout(layoutBase, columnIndex, 1, 0);
+            cupButtons[i] = btn;
+//
+//            //Button
+//            Button button = cupButtons[i];
+//            button.setBackgroundResource(R.drawable.opponent_smallcup);
+//            //Text
+//            TextView text = cupTexts[i];
+//            text.setText(String.valueOf(i));
+//            text.setTextSize(30 * sizes.scale);
+//
+//            // Add listener for click
+//            final int id = i;
+//            button.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    handleButton(id);
+//                }
+//            });
+//
+//            //Set params and add to view
+//            LayoutParams params = new LayoutParams();
+//            params.width = cupSize;
+//            params.height = cupSize;
+//            params.columnSpec = GridLayout.spec(columnIndex);
+//            params.rowSpec = GridLayout.spec(1);
+//            params.leftMargin = sizes.spaceSmall;
+//            params.rightMargin = sizes.spaceSmall;
+//            button.setLayoutParams(params);
+//            layoutBase.addView(button);
+//
+//            LayoutParams paramsText = new LayoutParams();
+//            paramsText.width = LayoutParams.WRAP_CONTENT;
+//            paramsText.height = LayoutParams.WRAP_CONTENT;
+//            paramsText.columnSpec = GridLayout.spec(columnIndex);
+//            paramsText.rowSpec = GridLayout.spec(0);
+//            paramsText.topMargin = sizes.spaceTop;
+//            paramsText.setGravity(Gravity.CENTER);
+//            text.setLayoutParams(paramsText);
+//            layoutBase.addView(text);
 
             columnIndex++;
         }
 
-        //Set attributes for store cups
-        //Player
-        Button playerStore = cupButtons[7];
-        playerStore.setBackgroundResource(R.drawable.player_bigcup);
-        TextView playerText = cupTexts[7];
-        playerText.setText(String.valueOf(7));
-        playerText.setTextColor(Color.parseColor("#FFFFFF"));
-        playerText.setTextSize(40 * scaleFactor);
+        CupButton btnPlayerB = new CupButton(this, PlayerType.B, CupType.Player, sizes, 15);
+        btnPlayerB.addToLayout(layoutBase, 0, 2, 1);
+        cupButtons[15] = btnPlayerB;
 
-        //Set params and add to view
-        LayoutParams playerParams = new LayoutParams();
-        playerParams.width = storeSize;
-        playerParams.height = storeSize;
-        playerParams.columnSpec = GridLayout.spec(8);
-        playerParams.rowSpec = GridLayout.spec(2);
-        playerParams.rightMargin = spaceLeft;
-        playerParams.leftMargin = spaceSmall;
-        playerParams.topMargin = spaceStoreTop;
-        playerParams.bottomMargin = spaceStoreTop;
-        playerStore.setLayoutParams(playerParams);
-        layoutBase.addView(playerStore);
+//        //Set attributes for store cups
+//        //Player
+//        Button playerStore = cupButtons[7];
+//        playerStore.setBackgroundResource(R.drawable.player_bigcup);
+//        TextView playerText = cupTexts[7];
+//        playerText.setText(String.valueOf(7));
+//        playerText.setTextColor(Color.parseColor("#FFFFFF"));
+//        playerText.setTextSize(40 * sizes.scale);
+//
+//        //Set params and add to view
+//        LayoutParams playerParams = new LayoutParams();
+//        playerParams.width = storeSize;
+//        playerParams.height = storeSize;
+//        playerParams.columnSpec = GridLayout.spec(8);
+//        playerParams.rowSpec = GridLayout.spec(2);
+//        playerParams.rightMargin = sizes.spaceLeft;
+//        playerParams.leftMargin = sizes.spaceSmall;
+//        playerParams.topMargin = sizes.spaceStoreTop;
+//        playerParams.bottomMargin = sizes.spaceStoreTop;
+//        playerStore.setLayoutParams(playerParams);
+//        layoutBase.addView(playerStore);
+//
+//        LayoutParams paramsPlayerText = new LayoutParams();
+//        paramsPlayerText.width = LayoutParams.WRAP_CONTENT;
+//        paramsPlayerText.height = LayoutParams.WRAP_CONTENT;
+//        paramsPlayerText.columnSpec = GridLayout.spec(8);
+//        paramsPlayerText.rowSpec = GridLayout.spec(3);
+//        paramsPlayerText.rightMargin = sizes.spaceSmall;
+//        paramsPlayerText.setGravity(Gravity.CENTER);
+//        playerText.setLayoutParams(paramsPlayerText);
+//        layoutBase.addView(playerText);
+//
+//        playerStore.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Log.d(TAG, "Store pressed");
+////                test1();
+//            }
+//        });
 
-        LayoutParams paramsPlayerText = new LayoutParams();
-        paramsPlayerText.width = LayoutParams.WRAP_CONTENT;
-        paramsPlayerText.height = LayoutParams.WRAP_CONTENT;
-        paramsPlayerText.columnSpec = GridLayout.spec(8);
-        paramsPlayerText.rowSpec = GridLayout.spec(3);
-        paramsPlayerText.rightMargin = spaceSmall;
-        paramsPlayerText.setGravity(Gravity.CENTER);
-        playerText.setLayoutParams(paramsPlayerText);
-        layoutBase.addView(playerText);
-
-        playerStore.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "Store pressed");
-//                test1();
-            }
-        });
-
-        //Opponent
-        Button opponentStore = cupButtons[15];
-        opponentStore.setBackgroundResource(R.drawable.opponent_bigcup);
-        TextView opponentText = cupTexts[15];
-        opponentText.setText(String.valueOf(15));
-        opponentText.setTextSize(40 * scaleFactor);
-
-        //Set params and add to view
-        LayoutParams opponentParams = new LayoutParams();
-        opponentParams.width = storeSize;
-        opponentParams.height = storeSize;
-        opponentParams.columnSpec = GridLayout.spec(0);
-        opponentParams.rowSpec = GridLayout.spec(2);
-        opponentParams.rightMargin = spaceSmall;
-        opponentParams.leftMargin = spaceLeft;
-        opponentParams.topMargin = spaceStoreTop;
-        opponentParams.bottomMargin = spaceStoreTop;
-        opponentStore.setLayoutParams(opponentParams);
-        layoutBase.addView(opponentStore);
-
-        LayoutParams paramsOpponentText = new LayoutParams();
-        paramsOpponentText.width = LayoutParams.WRAP_CONTENT;
-        paramsOpponentText.height = LayoutParams.WRAP_CONTENT;
-        paramsOpponentText.columnSpec = GridLayout.spec(0);
-        paramsOpponentText.rowSpec = GridLayout.spec(1);
-        paramsOpponentText.leftMargin = spaceSmall;
-        paramsOpponentText.setGravity(Gravity.CENTER);
-        opponentText.setLayoutParams(paramsOpponentText);
-        layoutBase.addView(opponentText);
-
-        opponentStore.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i(TAG, "Store pressed");
-//                test();
-            }
-        });
+//
+//        //Opponent
+//        Button opponentStore = cupButtons[15];
+//        opponentStore.setBackgroundResource(R.drawable.opponent_bigcup);
+//        TextView opponentText = cupTexts[15];
+//        opponentText.setText(String.valueOf(15));
+//        opponentText.setTextSize(40 * sizes.scale);
+//
+//        //Set params and add to view
+//        LayoutParams opponentParams = new LayoutParams();
+//        opponentParams.width = storeSize;
+//        opponentParams.height = storeSize;
+//        opponentParams.columnSpec = GridLayout.spec(0);
+//        opponentParams.rowSpec = GridLayout.spec(2);
+//        opponentParams.rightMargin = sizes.spaceSmall;
+//        opponentParams.leftMargin = sizes.spaceLeft;
+//        opponentParams.topMargin = sizes.spaceStoreTop;
+//        opponentParams.bottomMargin = sizes.spaceStoreTop;
+//        opponentStore.setLayoutParams(opponentParams);
+//        layoutBase.addView(opponentStore);
+//
+//        LayoutParams paramsOpponentText = new LayoutParams();
+//        paramsOpponentText.width = LayoutParams.WRAP_CONTENT;
+//        paramsOpponentText.height = LayoutParams.WRAP_CONTENT;
+//        paramsOpponentText.columnSpec = GridLayout.spec(0);
+//        paramsOpponentText.rowSpec = GridLayout.spec(1);
+//        paramsOpponentText.leftMargin = sizes.spaceSmall;
+//        paramsOpponentText.setGravity(Gravity.CENTER);
+//        opponentText.setLayoutParams(paramsOpponentText);
+//        layoutBase.addView(opponentText);
+//
+//        opponentStore.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Log.i(TAG, "Store pressed");
+////                test();
+//            }
+//        });
     }
 
     /**
