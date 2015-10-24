@@ -23,8 +23,4 @@ public class Game {
     public void start() {
 //        board.giveMove();
     }
-
-    public boolean isValidMove(int i) {
-        return board.isValidMove(i);
-    }
 }

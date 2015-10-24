@@ -41,6 +41,16 @@ public class CupButton extends Button {
 
         for (int i = 0; i < _cup.getCount(); i++) {
             ImageView shell = new ImageView(context);
+
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.MATCH_PARENT,
+                    FrameLayout.LayoutParams.MATCH_PARENT);
+
+            shell.setLayoutParams(params);
+            shell.setScaleType(ImageView.ScaleType.MATRIX);
+            shell.setImageResource(R.drawable.shell1);
+
+            _shells.add(shell);
         }
 
         if(_cup_type == CupType.PLAYER){
@@ -103,6 +113,10 @@ public class CupButton extends Button {
         layoutBase.addView(this);
         _text.setLayoutParams(paramsText);
         _layoutMaster.addView(_text);
+
+        for (int i = 0; i < _shells.size(); i++) {
+            _layoutMaster.addView(_shells.get(i));
+        }
 
         layoutBase.addOnLayoutChangeListener(new OnLayoutChangeListener() {
             @Override

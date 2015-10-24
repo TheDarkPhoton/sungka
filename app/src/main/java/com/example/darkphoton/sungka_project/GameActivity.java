@@ -42,21 +42,6 @@ public class GameActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //Hide navigation bar and system bar
-        hideNav();
-
-        //Setup layouts
-        FrameLayout.LayoutParams params = initLayouts();
-
-        //Set view to base layout
-        setContentView(layoutMaster, params);
-
-        //Set screen size
-        setScreenSize();
-
-        //Programmatically create and lay out elements
-        initView();
-
         shells = new Drawable[]{
                 ResourcesCompat.getDrawable(getResources(), R.drawable.shell1, null),
                 ResourcesCompat.getDrawable(getResources(), R.drawable.shell2, null),
@@ -66,6 +51,21 @@ public class GameActivity extends Activity {
 
         game = new Game();
         board = game.getBoard();
+
+        //Hide navigation bar and system bar
+        hideNav();
+
+        //Set screen size
+        setScreenSize();
+
+        //Setup layouts
+        FrameLayout.LayoutParams params = initLayouts();
+
+        //Set view to base layout
+        setContentView(layoutMaster, params);
+
+        //Programmatically create and lay out elements
+        initView();
     }
 
     @Override
