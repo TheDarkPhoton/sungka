@@ -2,24 +2,31 @@ package com.example.darkphoton.sungka_project;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.res.ResourcesCompat;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
-import android.widget.Button;
+import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
+
+import java.util.ArrayList;
+import java.util.Random;
 
 import game.Board;
 import game.Game;
+import game.HandOfShells;
 
 public class GameActivity extends Activity {
     private static final String TAG = "GameActivity";
@@ -171,6 +178,12 @@ public class GameActivity extends Activity {
         //Calculate sizes of store cups and small cups
         CupMargins sizes = new CupMargins(_screenWidth, _screenHeight);
 
+        for (int i = 0; i < shells.length; i++) {
+            Bitmap b = ((BitmapDrawable)shells[i]).getBitmap();
+            Bitmap bitmapResized = Bitmap.createScaledBitmap(b, (int)(sizes.cup * 0.2), (int)(sizes.cup * 0.2), false);
+            shells[i] = new BitmapDrawable(getResources(), bitmapResized);
+        }
+
         //Initialise button array
         cupButtons = new CupButton[16];
 
@@ -181,10 +194,13 @@ public class GameActivity extends Activity {
             CupButton btn = new CupButton(this, board.getCup(i), PlayerType.A, CupType.SHELL, sizes, i);
             btn.addToLayout(layoutBase, bottomColumnIndex++, 2);
             cupButtons[i] = btn;
+
+            final int indexA = i;
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    Log.i(TAG, "Index A");
+                    moveShells(indexA);
                 }
             });
 
@@ -192,10 +208,13 @@ public class GameActivity extends Activity {
             btn = new CupButton(this, board.getCup(i+8), PlayerType.B, CupType.SHELL, sizes, i+8);
             btn.addToLayout(layoutBase, topColumnIndex--, 0);
             cupButtons[i+8] = btn;
+
+            final int indexB = i+8;
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    Log.i(TAG, "Index B");
+                    moveShells(indexB);
                 }
             });
         }
@@ -208,5 +227,44 @@ public class GameActivity extends Activity {
         CupButton btnPlayerB = new CupButton(this, board.getCup(15), PlayerType.B, CupType.PLAYER, sizes, 15);
         btnPlayerB.addToLayout(layoutBase, 0, 1);
         cupButtons[15] = btnPlayerB;
+    }
+
+    private void moveShells(int index){
+        HandOfShells hand = board.pickUpShells(index);
+        if (hand == null)
+            return;
+
+        CupButton a = cupButtons[index];
+        CupButton b = cupButtons[index + 1];
+        ArrayList<ImageView> images = a.getShells();
+
+        while (hand.isNotEmpty()){
+            ++index;
+
+            hand.nextCup();
+
+            Random r = new Random();
+            for (int i = 0; i < images.size(); i++) {
+                ImageView image = images.get(i);
+                double[] pos = b.randomPositionInCup(r, image);
+
+                TranslateAnimation anim = new TranslateAnimation(
+                        0,
+                        (int)pos[0] - image.getX(),
+                        0,
+                        (int)pos[1] - image.getY());
+
+                anim.setDuration(1000);
+                anim.setFillAfter(true);
+                image.startAnimation(anim);
+            }
+
+            if (hand.dropShell()){
+                b.addShell(images.remove(images.size() - 1));
+            }
+
+            a = cupButtons[index % 15];
+            b = cupButtons[(index + 1) % 15];
+        }
     }
 }

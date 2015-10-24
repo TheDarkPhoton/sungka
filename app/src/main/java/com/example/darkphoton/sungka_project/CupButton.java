@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import game.Cup;
 
@@ -39,20 +40,6 @@ public class CupButton extends Button {
         _text.setText(String.valueOf(_id));
         _text.setTextSize(30 * sizes.scale);
 
-        for (int i = 0; i < _cup.getCount(); i++) {
-            ImageView shell = new ImageView(context);
-
-            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-                    FrameLayout.LayoutParams.MATCH_PARENT,
-                    FrameLayout.LayoutParams.MATCH_PARENT);
-
-            shell.setLayoutParams(params);
-            shell.setScaleType(ImageView.ScaleType.MATRIX);
-            shell.setImageResource(R.drawable.shell1);
-
-            _shells.add(shell);
-        }
-
         if(_cup_type == CupType.PLAYER){
             if (_player_type == PlayerType.A) {
                 _text.setTextColor(Color.parseColor("#FFFFFF"));
@@ -72,6 +59,22 @@ public class CupButton extends Button {
                 _text.setTextColor(Color.parseColor("#000000"));
                 setBackgroundResource(R.drawable.player_smallcup);
             }
+        }
+
+        for (int i = 0; i < _cup.getCount(); i++) {
+            ImageView shell = new ImageView(context);
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.WRAP_CONTENT,
+                    FrameLayout.LayoutParams.WRAP_CONTENT);
+
+            shell.setLayoutParams(params);
+
+            shell.setImageDrawable(GameActivity.shells[i % 4]);
+            shell.setScaleType(ImageView.ScaleType.MATRIX);
+            shell.setPivotX(shell.getWidth() / 2);
+            shell.setPivotY(shell.getHeight() / 2);
+
+            _shells.add(shell);
         }
     }
 
@@ -121,15 +124,48 @@ public class CupButton extends Button {
         layoutBase.addOnLayoutChangeListener(new OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                _text.setX(getX() + (getWidth() / 2) - (_text.getWidth() / 2));
+                float offsetX = ((GridLayout)getParent()).getX();
+                float offsetY = ((GridLayout)getParent()).getY();
 
-                float text_y = getY() + ((GridLayout)getParent()).getY();
+                _text.setX(offsetX + getX() + (getWidth() / 2) - (_text.getWidth() / 2));
 
+                float text_y = offsetY + getY();
                 if (_player_type == PlayerType.A)
                     _text.setY(text_y + getHeight());
                 else if (_player_type == PlayerType.B)
                     _text.setY(text_y - _text.getHeight());
+
+                Random r = new Random();
+                for (int i = 0; i < _shells.size(); i++) {
+                    double[] pos = randomPositionInCup(r, _shells.get(i));
+
+                    _shells.get(i).setX((float)pos[0]);
+                    _shells.get(i).setY((float)pos[1]);
+                }
             }
         });
+    }
+
+    public double[] randomPositionInCup(Random r, ImageView shell){
+        double[] pos = new double[2];
+
+        float offsetX = ((GridLayout)getParent()).getX();
+        float offsetY = ((GridLayout)getParent()).getY();
+
+        double angle = r.nextDouble() * Math.PI * 2;
+        int radius = r.nextInt(getWidth()/3);
+
+        pos[0] = offsetX + (Math.cos(angle) * radius) + getX() + (getWidth() / 2) - (shell.getWidth() / 2);
+        pos[1] = offsetY + (Math.sin(angle) * radius) + getY() + (getHeight() / 2) - (shell.getHeight() / 2);
+
+        return pos;
+    }
+
+    public ArrayList<ImageView> getShells(){
+        return _shells;
+    }
+
+    public void addShell(ImageView image){
+        _shells.add(image);
     }
 }

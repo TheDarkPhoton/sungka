@@ -37,7 +37,7 @@ public class Board {
         _currentPlayer = a;
     }
 
-    public HandOfShells makeHand(int index) {
+    public HandOfShells pickUpShells(int index){
         if (!(_currentPlayer.isShellCup(_cups[index], index) && _cups[index].getCount() > 0))
             return null;
 
