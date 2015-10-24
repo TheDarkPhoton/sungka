@@ -2,111 +2,119 @@ package com.example.darkphoton.sungka_project;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.GridLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import game.HandOfShells;
+import java.util.ArrayList;
+
+import game.Cup;
 
 public class CupButton extends Button {
-    private GameActivity.PlayerType _player_type;
-    private GameActivity.CupType _cup_type;
+    private PlayerType _player_type;
+    private CupType _cup_type;
 
+    private FrameLayout _layoutMaster;
+
+    private ArrayList<ImageView> _shells = new ArrayList<ImageView>();
+    private Cup _cup;
     private TextView _text;
-    CupMargins _sizes;
+    private CupMargins _sizes;
     private int _id;
 
-    public CupButton(Context context, GameActivity.PlayerType pType, GameActivity.CupType cType, CupMargins sizes, int id) {
+    public CupButton(Context context, Cup cup, PlayerType pType, CupType cType, CupMargins sizes, int id) {
         super(context);
 
+        _cup = cup;
         _player_type = pType;
         _cup_type = cType;
         _sizes = sizes;
         _id = id;
 
-        if(_cup_type == GameActivity.CupType.Player){
-            if (_player_type == GameActivity.PlayerType.A)
-                setBackgroundResource(R.drawable.player_bigcup);
-            else if (_player_type == GameActivity.PlayerType.B)
-                setBackgroundResource(R.drawable.opponent_bigcup);
-        }
-        else if (_cup_type == GameActivity.CupType.Shell){
-            if (_player_type == GameActivity.PlayerType.A)
-                setBackgroundResource(R.drawable.opponent_smallcup);
-            else if (_player_type == GameActivity.PlayerType.B)
-                setBackgroundResource(R.drawable.player_smallcup);
-        }
-
         _text = new TextView(context);
-        _text.setTextColor(Color.parseColor("#FFFFFF"));
         _text.setText(String.valueOf(_id));
         _text.setTextSize(30 * sizes.scale);
+
+        for (int i = 0; i < _cup.getCount(); i++) {
+            ImageView shell = new ImageView(context);
+        }
+
+        if(_cup_type == CupType.PLAYER){
+            if (_player_type == PlayerType.A) {
+                _text.setTextColor(Color.parseColor("#FFFFFF"));
+                setBackgroundResource(R.drawable.player_bigcup);
+            }
+            else if (_player_type == PlayerType.B) {
+                _text.setTextColor(Color.parseColor("#000000"));
+                setBackgroundResource(R.drawable.opponent_bigcup);
+            }
+        }
+        else if (_cup_type == CupType.SHELL){
+            if (_player_type == PlayerType.A) {
+                _text.setTextColor(Color.parseColor("#FFFFFF"));
+                setBackgroundResource(R.drawable.opponent_smallcup);
+            }
+            else if (_player_type == PlayerType.B) {
+                _text.setTextColor(Color.parseColor("#000000"));
+                setBackgroundResource(R.drawable.player_smallcup);
+            }
+        }
     }
 
-    public void addToLayout(GridLayout layoutBase, int cupColumn, int cupRow, int textRow){
+    public void addToLayout(GridLayout layoutBase, int cupColumn, int cupRow){
+        _layoutMaster = (FrameLayout)layoutBase.getParent();
+
         GridLayout.LayoutParams paramsButton = new GridLayout.LayoutParams();
         GridLayout.LayoutParams paramsText = new GridLayout.LayoutParams();
 
         paramsButton.columnSpec = GridLayout.spec(cupColumn);
         paramsButton.rowSpec = GridLayout.spec(cupRow);
-        paramsText.width = GridLayout.LayoutParams.WRAP_CONTENT;
-        paramsText.height = GridLayout.LayoutParams.WRAP_CONTENT;
-        paramsText.columnSpec = GridLayout.spec(cupColumn);
-        paramsText.rowSpec = GridLayout.spec(textRow);
         paramsButton.leftMargin = _sizes.spaceSmall;
         paramsButton.rightMargin = _sizes.spaceSmall;
 
-        if(_cup_type == GameActivity.CupType.Player){
+        paramsText.width = GridLayout.LayoutParams.WRAP_CONTENT;
+        paramsText.height = GridLayout.LayoutParams.WRAP_CONTENT;
+
+        if(_cup_type == CupType.PLAYER){
             paramsButton.width = _sizes.store;
             paramsButton.height = _sizes.store;
-            if (_player_type == GameActivity.PlayerType.A){
-                paramsButton.rightMargin = _sizes.spaceLeft;
-                paramsButton.leftMargin = _sizes.spaceSmall;
-                paramsText.rightMargin = _sizes.spaceSmall;
-            }
-            else if (_player_type == GameActivity.PlayerType.B){
+            if (_player_type == PlayerType.A){
                 paramsButton.rightMargin = _sizes.spaceSmall;
                 paramsButton.leftMargin = _sizes.spaceLeft;
-                paramsText.leftMargin = _sizes.spaceSmall;
+            }
+            else if (_player_type == PlayerType.B){
+                paramsButton.rightMargin = _sizes.spaceLeft;
+                paramsButton.leftMargin = _sizes.spaceSmall;
             }
             paramsButton.topMargin = _sizes.spaceStoreTop;
             paramsButton.bottomMargin = _sizes.spaceStoreTop;
-            paramsText.setGravity(Gravity.CENTER);
         }
-        else if (_cup_type == GameActivity.CupType.Shell){
+        else if (_cup_type == CupType.SHELL){
             paramsButton.width = _sizes.cup;
             paramsButton.height = _sizes.cup;
-            if (_player_type == GameActivity.PlayerType.A){
-                paramsText.topMargin = _sizes.spaceTop;
-            }
-            else if (_player_type == GameActivity.PlayerType.B){
-                paramsText.bottomMargin = _sizes.spaceTop;
-            }
-            paramsText.setGravity(Gravity.CENTER);
         }
 
+        paramsText.setGravity(Gravity.CENTER);
         setLayoutParams(paramsButton);
         layoutBase.addView(this);
         _text.setLayoutParams(paramsText);
-        layoutBase.addView(_text);
-    }
+        _layoutMaster.addView(_text);
 
-    public void handleButton(){
-        this.setOnClickListener(new View.OnClickListener() {
+        layoutBase.addOnLayoutChangeListener(new OnLayoutChangeListener() {
             @Override
-            public void onClick(View v) {
-//                Log.i(TAG, "Hole " + _id + " was pressed.");
-//
-//                if (game.isValidMove(_id)) {
-//                    final HandOfShells hand = game.fetchHand(_id);
-//
-//                    animateCupTransfer(hand, cupShells.get(_id).size());
-//                } else {
-//                    Log.i(TAG, "Invalid move");
-//                }
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                _text.setX(getX() + (getWidth() / 2) - (_text.getWidth() / 2));
+
+                float text_y = getY() + ((GridLayout)getParent()).getY();
+
+                if (_player_type == PlayerType.A)
+                    _text.setY(text_y + getHeight());
+                else if (_player_type == PlayerType.B)
+                    _text.setY(text_y - _text.getHeight());
             }
         });
     }

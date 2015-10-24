@@ -1,7 +1,7 @@
 package game;
 
 /**
- * Describes the sungka Player Cup (store)
+ * Describes the sungka PLAYER Cup (store)
  */
 public class PlayerCup extends Cup {
     private Player _player;

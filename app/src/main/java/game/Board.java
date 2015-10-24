@@ -37,74 +37,70 @@ public class Board {
         _currentPlayer = a;
     }
 
-    public boolean isValidMove(int index) {
+    public HandOfShells makeHand(int index) {
+        if (!(_currentPlayer.isShellCup(_cups[index], index) && _cups[index].getCount() > 0))
+            return null;
 
-        // make sure selected cup belongs to current player and is a non-empty ShellCup
-        if (_currentPlayer.isShellCup(_cups[index], index) && _cups[index].getCount() > 0) {
-            return true;
-        }
-        return false;
+        return new HandOfShells(index, _cups[index].pickUpShells(), this);
     }
 
-    public HandOfShells makeHand(int index) {
-        int shells = _cups[index].pickUpShells();
-        return new HandOfShells(index, shells, this);
+    public Cup getCup(int index){
+        return _cups[index];
     }
 
     public void addShell(int index) {
         _cups[index].addShell();
     }
 
-
     /**
      * Distributes shells of the cup indicated by the index.
      * @param index of the cup in the array.
      */
-    public void distribute(int index){
-        // don't allow a Player to select an opponent's Cup
-        if (((PlayerCup) _cups[index]).getPlayer() != _currentPlayer) {
-            return;
-        }
-
-        //get the number of shells in the cup and remove them, then increment index
-        int shells = _cups[index++].pickUpShells();
-
-        //while we have shells distribute them
-        while (shells > 0){
-            //if index is more then the size of cups then loop around and continue
-            if (index >= _cups.length)
-                index = 0;
-
-            //get the cup object and then increment index
-            Cup cup = _cups[index++];
-
-            // if cup is not a player cup OR the cup is the player's store,
-            // then add a shell to that cup
-            if (cup.isNotPlayerCup() || _currentPlayer.isStore(cup)) {
-                cup.addShell();
-                --shells;
-            }
-        }
-
-        // need to check a few things with the last used cup
-        int lastIndex = (index - 1) % 16;
-        Cup lastCup = _cups[lastIndex];
-
-        if (lastCup.getCount() == 1 && _currentPlayer.isShellCup(lastCup, lastIndex)) {
-
-            // the last shell fell into an empty cup belonging to the player, so capture shells
-            int numShells = lastCup.pickUpShells();
-            numShells += _cups[index % 8].pickUpShells();
-            _currentPlayer.captureShells(numShells);
-        }
-
-        // will possibly change in future
-        if (!_currentPlayer.isStore(lastCup)) {
-
-            // the last cup isn't the current player's store, so switch players
-            _currentPlayer = (_currentPlayer == _playerOne) ? _playerTwo : _playerOne;
-        }
-    }
+//    public void distribute(int index){
+//        // don't allow a PLAYER to select an opponent's Cup
+//        if (((PlayerCup) _cups[index]).getPlayer() != _currentPlayer) {
+//            return;
+//        }
+//
+//        //get the number of shells in the cup and remove them, then increment index
+//        int shells = _cups[index++].pickUpShells();
+//
+//        //while we have shells distribute them
+//        while (shells > 0){
+//            //if index is more then the size of cups then loop around and continue
+//            if (index >= _cups.length)
+//                index = 0;
+//
+//            //get the cup object and then increment index
+//            Cup cup = _cups[index++];
+//
+//            // if cup is not a player cup OR the cup is the player's store,
+//            // then add a shell to that cup
+//            if (cup.isNotPlayerCup() || _currentPlayer.isStore(cup)) {
+//                cup.addShell();
+//                --shells;
+//            }
+//        }
+//
+//        // need to check a few things with the last used cup
+//        int lastIndex = (index - 1) % 16;
+//        Cup lastCup = _cups[lastIndex];
+//
+//        if (lastCup.getCount() == 1 && _currentPlayer.isShellCup(lastCup, lastIndex)) {
+//
+//            // the last shell fell into an empty cup belonging to the player, so capture shells
+//            int numShells = lastCup.pickUpShells();
+//            numShells += _cups[index % 8].pickUpShells();
+//            _currentPlayer.captureShells(numShells);
+//        }
+//
+//        // will possibly change in future
+//        if (!_currentPlayer.isStore(lastCup)) {
+//
+//            // the last cup isn't the current player's store, so switch players
+//            _currentPlayer = (_currentPlayer == _playerOne) ? _playerTwo : _playerOne;
+//        }
+//    }
 
     /**
      * Checks if a provided cup belongs to the opponent of the current player.
