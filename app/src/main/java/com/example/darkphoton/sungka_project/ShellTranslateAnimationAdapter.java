@@ -6,18 +6,22 @@ import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import java.util.concurrent.CountDownLatch;
+
 import game.Cup;
 
 /**
  * Created by darkphoton on 25/10/15.
  */
 public class ShellTranslateAnimationAdapter implements Animation.AnimationListener {
+    private int[] _latch;
     private CupButton _btn;
     private View _v;
     private float _x;
     private float _y;
 
-    public ShellTranslateAnimationAdapter(CupButton btn, View v, float x, float y){
+    public ShellTranslateAnimationAdapter(int[] latch, CupButton btn, View v, float x, float y){
+        _latch = latch;
         _btn = btn;
         _v = v;
         _x = x;
@@ -38,6 +42,7 @@ public class ShellTranslateAnimationAdapter implements Animation.AnimationListen
         _v.setY(_y);
 
         _btn.updateText();
+        --_latch[0];
     }
 
     @Override

@@ -39,8 +39,7 @@ public class HandOfShells {
             next = (next + 1) % 16;
         }
 
-        _cup_index = next;
-        return next;
+        return _cup_index = next;
     }
 
     public boolean dropShellValid() {
@@ -50,15 +49,13 @@ public class HandOfShells {
     /**
      * Removes a shell from the hand and places it into a Cup.
      */
-    public boolean dropShell() {
-        if (_board.isOpponentStore(_cup_index)){
-            return false;
-        }
-
+    public void dropShell() {
         Log.i(TAG, "Dropping a shell from hand");
         --_shells;
         _board.addShell(_cup_index);
-        return true;
+
+        if (_shells == 0 && !_board.isCurrentPlayersStore(_cup_index))
+            _board.nextPlayersMove();
     }
 
     public int shellCount(){

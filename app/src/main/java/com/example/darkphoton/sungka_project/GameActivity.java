@@ -2,6 +2,7 @@ package com.example.darkphoton.sungka_project;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -22,6 +23,7 @@ import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.CountDownLatch;
 
 import game.Board;
 import game.Game;
@@ -239,31 +241,40 @@ public class GameActivity extends Activity {
         cupButtons[15] = btnPlayerB;
     }
 
+    private int[] latch = new int[1];
     private void moveShells(int index) {
+        if (latch[0] > 0)
+            return;
+
         final HandOfShells hand = board.pickUpShells(index);
         if (hand == null)
             return;
 
         final ArrayList<View> images = cupButtons[index].getShells();
-        CupButton b = cupButtons[index + 1];
 
-        Random r = new Random();
+        index = hand.nextCup();
+        CupButton b = cupButtons[index];
+
+        latch[0] = 0;
+
         int counter = 0;
         int cupsInHand = hand.shellCount();
+        Random r = new Random();
         while (counter < cupsInHand){
-            ++index;
-            hand.nextCup();
+            latch[0] += images.size();
+
 
             for (int i = 0; i < images.size(); i++) {
                 View image = images.get(i);
                 float[] coord = b.randomPositionInCup(r, image);
-                image.postDelayed(new ShellTranslation(b, image, coord, 500), 550 * counter);
+                image.postDelayed(new ShellTranslation(latch, b, image, coord, 500), 550 * counter);
             }
 
-            if (hand.dropShell())
-                b.addShell((ImageView)images.remove(images.size() - 1));
+            hand.dropShell();
+            b.addShell((ImageView)images.remove(images.size() - 1));
 
-            b = cupButtons[(index + 1) % 15];
+            index = hand.nextCup();
+            b = cupButtons[index];
             ++counter;
         }
     }

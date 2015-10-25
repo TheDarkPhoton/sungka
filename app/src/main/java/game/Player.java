@@ -30,6 +30,10 @@ public class Player {
         store = cup;
     }
 
+    public Cup getStore(){
+        return store;
+    }
+
     /**
      * Saves a players shell cup in a local array.
      * @param cup Shell cup of the player.
@@ -69,22 +73,6 @@ public class Player {
      */
     public boolean isStore(Cup cup) {
         return cup == store;
-    }
-
-    /**
-     * Stores the PLAYER's Store to them
-     * @param store the PLAYER's store
-     */
-    public void setStore(PlayerCup store){
-        this.store = store;
-    }
-
-    /**
-     * Stores the PLAYER's ShellCups
-     * @param shellCups the PLAYER's ShellCups
-     */
-    public void setShellCups(ShellCup[] shellCups){
-        this.shellCups = shellCups;
     }
 
     /**
