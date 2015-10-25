@@ -39,6 +39,12 @@ public class CupButton extends Button {
         _text = new TextView(context);
         _text.setText("" + _cup.getCount());
         _text.setTextSize(30 * sizes.scale);
+        _text.addOnLayoutChangeListener(new OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                updateTextLocation();
+            }
+        });
 
         if(_cup_type == CupType.PLAYER){
             if (_player_type == PlayerType.A) {
@@ -124,24 +130,7 @@ public class CupButton extends Button {
         layoutBase.addOnLayoutChangeListener(new OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                float offsetX = ((GridLayout)getParent()).getX();
-                float offsetY = ((GridLayout)getParent()).getY();
-
-                _text.setX(offsetX + getX() + (getWidth() / 2) - (_text.getWidth() / 2));
-
-                float text_y = offsetY + getY();
-                if (_player_type == PlayerType.A)
-                    _text.setY(text_y + getHeight());
-                else if (_player_type == PlayerType.B)
-                    _text.setY(text_y - _text.getHeight());
-
-                Random r = new Random();
-                for (int i = 0; i < _shells.size(); i++) {
-                    float[] pos = randomPositionInCup(r, _shells.get(i));
-
-                    _shells.get(i).setX(pos[0]);
-                    _shells.get(i).setY(pos[1]);
-                }
+                updateTextLocation();
             }
         });
     }
@@ -162,7 +151,7 @@ public class CupButton extends Button {
     }
 
     public ArrayList<View> getShells(){
-        _text.setText("" + _cup.getCount());
+        updateText();
         return _shells;
     }
 
@@ -172,5 +161,28 @@ public class CupButton extends Button {
 
     public void addShell(ImageView image){
         _shells.add(image);
+    }
+
+    public void initShellLocation(){
+        Random r = new Random();
+        for (int i = 0; i < _shells.size(); i++) {
+            float[] pos = randomPositionInCup(r, _shells.get(i));
+
+            _shells.get(i).setX(pos[0]);
+            _shells.get(i).setY(pos[1]);
+        }
+    }
+
+    private void updateTextLocation(){
+        float offsetX = ((GridLayout)getParent()).getX();
+        float offsetY = ((GridLayout)getParent()).getY();
+
+        _text.setX(offsetX + getX() + (getWidth() / 2) - (_text.getWidth() / 2));
+
+        float text_y = offsetY + getY();
+        if (_player_type == PlayerType.A)
+            _text.setY(text_y + getHeight());
+        else if (_player_type == PlayerType.B)
+            _text.setY(text_y - _text.getHeight());
     }
 }

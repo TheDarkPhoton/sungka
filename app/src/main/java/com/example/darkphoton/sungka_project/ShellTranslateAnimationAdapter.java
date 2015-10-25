@@ -2,6 +2,9 @@ package com.example.darkphoton.sungka_project;
 
 import android.view.View;
 import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import game.Cup;
 
@@ -27,8 +30,13 @@ public class ShellTranslateAnimationAdapter implements Animation.AnimationListen
 
     @Override
     public void onAnimationEnd(Animation animation) {
+        animation = new TranslateAnimation(0.0f, 0.0f, 0.0f, 0.0f);
+        animation.setDuration(1);
+        _v.startAnimation(animation);
+
         _v.setX(_x);
         _v.setY(_y);
+
         _btn.updateText();
     }
 

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.res.ResourcesCompat;
@@ -23,7 +22,6 @@ import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.concurrent.CountDownLatch;
 
 import game.Board;
 import game.Game;
@@ -151,10 +149,21 @@ public class GameActivity extends Activity {
         //Add layouts to master
         layoutMaster.addView(layoutBase);
 
-        layoutBase.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+
+        layoutMaster.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            boolean once = false;
+
             @Override
             public void onGlobalLayout() {
                 layoutBase.setY((layoutMaster.getHeight()/2) - (layoutBase.getHeight()/2));
+
+                if (once)
+                    return;
+                once = true;
+                
+                for (CupButton btn: cupButtons) {
+                    btn.initShellLocation();
+                }
             }
         });
 
