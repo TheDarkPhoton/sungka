@@ -31,7 +31,7 @@ public class HandOfShells {
      * Provides the index of the next Cup to drop a shell into.
      * @return the index of the next Cup to drop a shell into
      */
-    public int next() {
+    public int nextCup() {
         int next = (_cup_index + 1) % 16;
 
         // if next cup belongs to opponent, skip it
@@ -39,8 +39,11 @@ public class HandOfShells {
             next = (next + 1) % 16;
         }
 
-        _cup_index = next;
-        return next;
+        return _cup_index = next;
+    }
+
+    public boolean dropShellValid() {
+        return _board.isOpponentStore(_cup_index);
     }
 
     /**
@@ -48,8 +51,15 @@ public class HandOfShells {
      */
     public void dropShell() {
         Log.i(TAG, "Dropping a shell from hand");
-        _shells--;
+        --_shells;
         _board.addShell(_cup_index);
+
+        if (_shells == 0 && !_board.isCurrentPlayersStore(_cup_index))
+            _board.nextPlayersMove();
+    }
+
+    public int shellCount(){
+        return _shells;
     }
 
     /**

@@ -16,15 +16,11 @@ public class Game {
         board = new Board(playerOne, playerTwo);
     }
 
+    public Board getBoard(){
+        return board;
+    }
+
     public void start() {
 //        board.giveMove();
-    }
-
-    public boolean isValidMove(int i) {
-        return board.isValidMove(i);
-    }
-
-    public HandOfShells fetchHand(int i) {
-        return board.makeHand(i);
     }
 }
