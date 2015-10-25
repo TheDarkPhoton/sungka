@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.res.ResourcesCompat;
@@ -15,6 +16,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.BounceInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
@@ -24,6 +29,8 @@ import android.widget.RelativeLayout;
 import java.util.ArrayList;
 import java.util.Random;
 
+import animator.AnimatorSet;
+import animator.LinearAnimator;
 import game.Board;
 import game.Game;
 import game.HandOfShells;
@@ -229,42 +236,46 @@ public class GameActivity extends Activity {
         cupButtons[15] = btnPlayerB;
     }
 
-    private void moveShells(int index){
+    private void moveShells(int index) {
         HandOfShells hand = board.pickUpShells(index);
         if (hand == null)
             return;
 
-        CupButton a = cupButtons[index];
-        CupButton b = cupButtons[index + 1];
-        ArrayList<ImageView> images = a.getShells();
+//        ArrayList<View> saved = new ArrayList<>();
+        ArrayList<View> images = cupButtons[index].getShells();
 
+        CupButton b = cupButtons[index + 1];
+
+//        ArrayList<AnimationSet> sets = new ArrayList<>();
+//        for (int i = 0; i < images.size(); i++) {
+//            sets.add(new AnimationSet(true));
+//        }
+
+        Random r = new Random();
+        int counter = 0;
         while (hand.isNotEmpty()){
             ++index;
-
             hand.nextCup();
 
-            Random r = new Random();
             for (int i = 0; i < images.size(); i++) {
-                ImageView image = images.get(i);
-                double[] pos = b.randomPositionInCup(r, image);
-
-                TranslateAnimation anim = new TranslateAnimation(
-                        0,
-                        (int)pos[0] - image.getX(),
-                        0,
-                        (int)pos[1] - image.getY());
-
-                anim.setDuration(1000);
-                anim.setFillAfter(true);
-                image.startAnimation(anim);
+                View image = images.get(i);
+                float[] coord = b.randomPositionInCup(r, image);
+                image.postDelayed(new DelayedTranslation(image, coord, 1000), 1100 * counter);
             }
 
             if (hand.dropShell()){
-                b.addShell(images.remove(images.size() - 1));
+                ImageView image = (ImageView)images.remove(images.size() - 1);
+                b.addShell(image);
+//                saved.add(image);
             }
 
-            a = cupButtons[index % 15];
             b = cupButtons[(index + 1) % 15];
+            ++counter;
+//            break;
         }
+
+//        for (int i = 0; i < saved.size(); i++) {
+//            saved.get(i).startAnimation(sets.get(i));
+//        }
     }
 }

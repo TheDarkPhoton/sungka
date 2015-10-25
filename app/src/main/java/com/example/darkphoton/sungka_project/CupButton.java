@@ -21,7 +21,7 @@ public class CupButton extends Button {
 
     private FrameLayout _layoutMaster;
 
-    private ArrayList<ImageView> _shells = new ArrayList<ImageView>();
+    private ArrayList<View> _shells = new ArrayList<View>();
     private Cup _cup;
     private TextView _text;
     private CupMargins _sizes;
@@ -137,31 +137,31 @@ public class CupButton extends Button {
 
                 Random r = new Random();
                 for (int i = 0; i < _shells.size(); i++) {
-                    double[] pos = randomPositionInCup(r, _shells.get(i));
+                    float[] pos = randomPositionInCup(r, _shells.get(i));
 
-                    _shells.get(i).setX((float)pos[0]);
-                    _shells.get(i).setY((float)pos[1]);
+                    _shells.get(i).setX(pos[0]);
+                    _shells.get(i).setY(pos[1]);
                 }
             }
         });
     }
 
-    public double[] randomPositionInCup(Random r, ImageView shell){
-        double[] pos = new double[2];
+    public float[] randomPositionInCup(Random r, View shell){
+        float[] pos = new float[2];
 
         float offsetX = ((GridLayout)getParent()).getX();
         float offsetY = ((GridLayout)getParent()).getY();
 
-        double angle = r.nextDouble() * Math.PI * 2;
+        float angle = (float)r.nextDouble() * (float)Math.PI * 2;
         int radius = r.nextInt(getWidth()/3);
 
-        pos[0] = offsetX + (Math.cos(angle) * radius) + getX() + (getWidth() / 2) - (shell.getWidth() / 2);
-        pos[1] = offsetY + (Math.sin(angle) * radius) + getY() + (getHeight() / 2) - (shell.getHeight() / 2);
+        pos[0] = offsetX + ((float)Math.cos(angle) * radius) + getX() + (getWidth() / 2) - (shell.getWidth() / 2);
+        pos[1] = offsetY + ((float)Math.sin(angle) * radius) + getY() + (getHeight() / 2) - (shell.getHeight() / 2);
 
         return pos;
     }
 
-    public ArrayList<ImageView> getShells(){
+    public ArrayList<View> getShells(){
         return _shells;
     }
 
