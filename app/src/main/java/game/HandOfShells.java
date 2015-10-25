@@ -19,11 +19,13 @@ public class HandOfShells {
      *
      * @param cupIndex the index location of a cup that a player has selected
      * @param shells the number of shells in that cup
-     * @param board the current board being played on
      */
-    public HandOfShells(int cupIndex, int shells, Board board) {
+    public HandOfShells(int cupIndex, int shells) {
         _cup_index = cupIndex;
         _shells = shells;
+    }
+
+    public void bindBoard(Board board){
         _board = board;
     }
 

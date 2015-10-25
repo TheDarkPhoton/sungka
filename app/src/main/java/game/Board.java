@@ -39,13 +39,6 @@ public class Board {
         _currentPlayer = a;
     }
 
-    public HandOfShells pickUpShells(int index){
-        if (!(_currentPlayer.isShellCup(_cups[index], index) && _cups[index].getCount() > 0))
-            return null;
-
-        return new HandOfShells(index, _cups[index].pickUpShells(), this);
-    }
-
     public Cup getCup(int index){
         return _cups[index];
     }
@@ -60,8 +53,10 @@ public class Board {
      * @return Hand of shells object.
      */
     public HandOfShells pickUpShells(int index){
-        Cup cup = _cups[index];
-        HandOfShells hand = new HandOfShells(index, cup.pickUpShells());
+        if (!(_currentPlayer.isShellCup(_cups[index], index) && _cups[index].getCount() > 0))
+            return null;
+
+        HandOfShells hand = new HandOfShells(index, _cups[index].pickUpShells());
 
         //send to the other user
 
