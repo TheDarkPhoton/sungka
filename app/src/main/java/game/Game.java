@@ -5,5 +5,22 @@ package game;
  */
 public class Game {
 
-    // TODO: control game flow, track player statistics
+    private Board board;
+
+    public Game() {
+
+        // for now, assume human players
+        Player playerOne = new Human("Shell Master");
+        Player playerTwo = new Human("Angry Gull");
+
+        board = new Board(playerOne, playerTwo);
+    }
+
+    public Board getBoard(){
+        return board;
+    }
+
+    public void start() {
+//        board.giveMove();
+    }
 }
