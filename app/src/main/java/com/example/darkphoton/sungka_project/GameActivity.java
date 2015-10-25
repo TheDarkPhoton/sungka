@@ -5,7 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
+import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.res.ResourcesCompat;
@@ -16,11 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.BounceInterpolator;
-import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.ImageView;
@@ -28,9 +23,8 @@ import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.CountDownLatch;
 
-import animator.AnimatorSet;
-import animator.LinearAnimator;
 import game.Board;
 import game.Game;
 import game.HandOfShells;
@@ -237,45 +231,31 @@ public class GameActivity extends Activity {
     }
 
     private void moveShells(int index) {
-        HandOfShells hand = board.pickUpShells(index);
+        final HandOfShells hand = board.pickUpShells(index);
         if (hand == null)
             return;
 
-//        ArrayList<View> saved = new ArrayList<>();
-        ArrayList<View> images = cupButtons[index].getShells();
-
+        final ArrayList<View> images = cupButtons[index].getShells();
         CupButton b = cupButtons[index + 1];
-
-//        ArrayList<AnimationSet> sets = new ArrayList<>();
-//        for (int i = 0; i < images.size(); i++) {
-//            sets.add(new AnimationSet(true));
-//        }
 
         Random r = new Random();
         int counter = 0;
-        while (hand.isNotEmpty()){
+        int cupsInHand = hand.shellCount();
+        while (counter < cupsInHand){
             ++index;
             hand.nextCup();
 
             for (int i = 0; i < images.size(); i++) {
                 View image = images.get(i);
                 float[] coord = b.randomPositionInCup(r, image);
-                image.postDelayed(new DelayedTranslation(image, coord, 1000), 1100 * counter);
+                image.postDelayed(new ShellTranslation(b, image, coord, 500), 550 * counter);
             }
 
-            if (hand.dropShell()){
-                ImageView image = (ImageView)images.remove(images.size() - 1);
-                b.addShell(image);
-//                saved.add(image);
-            }
+            if (hand.dropShell())
+                b.addShell((ImageView)images.remove(images.size() - 1));
 
             b = cupButtons[(index + 1) % 15];
             ++counter;
-//            break;
         }
-
-//        for (int i = 0; i < saved.size(); i++) {
-//            saved.get(i).startAnimation(sets.get(i));
-//        }
     }
 }

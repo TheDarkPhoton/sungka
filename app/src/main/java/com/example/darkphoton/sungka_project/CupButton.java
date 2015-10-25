@@ -37,7 +37,7 @@ public class CupButton extends Button {
         _id = id;
 
         _text = new TextView(context);
-        _text.setText(String.valueOf(_id));
+        _text.setText("" + _cup.getCount());
         _text.setTextSize(30 * sizes.scale);
 
         if(_cup_type == CupType.PLAYER){
@@ -162,7 +162,12 @@ public class CupButton extends Button {
     }
 
     public ArrayList<View> getShells(){
+        _text.setText("" + _cup.getCount());
         return _shells;
+    }
+
+    public void updateText(){
+        _text.setText("" + _cup.getCount());
     }
 
     public void addShell(ImageView image){

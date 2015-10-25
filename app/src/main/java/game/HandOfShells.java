@@ -43,6 +43,10 @@ public class HandOfShells {
         return next;
     }
 
+    public boolean dropShellValid() {
+        return _board.isOpponentStore(_cup_index);
+    }
+
     /**
      * Removes a shell from the hand and places it into a Cup.
      */
@@ -55,6 +59,10 @@ public class HandOfShells {
         --_shells;
         _board.addShell(_cup_index);
         return true;
+    }
+
+    public int shellCount(){
+        return _shells;
     }
 
     /**
