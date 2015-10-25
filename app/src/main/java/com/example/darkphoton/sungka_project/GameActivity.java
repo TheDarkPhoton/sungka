@@ -23,7 +23,6 @@ import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.concurrent.CountDownLatch;
 
 import game.Board;
 import game.Game;
@@ -262,7 +261,6 @@ public class GameActivity extends Activity {
         Random r = new Random();
         while (counter < cupsInHand){
             latch[0] += images.size();
-
 
             for (int i = 0; i < images.size(); i++) {
                 View image = images.get(i);

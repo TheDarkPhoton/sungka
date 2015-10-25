@@ -21,7 +21,7 @@ public class Board {
 
         //define player a cups
         for (int i = 0; i < 7; i++) {
-            _cups[i] = new ShellCup(40);
+            _cups[i] = new ShellCup(7);
             a.bindShellCup(_cups[i], i);
         }
         _cups[7] = new PlayerCup(a);
@@ -29,7 +29,7 @@ public class Board {
 
         //define player b cups
         for (int i = 8; i < 15; i++) {
-            _cups[i] = new ShellCup(0);
+            _cups[i] = new ShellCup(7);
             b.bindShellCup(_cups[i], i - 8);
         }
         _cups[15] = new PlayerCup(a);
