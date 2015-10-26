@@ -1,18 +1,18 @@
 package game;
 
-import android.util.Log;
+import java.util.ArrayList;
 
 /**
  * Creates a class representing a hand that has picked up some shells and will deposit them
  * in successive cups.
  */
 public class HandOfShells {
-
     private static final String TAG = "HandOfShells";
 
     private int _cup_index;
     private Board _board;
     private int _shells;
+    private ArrayList<String> _messages = new ArrayList<>();
 
     /**
      * Cup.pickUpShells() should be used to provide the value for 'cup'.
@@ -33,7 +33,7 @@ public class HandOfShells {
      * Provides the index of the next Cup to drop a shell into.
      * @return the index of the next Cup to drop a shell into
      */
-    public int nextCup() {
+    public int getNextCup() {
         int next = (_cup_index + 1) % 16;
 
         // if next cup belongs to opponent, skip it
@@ -44,30 +44,52 @@ public class HandOfShells {
         return _cup_index = next;
     }
 
-    public boolean dropShellValid() {
-        return _board.isOpponentStore(_cup_index);
+    public void setNextCup(int index){
+        _cup_index = index;
+    }
+
+    public void dropAllShells(){
+        _board.getCup(_cup_index).addShells(_shells);
+        _shells = 0;
     }
 
     /**
      * Removes a shell from the hand and places it into a Cup.
      */
-    public void dropShell() {
-        Log.i(TAG, "Dropping a shell from hand");
+    public int dropShell() {
+        Cup cup = _board.getCup(_cup_index);
+        int robbedIndex = -1;
+        if (_board.getCurrentPlayer().isPlayersCup(cup) && cup.getCount() == 0){
+            if (_cup_index < 7)
+                robbedIndex = 14 - _cup_index;
+            else if (_cup_index > 7 && _cup_index < 15)
+                robbedIndex =  6 - (_cup_index - 8);
+        }
+
         --_shells;
         _board.addShell(_cup_index);
 
-        if (_shells == 0 && !_board.isCurrentPlayersStore(_cup_index))
-            _board.nextPlayersMove();
+        if (_shells == 0){
+            Player oldPlayer = _board.getCurrentPlayer();
+            Player newPlayer = _board.nextPlayersMove(_cup_index);
+
+            if (_board.hasValidMoves()){
+                if (oldPlayer == newPlayer){
+                    Player opponent = _board.getOpponent();
+                    if (!opponent.hasValidMove())
+                        _messages.add(_board.getOpponent().getName() + " has no valid move.");
+                    _messages.add(_board.getCurrentPlayer().getName() + " gets another turn.");
+                }
+                else {
+                    _messages.add(_board.getCurrentPlayer().getName() + "'s turn.");
+                }
+            }
+        }
+
+        return robbedIndex;
     }
 
-    public int shellCount(){
-        return _shells;
-    }
-
-    /**
-     * @return true if there are no more shells left
-     */
-    public boolean isNotEmpty() {
-        return _shells > 0;
+    public ArrayList<String> getMessages(){
+        return _messages;
     }
 }

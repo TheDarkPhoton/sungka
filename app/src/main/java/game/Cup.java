@@ -26,6 +26,10 @@ public abstract class Cup {
         ++_shells;
     }
 
+    public void addShells(int count){
+        _shells += count;
+    }
+
     /**
      * Removes all shells from the shell count and returns it.
      * @return shell count.

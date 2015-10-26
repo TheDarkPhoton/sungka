@@ -2,7 +2,6 @@ package com.example.darkphoton.sungka_project;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -210,7 +209,6 @@ public class GameActivity extends Activity {
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.i(TAG, "Index A");
                     moveShells(indexA);
                 }
             });
@@ -224,7 +222,6 @@ public class GameActivity extends Activity {
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.i(TAG, "Index B");
                     moveShells(indexB);
                 }
             });
@@ -252,11 +249,11 @@ public class GameActivity extends Activity {
 
         animationInProgress = true;
         ArrayList<View> images = cupButtons[index].getShells();
-        moveShellsRec(hand, images, 500);
+        moveShellsRec(hand, images, 300);
     }
 
     private void moveShellsRec(final HandOfShells hand, final ArrayList<View> images, final int duration) {
-        int index = hand.nextCup();
+        int index = hand.getNextCup();
         CupButton b = cupButtons[index];
 
         for (int i = 0; i < images.size(); i++) {
@@ -265,19 +262,78 @@ public class GameActivity extends Activity {
             new ShellTranslation(b, image, coord, duration).startAnimation();
         }
 
-        hand.dropShell();
+        final int robbedIndex = hand.dropShell();
         b.addShell((ImageView) images.remove(images.size() - 1));
 
-        if (images.size() > 0){
-            b.postDelayed(new Runnable() {
-                @Override
-                public void run() {
+        b.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (images.size() > 0) {
                     moveShellsRec(hand, images, duration);
+                } else if (robbedIndex >= 0) {
+                    moveSpecial(robbedIndex, duration * 2);
+                    showAnimationMessages(hand);
+                } else {
+                    animationInProgress = false;
+                    checkGameOverState();
+                    showAnimationMessages(hand);
                 }
-            }, duration + 10);
+            }
+        }, duration + 10);
+    }
+
+    private void moveSpecial(final int robbedIndex, final int duration){
+        final HandOfShells hand = board.pickUpShells(robbedIndex);
+        if (hand == null) {
+            animationInProgress = false;
+            checkGameOverState();
+            return;
+        }
+
+        CupButton playersCup;
+        CupButton robbedCup;
+
+        if (robbedIndex < 7){
+            playersCup = cupButtons[15];
+            robbedCup = cupButtons[robbedIndex];
+            hand.setNextCup(15);
         }
         else{
-            animationInProgress = false;
+            playersCup = cupButtons[7];
+            robbedCup = cupButtons[robbedIndex];
+            hand.setNextCup(7);
         }
+
+        ArrayList<View> images = robbedCup.getShells();
+
+        for (int i = 0; i < images.size(); i++) {
+            View image = images.get(i);
+            float[] coord = playersCup.randomPositionInCup(r, image);
+            new ShellTranslation(playersCup, image, coord, duration).startAnimation();
+        }
+
+        hand.dropAllShells();
+        playersCup.addShells(images);
+
+        playersCup.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                animationInProgress = false;
+                showAnimationMessages(hand);
+                checkGameOverState();
+            }
+        }, duration + 10);
+    }
+
+    private void showAnimationMessages(HandOfShells hand){
+        ArrayList<String> msgs = hand.getMessages();
+        for (int i = 0; i < msgs.size(); i++) {
+            Log.i(TAG, msgs.get(i));
+        }
+    }
+
+    private void checkGameOverState(){
+        if (!board.hasValidMoves())
+            Log.i(TAG, "Game Over!!!");
     }
 }

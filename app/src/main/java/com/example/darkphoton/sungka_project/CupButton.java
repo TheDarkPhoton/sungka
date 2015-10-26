@@ -192,6 +192,9 @@ public class CupButton extends Button {
     public void addShell(ImageView image){
         _shells.add(image);
     }
+    public void addShells(ArrayList<View> shells){
+        _shells.addAll(shells);
+    }
 
     public void initShellLocation(){
         Random r = new Random();

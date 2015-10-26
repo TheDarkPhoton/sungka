@@ -11,7 +11,7 @@ public class Player {
     private String name;
     private int score;
     private Cup store;
-    private Cup[] shellCups;
+    private Cup[] cups;
     private ArrayList<MoveInfo> moveInfos;//arraylist to store the users moves in a game
 
     /**
@@ -23,7 +23,7 @@ public class Player {
      */
     public Player(String name){
         this.name = name;
-        this.shellCups = new Cup[7];
+        this.cups = new Cup[7];
         this.store = null;
         moveInfos = new ArrayList<MoveInfo>();
     }
@@ -36,8 +36,23 @@ public class Player {
         store = cup;
     }
 
-    public Cup getStore(){
-        return store;
+    public boolean isPlayersCup(Cup cup){
+        return isPlayersCup(cup, false);
+    }
+
+    public boolean isPlayersCup(Cup cup, boolean just_store){
+        if (store == cup)
+            return true;
+
+        if (just_store)
+            return false;
+
+        for (int i = 0; i < cups.length; i++) {
+            if (cups[i] == cup)
+                return true;
+        }
+
+        return false;
     }
 
     /**
@@ -46,7 +61,7 @@ public class Player {
      * @param index array index that corresponds with the cup.
      */
     public void bindShellCup(Cup cup, int index){
-        shellCups[index] = cup;
+        cups[index] = cup;
     }
 
     /**
@@ -72,37 +87,14 @@ public class Player {
         moves++;
     }
 
-    /**
-     * Checks if the provided cup is the PLAYER's store.
-     * @param cup the Cup to check
-     * @return true if the cup is the PLAYER's store
-     */
-    public boolean isStore(Cup cup) {
-        return cup == store;
-    }
-
-    /**
-     * Determines if a Cup is one of the PLAYER's Shell Cups
-     * @param cup the Cup to check
-     * @param i the position of the Cup in the array
-     * @return true if the provided Shell Cup belongs to the PLAYER
-     */
-    public boolean isShellCup(Cup cup, int i) {
-        if (cup.isNotPlayerCup()) {
-            return shellCups[i % 8] == cup;
+    public boolean hasValidMove(){
+        for (int i = 0; i < cups.length; i++) {
+            if (cups[i].getCount() > 0)
+                return true;
         }
+
         return false;
     }
-
-    /**
-     * Capture shells from opponent's cup
-     * @param numShells the number of shells to put in the store
-     */
-    public void captureShells(int numShells) {
-        // need to cast to PlayerCup in order to be able to use this method
-        ((PlayerCup) store).addCapturedShells(numShells);
-    }
-
 
     /**
      * Method used to be able to identify between PLAYER objects
