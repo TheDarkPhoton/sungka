@@ -11,7 +11,7 @@ import java.net.Socket;
 
 /**
  * This class represents the Client in the Server-Client relationship. This will allow one Player to connect to anothers
- * server and thereby be able to play against each other.
+ * server and thereby be able to play against each other. This player joins the game.
  */
 public class SungkaClient extends AsyncTask<String,Integer,Boolean> {
     //TODO:allow the user to connect to a server using a Socket, and pass the information when a move is made to the SungkaServer
@@ -20,11 +20,11 @@ public class SungkaClient extends AsyncTask<String,Integer,Boolean> {
     //TODO:should have static string values that indicate what the other user did eg: perform a move,has left or wants to end the game
     private String hostName;
     private int portNumber;
-    private Board board;
     private Socket clientSocket;
     private PrintWriter printWriter;
     private BufferedReader bufferedReader;
     private Handler listenForServerHandler;
+    private SungkaProtocol sungkaProtocol;
     private Runnable listenForServer = new Runnable() {
         @Override
         public void run() {
@@ -32,6 +32,7 @@ public class SungkaClient extends AsyncTask<String,Integer,Boolean> {
             try {
                 while((fromServer = bufferedReader.readLine()) !=null) {
                     //received a message from the server, do the appropriate change in the board
+                    sungkaProtocol.updateGame(fromServer);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -48,7 +49,7 @@ public class SungkaClient extends AsyncTask<String,Integer,Boolean> {
     public SungkaClient(String hostName, int portNumber,Board board){
         this.hostName = hostName;
         this.portNumber = portNumber;
-        this.board = board;
+        sungkaProtocol = new SungkaProtocol(board);
     }
 
     /**
@@ -89,11 +90,12 @@ public class SungkaClient extends AsyncTask<String,Integer,Boolean> {
 
     /**
      * Close the connection the server
-     * @throws IOException if an issue arrises when attempting to close the Socket
+     * @throws IOException if an issue arises when attempting to close the Socket
      */
     public void closeConnection() throws IOException {
         clientSocket.close();
     }
+
 
     protected void onPostExecute(Boolean result){
         super.onPostExecute(result);
