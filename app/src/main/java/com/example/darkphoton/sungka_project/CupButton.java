@@ -152,7 +152,13 @@ public class CupButton extends Button {
 
     public ArrayList<View> getShells(){
         updateText();
-        return _shells;
+
+        ArrayList<View> shells = new ArrayList<>();
+        while (_shells.size() > 0) {
+            shells.add(_shells.remove(_shells.size() - 1));
+        }
+
+        return shells;
     }
 
     public void updateText(){
