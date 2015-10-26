@@ -252,19 +252,17 @@ public class GameActivity extends Activity {
 
         animationInProgress = true;
         ArrayList<View> images = cupButtons[index].getShells();
-        moveShellsRec(hand, images, images.size());
+        moveShellsRec(hand, images, 500);
     }
 
-    private void moveShellsRec(final HandOfShells hand, final ArrayList<View> images, final int imageCount) {
-        int counter = imageCount - images.size();
-
+    private void moveShellsRec(final HandOfShells hand, final ArrayList<View> images, final int duration) {
         int index = hand.nextCup();
         CupButton b = cupButtons[index];
 
         for (int i = 0; i < images.size(); i++) {
             View image = images.get(i);
             float[] coord = b.randomPositionInCup(r, image);
-            new ShellTranslation(b, image, coord, 500).startAnimation();
+            new ShellTranslation(b, image, coord, duration).startAnimation();
         }
 
         hand.dropShell();
@@ -274,9 +272,9 @@ public class GameActivity extends Activity {
             b.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    moveShellsRec(hand, images, imageCount);
+                    moveShellsRec(hand, images, duration);
                 }
-            }, 550);
+            }, duration + 10);
         }
         else{
             animationInProgress = false;
