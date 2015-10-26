@@ -2,7 +2,6 @@ package com.example.darkphoton.sungka_project;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -150,7 +149,6 @@ public class GameActivity extends Activity {
         //Add layouts to master
         layoutMaster.addView(layoutBase);
 
-
         layoutMaster.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             boolean once = false;
 
@@ -180,18 +178,18 @@ public class GameActivity extends Activity {
         wm.getDefaultDisplay().getMetrics(displayMetrics);
         _screenWidth = displayMetrics.widthPixels;
         _screenHeight = displayMetrics.heightPixels;
+
+        //Calculate sizes of store cups and small cups
+        CupButton.generateSizes(_screenWidth,_screenHeight);
     }
 
     /**
-     * Calculate sizes for layoutBase
+     * Initialises all cup buttons in the right location on the screen.
      */
     private void initView() {
-        //Calculate sizes of store cups and small cups
-        CupMargins sizes = new CupMargins(_screenWidth, _screenHeight);
-
         for (int i = 0; i < shells.length; i++) {
             Bitmap b = ((BitmapDrawable)shells[i]).getBitmap();
-            Bitmap bitmapResized = Bitmap.createScaledBitmap(b, (int)(sizes.cup * 0.2), (int)(sizes.cup * 0.2), false);
+            Bitmap bitmapResized = Bitmap.createScaledBitmap(b, (int)(CupButton.sizes.cup * 0.2), (int)(CupButton.sizes.cup * 0.2), false);
             shells[i] = new BitmapDrawable(getResources(), bitmapResized);
         }
 
@@ -202,7 +200,7 @@ public class GameActivity extends Activity {
         int bottomColumnIndex = 1;
         for(int i = 0; i < 7; i++) {
             //PLAYER A shell cup
-            CupButton btn = new CupButton(this, board.getCup(i), PlayerType.A, CupType.SHELL, sizes, i);
+            CupButton btn = new CupButton(this, board.getCup(i), CupButton.PLAYER_A, CupButton.CUP);
             btn.addToLayout(layoutBase, bottomColumnIndex++, 2);
             cupButtons[i] = btn;
 
@@ -210,13 +208,12 @@ public class GameActivity extends Activity {
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.i(TAG, "Index A");
                     moveShells(indexA);
                 }
             });
 
             //PlayerB shell cup
-            btn = new CupButton(this, board.getCup(i+8), PlayerType.B, CupType.SHELL, sizes, i+8);
+            btn = new CupButton(this, board.getCup(i+8), CupButton.PLAYER_B, CupButton.CUP);
             btn.addToLayout(layoutBase, topColumnIndex--, 0);
             cupButtons[i+8] = btn;
 
@@ -224,24 +221,28 @@ public class GameActivity extends Activity {
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.i(TAG, "Index B");
                     moveShells(indexB);
                 }
             });
         }
         //PLAYER A store
-        CupButton btnPlayerA = new CupButton(this, board.getCup(7), PlayerType.A, CupType.PLAYER, sizes, 7);
+        CupButton btnPlayerA = new CupButton(this, board.getCup(7), CupButton.PLAYER_A, CupButton.STORE);
         btnPlayerA.addToLayout(layoutBase, 8, 1);
         cupButtons[7] = btnPlayerA;
 
         //PLAYER B store
-        CupButton btnPlayerB = new CupButton(this, board.getCup(15), PlayerType.B, CupType.PLAYER, sizes, 15);
+        CupButton btnPlayerB = new CupButton(this, board.getCup(15), CupButton.PLAYER_B, CupButton.STORE);
         btnPlayerB.addToLayout(layoutBase, 0, 1);
         cupButtons[15] = btnPlayerB;
     }
 
-    private final Random r = new Random();
-    private boolean animationInProgress = false;
+    private final Random r = new Random();                                  //Object for random number generation
+    private boolean animationInProgress = false;                            //Prevents buttons clicks while animation is in progress
+
+    /**
+     * Prepares variables for the animation.
+     * @param index the cup button pressed.
+     */
     private void moveShells(int index){
         if (animationInProgress)
             return;
@@ -252,32 +253,111 @@ public class GameActivity extends Activity {
 
         animationInProgress = true;
         ArrayList<View> images = cupButtons[index].getShells();
-        moveShellsRec(hand, images, 500);
+        moveShellsRec(hand, images, 300);
     }
 
+    /**
+     * Recursive animation method, performs single animation from cup a to cup b.
+     * @param hand Used to control the state of the backend.
+     * @param images Images to be moved from the clicked cup.
+     * @param duration Duration of the animation.
+     */
     private void moveShellsRec(final HandOfShells hand, final ArrayList<View> images, final int duration) {
-        int index = hand.nextCup();
+        int index = hand.getNextCup();
         CupButton b = cupButtons[index];
 
         for (int i = 0; i < images.size(); i++) {
             View image = images.get(i);
-            float[] coord = b.randomPositionInCup(r, image);
+            float[] coord = b.randomPositionInCup(image);
             new ShellTranslation(b, image, coord, duration).startAnimation();
         }
 
-        hand.dropShell();
+        final int robbedIndex = hand.dropShell();
         b.addShell((ImageView) images.remove(images.size() - 1));
 
-        if (images.size() > 0){
-            b.postDelayed(new Runnable() {
-                @Override
-                public void run() {
+        b.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (images.size() > 0) {
                     moveShellsRec(hand, images, duration);
+                } else if (robbedIndex >= 0) {
+                    moveRobOpponent(robbedIndex, duration * 2);
+                    showAnimationMessages(hand);
+                } else {
+                    animationInProgress = false;
+                    checkGameOverState();
+                    showAnimationMessages(hand);
                 }
-            }, duration + 10);
+            }
+        }, duration + 25);
+    }
+
+    /**
+     * Method that handles the case where the opponents cup is robbed because shell
+     * landed in the current players cup.
+     * @param robbedIndex The index of the opponents cup to be robbed.
+     * @param duration Duration of the animation.
+     */
+    private void moveRobOpponent(final int robbedIndex, final int duration){
+        final HandOfShells hand = board.pickUpShells(robbedIndex);
+        if (hand == null) {
+            animationInProgress = false;
+            checkGameOverState();
+            return;
+        }
+
+        CupButton playersCup;
+        CupButton robbedCup;
+
+        if (robbedIndex < 7){
+            playersCup = cupButtons[15];
+            robbedCup = cupButtons[robbedIndex];
+            hand.setNextCup(15);
         }
         else{
-            animationInProgress = false;
+            playersCup = cupButtons[7];
+            robbedCup = cupButtons[robbedIndex];
+            hand.setNextCup(7);
         }
+
+        ArrayList<View> images = robbedCup.getShells();
+
+        for (int i = 0; i < images.size(); i++) {
+            View image = images.get(i);
+            float[] coord = playersCup.randomPositionInCup(image);
+            new ShellTranslation(playersCup, image, coord, duration).startAnimation();
+        }
+
+        hand.dropAllShells();
+        playersCup.addShells(images);
+
+        playersCup.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                animationInProgress = false;
+                showAnimationMessages(hand);
+                checkGameOverState();
+            }
+        }, duration + 10);
+    }
+
+    /**
+     * Displays messages that explains what happened during animation. TODO Display info messages on the screen.
+     * @param hand The object that stores messages.
+     */
+    private void showAnimationMessages(HandOfShells hand){
+        ArrayList<String> msgs = hand.getMessages();
+        for (int i = 0; i < msgs.size(); i++) {
+            Log.i(TAG, msgs.get(i));
+        }
+    }
+
+    /**
+     * Checks if the game over state is reached and performs game over operations. TODO implement game over operations.
+     */
+    private void checkGameOverState(){
+        //if there are no valid moves
+        if (!board.hasValidMoves())
+            Log.i(TAG, "Game Over!!!");
     }
 }

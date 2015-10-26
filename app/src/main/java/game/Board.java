@@ -1,7 +1,5 @@
 package game;
 
-import android.util.Log;
-
 /**
  * An object that describes the state of the current game board
  */
@@ -10,9 +8,12 @@ public class Board {
     private Player _currentPlayer;                          // the player whose turn it is
     private Player _playerOne;
     private Player _playerTwo;
+    private boolean _validMoveExists = true;
 
     /**
      * Constructs board with default attributes.
+     * @param a Player one
+     * @param b Player two
      */
     Board(Player a, Player b){
         _cups = new Cup[16];
@@ -39,21 +40,13 @@ public class Board {
         _currentPlayer = a;
     }
 
-    public Cup getCup(int index){
-        return _cups[index];
-    }
-
-    public void addShell(int index) {
-        _cups[index].addShell();
-    }
-
     /**
      * Picks up shells from the selected cup.
      * @param index of the cup.
      * @return Hand of shells object.
      */
     public HandOfShells pickUpShells(int index){
-        if (!(_currentPlayer.isShellCup(_cups[index], index) && _cups[index].getCount() > 0))
+        if (!_validMoveExists || !(_currentPlayer.isPlayersCup(_cups[index]) && _cups[index].getCount() > 0))
             return null;
 
         HandOfShells hand = new HandOfShells(index, _cups[index].pickUpShells());
@@ -65,51 +58,83 @@ public class Board {
     }
 
     /**
+     * Determines wheater to pass a turn to the next player.
+     * @param players_cup is used to check if the last shell landed in his store.
+     * @return the player that is the current player.
+     */
+    public Player nextPlayersMove(int players_cup){
+        if (!(isCurrentPlayersStore(players_cup) && _currentPlayer.hasValidMove()) && getOpponent().hasValidMove()){
+            _currentPlayer = getOpponent();
+        }
+
+        else if (!getCurrentPlayer().hasValidMove() && !getOpponent().hasValidMove()){
+            _currentPlayer = null;
+            _validMoveExists = false;
+        }
+
+        return _currentPlayer;
+    }
+
+    /**
+     * Adds a shell to the specified cup.
+     * @param index cup in question.
+     */
+    public void addShell(int index) {
+        _cups[index].addShell();
+    }
+
+    /**
      * Checks if a provided cup belongs to the opponent of the current player.
      * @param index the location of the cup in question
      * @return true if the indicated cup belongs to the current player's opponent
      */
     public boolean isOpponentStore(int index) {
-        Log.i("Board", "is opponents store Index " + index);
-        if (_currentPlayer.isStore(getPlayerCupA())) {
-            // PlayerB's store is at 15
-            return index == 15;
-        } else if (_currentPlayer.isStore(getPlayerCupB())) {
-            // PlayerA's store is at 7
-            return index == 7;
-        }
-
-        return false;
+        return getOpponent().isPlayersCup(_cups[index], true);
     }
 
+    /**
+     * Checks if a provided cup belongs to the current player.
+     * @param index the location of the cup in question
+     * @return true if the indicated cup belongs to the current player
+     */
     public boolean isCurrentPlayersStore(int index) {
-        if (_currentPlayer.isStore(getPlayerCupA())) {
-            // PlayerB's store is at 15
-            return index == 7;
-        } else if (_currentPlayer.isStore(getPlayerCupB())) {
-            // PlayerA's store is at 7
-            return index == 15;
-        }
-
-        return false;
+        return getCurrentPlayer().isPlayersCup(_cups[index], true);
     }
 
-    public void nextPlayersMove(){
+    /**
+     * Gets the current player.
+     * @return current player.
+     */
+    public Player getCurrentPlayer(){
+        return _currentPlayer;
+    }
+
+    /**
+     * Gets the opponent player.
+     * @return opponent player.
+     */
+    public Player getOpponent(){
         if (_currentPlayer == _playerOne)
-            _currentPlayer = _playerTwo;
+            return _playerTwo;
         else
-            _currentPlayer = _playerOne;
+            return _playerOne;
+    }
+
+    /**
+     * Gets the specified cup.
+     * @param index of the cup in question.
+     * @return cup in question.
+     */
+    public Cup getCup(int index){
+        return _cups[index];
     }
 
     /**
      * Checks if the game over condition is met.
      * @return return true of game should end, false otherwise
      */
-    public boolean isGameOver(){
-        if (getPlayerCupA().getCount() + getPlayerCupB().getCount() == 98) {
-            return true;
-        }
-        return false;
+    public boolean hasValidMoves(){
+        return _validMoveExists;
     }
 
     /**
