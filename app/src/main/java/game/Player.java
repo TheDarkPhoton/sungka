@@ -36,10 +36,21 @@ public class Player {
         store = cup;
     }
 
+    /**
+     * Determines if the cup provided belongs to this player.
+     * @param cup Cup in question.
+     * @return true if cup belongs to the player.
+     */
     public boolean isPlayersCup(Cup cup){
         return isPlayersCup(cup, false);
     }
 
+    /**
+     * Determines if the cup provided belongs to this player.
+     * @param cup Cup in question.
+     * @param just_store Checks if the cup is the players store.
+     * @return true if cup belongs to the player.
+     */
     public boolean isPlayersCup(Cup cup, boolean just_store){
         if (store == cup)
             return true;
@@ -87,6 +98,10 @@ public class Player {
         moves++;
     }
 
+    /**
+     * Checks if player has any valid moves.
+     * @return true if there are moves that this player can make.
+     */
     public boolean hasValidMove(){
         for (int i = 0; i < cups.length; i++) {
             if (cups[i].getCount() > 0)

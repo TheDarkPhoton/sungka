@@ -149,7 +149,6 @@ public class GameActivity extends Activity {
         //Add layouts to master
         layoutMaster.addView(layoutBase);
 
-
         layoutMaster.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             boolean once = false;
 
@@ -185,7 +184,7 @@ public class GameActivity extends Activity {
     }
 
     /**
-     * Calculate sizes for layoutBase
+     * Initialises all cup buttons in the right location on the screen.
      */
     private void initView() {
         for (int i = 0; i < shells.length; i++) {
@@ -201,7 +200,7 @@ public class GameActivity extends Activity {
         int bottomColumnIndex = 1;
         for(int i = 0; i < 7; i++) {
             //PLAYER A shell cup
-            CupButton btn = new CupButton(this, board.getCup(i), CupButton.PLAYER_A, CupButton.CUP, i);
+            CupButton btn = new CupButton(this, board.getCup(i), CupButton.PLAYER_A, CupButton.CUP);
             btn.addToLayout(layoutBase, bottomColumnIndex++, 2);
             cupButtons[i] = btn;
 
@@ -214,7 +213,7 @@ public class GameActivity extends Activity {
             });
 
             //PlayerB shell cup
-            btn = new CupButton(this, board.getCup(i+8), CupButton.PLAYER_B, CupButton.CUP, i+8);
+            btn = new CupButton(this, board.getCup(i+8), CupButton.PLAYER_B, CupButton.CUP);
             btn.addToLayout(layoutBase, topColumnIndex--, 0);
             cupButtons[i+8] = btn;
 
@@ -227,18 +226,23 @@ public class GameActivity extends Activity {
             });
         }
         //PLAYER A store
-        CupButton btnPlayerA = new CupButton(this, board.getCup(7), CupButton.PLAYER_A, CupButton.STORE, 7);
+        CupButton btnPlayerA = new CupButton(this, board.getCup(7), CupButton.PLAYER_A, CupButton.STORE);
         btnPlayerA.addToLayout(layoutBase, 8, 1);
         cupButtons[7] = btnPlayerA;
 
         //PLAYER B store
-        CupButton btnPlayerB = new CupButton(this, board.getCup(15), CupButton.PLAYER_B, CupButton.STORE, 15);
+        CupButton btnPlayerB = new CupButton(this, board.getCup(15), CupButton.PLAYER_B, CupButton.STORE);
         btnPlayerB.addToLayout(layoutBase, 0, 1);
         cupButtons[15] = btnPlayerB;
     }
 
-    private final Random r = new Random();
-    private boolean animationInProgress = false;
+    private final Random r = new Random();                                  //Object for random number generation
+    private boolean animationInProgress = false;                            //Prevents buttons clicks while animation is in progress
+
+    /**
+     * Prepares variables for the animation.
+     * @param index the cup button pressed.
+     */
     private void moveShells(int index){
         if (animationInProgress)
             return;
@@ -252,13 +256,19 @@ public class GameActivity extends Activity {
         moveShellsRec(hand, images, 300);
     }
 
+    /**
+     * Recursive animation method, performs single animation from cup a to cup b.
+     * @param hand Used to control the state of the backend.
+     * @param images Images to be moved from the clicked cup.
+     * @param duration Duration of the animation.
+     */
     private void moveShellsRec(final HandOfShells hand, final ArrayList<View> images, final int duration) {
         int index = hand.getNextCup();
         CupButton b = cupButtons[index];
 
         for (int i = 0; i < images.size(); i++) {
             View image = images.get(i);
-            float[] coord = b.randomPositionInCup(r, image);
+            float[] coord = b.randomPositionInCup(image);
             new ShellTranslation(b, image, coord, duration).startAnimation();
         }
 
@@ -271,7 +281,7 @@ public class GameActivity extends Activity {
                 if (images.size() > 0) {
                     moveShellsRec(hand, images, duration);
                 } else if (robbedIndex >= 0) {
-                    moveSpecial(robbedIndex, duration * 2);
+                    moveRobOpponent(robbedIndex, duration * 2);
                     showAnimationMessages(hand);
                 } else {
                     animationInProgress = false;
@@ -279,10 +289,16 @@ public class GameActivity extends Activity {
                     showAnimationMessages(hand);
                 }
             }
-        }, duration + 10);
+        }, duration + 25);
     }
 
-    private void moveSpecial(final int robbedIndex, final int duration){
+    /**
+     * Method that handles the case where the opponents cup is robbed because shell
+     * landed in the current players cup.
+     * @param robbedIndex The index of the opponents cup to be robbed.
+     * @param duration Duration of the animation.
+     */
+    private void moveRobOpponent(final int robbedIndex, final int duration){
         final HandOfShells hand = board.pickUpShells(robbedIndex);
         if (hand == null) {
             animationInProgress = false;
@@ -308,7 +324,7 @@ public class GameActivity extends Activity {
 
         for (int i = 0; i < images.size(); i++) {
             View image = images.get(i);
-            float[] coord = playersCup.randomPositionInCup(r, image);
+            float[] coord = playersCup.randomPositionInCup(image);
             new ShellTranslation(playersCup, image, coord, duration).startAnimation();
         }
 
@@ -325,6 +341,10 @@ public class GameActivity extends Activity {
         }, duration + 10);
     }
 
+    /**
+     * Displays messages that explains what happened during animation. TODO Display info messages on the screen.
+     * @param hand The object that stores messages.
+     */
     private void showAnimationMessages(HandOfShells hand){
         ArrayList<String> msgs = hand.getMessages();
         for (int i = 0; i < msgs.size(); i++) {
@@ -332,7 +352,11 @@ public class GameActivity extends Activity {
         }
     }
 
+    /**
+     * Checks if the game over state is reached and performs game over operations. TODO implement game over operations.
+     */
     private void checkGameOverState(){
+        //if there are no valid moves
         if (!board.hasValidMoves())
             Log.i(TAG, "Game Over!!!");
     }

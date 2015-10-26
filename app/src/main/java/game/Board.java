@@ -12,6 +12,8 @@ public class Board {
 
     /**
      * Constructs board with default attributes.
+     * @param a Player one
+     * @param b Player two
      */
     Board(Player a, Player b){
         _cups = new Cup[16];
@@ -55,6 +57,11 @@ public class Board {
         return hand;
     }
 
+    /**
+     * Determines wheater to pass a turn to the next player.
+     * @param players_cup is used to check if the last shell landed in his store.
+     * @return the player that is the current player.
+     */
     public Player nextPlayersMove(int players_cup){
         if (!(isCurrentPlayersStore(players_cup) && _currentPlayer.hasValidMove()) && getOpponent().hasValidMove()){
             _currentPlayer = getOpponent();
@@ -68,6 +75,10 @@ public class Board {
         return _currentPlayer;
     }
 
+    /**
+     * Adds a shell to the specified cup.
+     * @param index cup in question.
+     */
     public void addShell(int index) {
         _cups[index].addShell();
     }
@@ -90,10 +101,18 @@ public class Board {
         return getCurrentPlayer().isPlayersCup(_cups[index], true);
     }
 
+    /**
+     * Gets the current player.
+     * @return current player.
+     */
     public Player getCurrentPlayer(){
         return _currentPlayer;
     }
 
+    /**
+     * Gets the opponent player.
+     * @return opponent player.
+     */
     public Player getOpponent(){
         if (_currentPlayer == _playerOne)
             return _playerTwo;
@@ -101,6 +120,11 @@ public class Board {
             return _playerOne;
     }
 
+    /**
+     * Gets the specified cup.
+     * @param index of the cup in question.
+     * @return cup in question.
+     */
     public Cup getCup(int index){
         return _cups[index];
     }

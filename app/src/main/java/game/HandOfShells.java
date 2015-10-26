@@ -16,7 +16,6 @@ public class HandOfShells {
 
     /**
      * Cup.pickUpShells() should be used to provide the value for 'cup'.
-     *
      * @param cupIndex the index location of a cup that a player has selected
      * @param shells the number of shells in that cup
      */
@@ -25,6 +24,10 @@ public class HandOfShells {
         _shells = shells;
     }
 
+    /**
+     * Saves the reference to the board of the hand.
+     * @param board Board in question.
+     */
     public void bindBoard(Board board){
         _board = board;
     }
@@ -44,10 +47,17 @@ public class HandOfShells {
         return _cup_index = next;
     }
 
+    /**
+     * Sets the value of the current cup index.
+     * @param index The cup over which hand was moved.
+     */
     public void setNextCup(int index){
         _cup_index = index;
     }
 
+    /**
+     * Drops all shells in the current cup.
+     */
     public void dropAllShells(){
         _board.getCup(_cup_index).addShells(_shells);
         _shells = 0;
@@ -89,6 +99,10 @@ public class HandOfShells {
         return robbedIndex;
     }
 
+    /**
+     * Gets all of the saved messages.
+     * @return saved messages.
+     */
     public ArrayList<String> getMessages(){
         return _messages;
     }
