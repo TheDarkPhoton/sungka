@@ -180,18 +180,18 @@ public class GameActivity extends Activity {
         wm.getDefaultDisplay().getMetrics(displayMetrics);
         _screenWidth = displayMetrics.widthPixels;
         _screenHeight = displayMetrics.heightPixels;
+
+        //Calculate sizes of store cups and small cups
+        CupButton.generateSizes(_screenWidth,_screenHeight);
     }
 
     /**
      * Calculate sizes for layoutBase
      */
     private void initView() {
-        //Calculate sizes of store cups and small cups
-        CupMargins sizes = new CupMargins(_screenWidth, _screenHeight);
-
         for (int i = 0; i < shells.length; i++) {
             Bitmap b = ((BitmapDrawable)shells[i]).getBitmap();
-            Bitmap bitmapResized = Bitmap.createScaledBitmap(b, (int)(sizes.cup * 0.2), (int)(sizes.cup * 0.2), false);
+            Bitmap bitmapResized = Bitmap.createScaledBitmap(b, (int)(CupButton.sizes.cup * 0.2), (int)(CupButton.sizes.cup * 0.2), false);
             shells[i] = new BitmapDrawable(getResources(), bitmapResized);
         }
 
@@ -202,7 +202,7 @@ public class GameActivity extends Activity {
         int bottomColumnIndex = 1;
         for(int i = 0; i < 7; i++) {
             //PLAYER A shell cup
-            CupButton btn = new CupButton(this, board.getCup(i), PlayerType.A, CupType.SHELL, sizes, i);
+            CupButton btn = new CupButton(this, board.getCup(i), CupButton.PLAYER_A, CupButton.CUP, i);
             btn.addToLayout(layoutBase, bottomColumnIndex++, 2);
             cupButtons[i] = btn;
 
@@ -216,7 +216,7 @@ public class GameActivity extends Activity {
             });
 
             //PlayerB shell cup
-            btn = new CupButton(this, board.getCup(i+8), PlayerType.B, CupType.SHELL, sizes, i+8);
+            btn = new CupButton(this, board.getCup(i+8), CupButton.PLAYER_B, CupButton.CUP, i+8);
             btn.addToLayout(layoutBase, topColumnIndex--, 0);
             cupButtons[i+8] = btn;
 
@@ -230,12 +230,12 @@ public class GameActivity extends Activity {
             });
         }
         //PLAYER A store
-        CupButton btnPlayerA = new CupButton(this, board.getCup(7), PlayerType.A, CupType.PLAYER, sizes, 7);
+        CupButton btnPlayerA = new CupButton(this, board.getCup(7), CupButton.PLAYER_A, CupButton.STORE, 7);
         btnPlayerA.addToLayout(layoutBase, 8, 1);
         cupButtons[7] = btnPlayerA;
 
         //PLAYER B store
-        CupButton btnPlayerB = new CupButton(this, board.getCup(15), PlayerType.B, CupType.PLAYER, sizes, 15);
+        CupButton btnPlayerB = new CupButton(this, board.getCup(15), CupButton.PLAYER_B, CupButton.STORE, 15);
         btnPlayerB.addToLayout(layoutBase, 0, 1);
         cupButtons[15] = btnPlayerB;
     }
