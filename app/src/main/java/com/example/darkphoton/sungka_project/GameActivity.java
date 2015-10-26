@@ -240,40 +240,46 @@ public class GameActivity extends Activity {
         cupButtons[15] = btnPlayerB;
     }
 
-    private int[] latch = new int[1];
-    private void moveShells(int index) {
-        if (latch[0] > 0)
+    private final Random r = new Random();
+    private boolean animationInProgress = false;
+    private void moveShells(int index){
+        if (animationInProgress)
             return;
 
-        final HandOfShells hand = board.pickUpShells(index);
+        HandOfShells hand = board.pickUpShells(index);
         if (hand == null)
             return;
 
-        final ArrayList<View> images = cupButtons[index].getShells();
+        animationInProgress = true;
+        ArrayList<View> images = cupButtons[index].getShells();
+        moveShellsRec(hand, images, images.size());
+    }
 
-        index = hand.nextCup();
+    private void moveShellsRec(final HandOfShells hand, final ArrayList<View> images, final int imageCount) {
+        int counter = imageCount - images.size();
+
+        int index = hand.nextCup();
         CupButton b = cupButtons[index];
 
-        latch[0] = 0;
+        for (int i = 0; i < images.size(); i++) {
+            View image = images.get(i);
+            float[] coord = b.randomPositionInCup(r, image);
+            new ShellTranslation(b, image, coord, 500).startAnimation();
+        }
 
-        int counter = 0;
-        int cupsInHand = hand.shellCount();
-        Random r = new Random();
-        while (counter < cupsInHand){
-            latch[0] += images.size();
+        hand.dropShell();
+        b.addShell((ImageView) images.remove(images.size() - 1));
 
-            for (int i = 0; i < images.size(); i++) {
-                View image = images.get(i);
-                float[] coord = b.randomPositionInCup(r, image);
-                image.postDelayed(new ShellTranslation(latch, b, image, coord, 500), 550 * counter);
-            }
-
-            hand.dropShell();
-            b.addShell((ImageView)images.remove(images.size() - 1));
-
-            index = hand.nextCup();
-            b = cupButtons[index];
-            ++counter;
+        if (images.size() > 0){
+            b.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    moveShellsRec(hand, images, imageCount);
+                }
+            }, 550);
+        }
+        else{
+            animationInProgress = false;
         }
     }
 }
