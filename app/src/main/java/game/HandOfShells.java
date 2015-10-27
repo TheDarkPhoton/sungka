@@ -100,6 +100,14 @@ public class HandOfShells {
     }
 
     /**
+     * Adds a message to the list of messages.
+     * @param msg message to be added.
+     */
+    public void addMessage(String msg){
+        _messages.add(msg);
+    }
+
+    /**
      * Gets all of the saved messages.
      * @return saved messages.
      */

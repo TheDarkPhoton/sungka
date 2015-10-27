@@ -76,6 +76,13 @@ public class Board {
     }
 
     /**
+     * Gives turn to the next player.
+     */
+    public void nextPlayersMove(){
+        _currentPlayer = getOpponent();
+    }
+
+    /**
      * Adds a shell to the specified cup.
      * @param index cup in question.
      */

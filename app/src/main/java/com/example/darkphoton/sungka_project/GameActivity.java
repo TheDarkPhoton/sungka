@@ -335,6 +335,10 @@ public class GameActivity extends Activity {
             @Override
             public void run() {
                 animationInProgress = false;
+                if (!board.getCurrentPlayer().hasValidMove()) {
+                    board.nextPlayersMove();
+                    hand.addMessage(board.getOpponent().getName() + " was robbed of his only move... " + board.getCurrentPlayer().getName() + "'s turn.");
+                }
                 showAnimationMessages(hand);
                 checkGameOverState();
             }
