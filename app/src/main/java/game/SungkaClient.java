@@ -3,6 +3,8 @@ package game;
 import android.os.AsyncTask;
 import android.os.Handler;
 
+import com.example.darkphoton.sungka_project.GameActivity;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -44,12 +46,12 @@ public class SungkaClient extends AsyncTask<String,Integer,Boolean> {
      * The constructor to provide the necessary information about the Server
      * @param hostName the IP address of the server, it is the IPv4 address if both users are connected to the same network
      * @param portNumber the port of the server which we want to connect to
-     * @param board the Board object of the player that is connecting to the server
+     * @param gameActivity the GameActivity object of the player that is connecting to the server
      */
-    public SungkaClient(String hostName, int portNumber,Board board){
+    public SungkaClient(String hostName, int portNumber,GameActivity gameActivity){
         this.hostName = hostName;
         this.portNumber = portNumber;
-        sungkaProtocol = new SungkaProtocol(board);
+        sungkaProtocol = new SungkaProtocol(gameActivity);
     }
 
     /**
@@ -57,10 +59,10 @@ public class SungkaClient extends AsyncTask<String,Integer,Boolean> {
      * the server and a BufferedReader to receive message from the Server
      */
     private void connectClient() throws IOException {
-            clientSocket = new Socket(hostName,portNumber);
-            printWriter = new PrintWriter(clientSocket.getOutputStream(),true);
-            bufferedReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            listenForServerHandler = new Handler();
+        clientSocket = new Socket(hostName,portNumber);
+        printWriter = new PrintWriter(clientSocket.getOutputStream(),true);
+        bufferedReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        listenForServerHandler = new Handler();
     }
 
     /**
@@ -95,10 +97,17 @@ public class SungkaClient extends AsyncTask<String,Integer,Boolean> {
     public void closeConnection() throws IOException {
         clientSocket.close();
     }
+    @Override
+    protected void onPreExecute() {
+        //TODO:could show a dialog on the gameActivity while the connection is established between the devices
+        super.onPreExecute();
+    }
 
 
     protected void onPostExecute(Boolean result){
+        //TODO:could remove that dialog since the connection has been established
         super.onPostExecute(result);
         listenForServerHandler.postDelayed(listenForServer, 50);//start the listenForServer runnable thread in 50 ms
     }
+
 }

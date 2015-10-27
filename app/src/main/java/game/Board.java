@@ -1,5 +1,7 @@
 package game;
 
+import android.util.Log;
+
 /**
  * An object that describes the state of the current game board
  */
@@ -37,53 +39,12 @@ public class Board {
         _currentPlayer = a;
     }
 
-    /**
-     * Distributes shells of the cup indicated by the index.
-     * @param index of the cup in the array.
-     */
-    public void distribute(int index){
-        // don't allow a Player to select an opponent's Cup
-        if (((PlayerCup) _cups[index]).getPlayer() != _currentPlayer)
-            return;
+    public Cup getCup(int index){
+        return _cups[index];
+    }
 
-        //get the number of shells in the cup and remove them, then increment index
-        int shells = _cups[index++].pickUpShells();
-
-        //while we have shells distribute them
-        while (shells > 0){
-            //if index is more then the size of cups then loop around and continue
-            if (index >= _cups.length)
-                index = 0;
-
-            //get the cup object and then increment index
-            Cup cup = _cups[index++];
-
-            // if cup is not a player cup OR the cup is the player's store,
-            // then add a shell to that cup
-            if (cup.isNotPlayerCup() || _currentPlayer.isStore(cup)) {
-                cup.addShell();
-                --shells;
-            }
-        }
-
-        // need to check a few things with the last used cup
-        int lastIndex = (index - 1) % 16;
-        Cup lastCup = _cups[lastIndex];
-
-        if (lastCup.getCount() == 1 && _currentPlayer.isShellCup(lastCup, lastIndex)) {
-
-            // the last shell fell into an empty cup belonging to the player, so capture shells
-            int numShells = lastCup.pickUpShells();
-            numShells += _cups[index % 8].pickUpShells();
-            _currentPlayer.captureShells(numShells);
-        }
-
-        // will possibly change in future
-        if (!_currentPlayer.isStore(lastCup)) {
-
-            // the last cup isn't the current player's store, so switch players
-            _currentPlayer = (_currentPlayer == _playerOne) ? _playerTwo : _playerOne;
-        }
+    public void addShell(int index) {
+        _cups[index].addShell();
     }
 
     /**
@@ -92,8 +53,10 @@ public class Board {
      * @return Hand of shells object.
      */
     public HandOfShells pickUpShells(int index){
-        Cup cup = _cups[index];
-        HandOfShells hand = new HandOfShells(index, cup.pickUpShells());
+        if (!(_currentPlayer.isShellCup(_cups[index], index) && _cups[index].getCount() > 0))
+            return null;
+
+        HandOfShells hand = new HandOfShells(index, _cups[index].pickUpShells());
 
         //send to the other user
 
@@ -107,6 +70,7 @@ public class Board {
      * @return true if the indicated cup belongs to the current player's opponent
      */
     public boolean isOpponentStore(int index) {
+        Log.i("Board", "is opponents store Index " + index);
         if (_currentPlayer.isStore(getPlayerCupA())) {
             // PlayerB's store is at 15
             return index == 15;
@@ -118,13 +82,35 @@ public class Board {
         return false;
     }
 
+    public boolean isCurrentPlayersStore(int index) {
+        if (_currentPlayer.isStore(getPlayerCupA())) {
+            // PlayerB's store is at 15
+            return index == 7;
+        } else if (_currentPlayer.isStore(getPlayerCupB())) {
+            // PlayerA's store is at 7
+            return index == 15;
+        }
+
+        return false;
+    }
+
+    public void nextPlayersMove(){
+        if (_currentPlayer == _playerOne)
+            _currentPlayer = _playerTwo;
+        else
+            _currentPlayer = _playerOne;
+    }
+
     /**
      * Checks if the game over condition is met.
      * @return return true of game should end, false otherwise
      */
     public boolean isGameOver(){
+        if (getPlayerCupA().getCount() + getPlayerCupB().getCount() == 98) {
+            return true;
+        }
         return false;
-    } // TODO
+    }
 
     /**
      * Gets the PlayerA cup

@@ -3,6 +3,8 @@ package game;
 import android.os.AsyncTask;
 import android.os.Handler;
 
+import com.example.darkphoton.sungka_project.GameActivity;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -42,12 +44,12 @@ public class SungkaServer extends AsyncTask<String,Integer,Boolean> {
     /**
      * The constructor used to provide the necessary information to set up the ServerSocket
      * @param portNumber the port that the ServerSocket will bind to
-     * @param board the board object of the current Player
+     * @param gameActivity the GameActivity of the current Player
      */
-    public SungkaServer(int portNumber,Board board){
+    public SungkaServer(int portNumber,GameActivity gameActivity){
         this.portNumber = portNumber;
         listenForClientHandler = new Handler();
-        sungkaProtocol = new SungkaProtocol(board);
+        sungkaProtocol = new SungkaProtocol(gameActivity);
     }
 
     /**
@@ -85,7 +87,14 @@ public class SungkaServer extends AsyncTask<String,Integer,Boolean> {
         return true;
     }
 
+    @Override
+    protected void onPreExecute() {
+        //TODO:could show a dialog on the gameActivity while the connection is established between the devices
+        super.onPreExecute();
+    }
+
     protected void onPostExecute(Boolean result){
+        //TODO:could remove that dialog since the connection has been established
         super.onPostExecute(result);
         listenForClientHandler.postDelayed(listenForClient, 50);//start the listenForClient runnable thread in 50 ms
     }

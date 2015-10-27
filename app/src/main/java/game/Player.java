@@ -3,7 +3,7 @@ package game;
 import java.util.ArrayList;
 
 /**
- * Player Class which represents a Player. This class will be inherited to form a
+ * PLAYER Class which represents a PLAYER. This class will be inherited to form a
  * Human player and a AI player.
  */
 public class Player {
@@ -15,6 +15,8 @@ public class Player {
     private ArrayList<MoveInfo> moveInfos;//arraylist to store the users moves in a game
 
     /**
+     * Initializes the PLAYER Object, along with initializing the values of the PLAYER's store and their respective
+     * shell cups
      * Initializes the Player Object, along with initializing the values of the Player's store and their respective
      * shell cups. Also initializes the list that will hold the Player's Moves the game.
      * @param name the name of the player
@@ -34,6 +36,10 @@ public class Player {
         store = cup;
     }
 
+    public Cup getStore(){
+        return store;
+    }
+
     /**
      * Saves a players shell cup in a local array.
      * @param cup Shell cup of the player.
@@ -45,7 +51,7 @@ public class Player {
 
     /**
      *
-     * @return the current amount of shells a Player has in their store
+     * @return the current amount of shells a PLAYER has in their store
      */
     public int getScore(){
         return store.getCount();
@@ -53,7 +59,7 @@ public class Player {
 
     /**
      *
-     * @return the name of the Player
+     * @return the name of the PLAYER
      */
     public String getName(){
         return name;
@@ -67,35 +73,19 @@ public class Player {
     }
 
     /**
-     * Checks if the provided cup is the Player's store.
+     * Checks if the provided cup is the PLAYER's store.
      * @param cup the Cup to check
-     * @return true if the cup is the Player's store
+     * @return true if the cup is the PLAYER's store
      */
     public boolean isStore(Cup cup) {
         return cup == store;
     }
 
     /**
-     * Stores the Player's Store to them
-     * @param store the Player's store
-     */
-    public void setStore(PlayerCup store){
-        this.store = store;
-    }
-
-    /**
-     * Stores the Player's ShellCups
-     * @param shellCups the Player's ShellCups
-     */
-    public void setShellCups(ShellCup[] shellCups){
-        this.shellCups = shellCups;
-    }
-
-    /**
-     * Determines if a Cup is one of the Player's Shell Cups
+     * Determines if a Cup is one of the PLAYER's Shell Cups
      * @param cup the Cup to check
      * @param i the position of the Cup in the array
-     * @return true if the provided Shell Cup belongs to the Player
+     * @return true if the provided Shell Cup belongs to the PLAYER
      */
     public boolean isShellCup(Cup cup, int i) {
         if (cup.isNotPlayerCup()) {
@@ -113,10 +103,11 @@ public class Player {
         ((PlayerCup) store).addCapturedShells(numShells);
     }
 
+
     /**
-     * Method used to be able to identify between Player objects
-     * @param object the Object which we are checking if it is equal to this Player Object
-     * @return true if the object is equal to this Player Object, false otherwise
+     * Method used to be able to identify between PLAYER objects
+     * @param object the Object which we are checking if it is equal to this PLAYER Object
+     * @return true if the object is equal to this PLAYER Object, false otherwise
      */
     public boolean equals(Object object){
         try{

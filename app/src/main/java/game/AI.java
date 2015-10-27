@@ -1,7 +1,7 @@
 package game;
 
 /**
- * Class that represents the AI class, that will play against the Player in the Player vs AI mode.
+ * Class that represents the AI class, that will play against the PLAYER in the PLAYER vs AI mode.
  */
 public class AI extends Player {
     private Board board;
