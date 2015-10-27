@@ -1,9 +1,14 @@
 package game;
 
+import java.util.ArrayList;
+
 /**
  * An object that describes the state of the current game board
  */
 public class Board {
+
+    private static final ArrayList<BoardState> STATE_MESSAGES = new ArrayList<>();
+
     private Cup[] _cups;                                    // an array of board cups
     private Player _currentPlayer;                          // the player whose turn it is
     private Player _playerOne;
@@ -42,14 +47,26 @@ public class Board {
 
     /**
      * Picks up shells from the selected cup.
-     * @param index of the cup.
+     * @param index of the cup
      * @return Hand of shells object.
      */
     public HandOfShells pickUpShells(int index){
-        if (!_validMoveExists || !(_currentPlayer.isPlayersCup(_cups[index]) && _cups[index].getCount() > 0))
+        return pickUpShells(index, false);
+    }
+
+    /**
+     * Picks up shells from the selected cup.
+     * @param index of the cup
+     * @param robber if set to true the opponents cups are valid instead of current players.
+     * @return hand of shells object.
+     */
+    public HandOfShells pickUpShells(int index, boolean robber){
+        Player player = robber ? getOpponent() : getCurrentPlayer();
+//        Player player = getCurrentPlayer();
+        if (!_validMoveExists || !(player.isPlayersCup(_cups[index]) && _cups[index].getCount() > 0))
             return null;
 
-        HandOfShells hand = new HandOfShells(index, _cups[index].pickUpShells());
+        HandOfShells hand = new HandOfShells(player, index, _cups[index].pickUpShells());
 
         //send to the other user
 
@@ -70,6 +87,7 @@ public class Board {
         else if (!getCurrentPlayer().hasValidMove() && !getOpponent().hasValidMove()){
             _currentPlayer = null;
             _validMoveExists = false;
+            addStateMessage(BoardState.GAME_OVER);
         }
 
         return _currentPlayer;
@@ -145,6 +163,40 @@ public class Board {
     }
 
     /**
+     * Determines if provided player the the first player
+     * @param p Provided player.
+     * @return True if provided player is the first player.
+     */
+    public boolean isPlayerA(Player p){
+        return _playerOne == p;
+    }
+
+    /**
+     * Determines if provided player the the second player
+     * @param p Provided player.
+     * @return true if provided player is the second player.
+     */
+    public boolean isPlayerB(Player p){
+        return _playerTwo == p;
+    }
+
+    /**
+     * Gets the first player.
+     * @return first player.
+     */
+    public Player getPlayerA(){
+        return _playerOne;
+    }
+
+    /**
+     * Gets the second player.
+     * @return second player.
+     */
+    public Player getPlayerB(){
+        return _playerTwo;
+    }
+
+    /**
      * Gets the PlayerA cup
      * @return returns player cup object.
      */
@@ -158,5 +210,21 @@ public class Board {
      */
     public Cup getPlayerCupB(){
         return _cups[15];
+    }
+
+    /**
+     * Adds a message to the list of messages.
+     * @param msg message to be added.
+     */
+    public static void addStateMessage(BoardState msg){
+        STATE_MESSAGES.add(msg);
+    }
+
+    /**
+     * Gets all of the saved messages.
+     * @return saved messages.
+     */
+    public static ArrayList<BoardState> getMessages(){
+        return STATE_MESSAGES;
     }
 }

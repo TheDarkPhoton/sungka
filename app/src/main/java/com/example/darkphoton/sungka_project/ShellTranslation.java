@@ -17,6 +17,7 @@ public class ShellTranslation implements Animation.AnimationListener {
     private float[] _coords;
     private float[] _relativeCoords;
     private int _duration;
+    TranslateAnimation _anim;
 
     public ShellTranslation(CupButton btn, View view, float[] coords, int duration){
         _btn = btn;
@@ -29,11 +30,15 @@ public class ShellTranslation implements Animation.AnimationListener {
     }
 
     public void startAnimation() {
-        TranslateAnimation anim = new TranslateAnimation(0, _relativeCoords[0], 0, _relativeCoords[1]);
-        anim.setInterpolator(new AccelerateInterpolator(1.0f));
-        anim.setDuration(_duration);
-        anim.setAnimationListener(this);
-        _view.startAnimation(anim);
+        _anim = new TranslateAnimation(0, _relativeCoords[0], 0, _relativeCoords[1]);
+        _anim.setInterpolator(new AccelerateInterpolator(1.0f));
+        _anim.setDuration(_duration);
+        _anim.setAnimationListener(this);
+        _view.startAnimation(_anim);
+    }
+
+    public boolean hasEnded(){
+        return _anim.hasEnded();
     }
 
     @Override

@@ -26,6 +26,7 @@ import java.util.Random;
 import game.Board;
 import game.Game;
 import game.HandOfShells;
+import game.BoardState;
 
 public class GameActivity extends Activity {
     private static final String TAG = "GameActivity";
@@ -272,7 +273,7 @@ public class GameActivity extends Activity {
             new ShellTranslation(b, image, coord, duration).startAnimation();
         }
 
-        final int robbedIndex = hand.dropShell();
+        final HandOfShells robersHand = hand.dropShell();
         b.addShell((ImageView) images.remove(images.size() - 1));
 
         b.postDelayed(new Runnable() {
@@ -280,13 +281,12 @@ public class GameActivity extends Activity {
             public void run() {
                 if (images.size() > 0) {
                     moveShellsRec(hand, images, duration);
-                } else if (robbedIndex >= 0) {
-                    moveRobOpponent(robbedIndex, duration * 2);
-                    showAnimationMessages(hand);
+                } else if (robersHand != null) {
+                    moveRobOpponent(robersHand, duration * 2);
+                    showAnimationMessages();
                 } else {
                     animationInProgress = false;
-                    checkGameOverState();
-                    showAnimationMessages(hand);
+                    showAnimationMessages();
                 }
             }
         }, duration + 25);
@@ -295,29 +295,22 @@ public class GameActivity extends Activity {
     /**
      * Method that handles the case where the opponents cup is robbed because shell
      * landed in the current players cup.
-     * @param robbedIndex The index of the opponents cup to be robbed.
+     * @param robbersHand The index of the opponents cup to be robbed.
      * @param duration Duration of the animation.
      */
-    private void moveRobOpponent(final int robbedIndex, final int duration){
-        final HandOfShells hand = board.pickUpShells(robbedIndex);
-        if (hand == null) {
-            animationInProgress = false;
-            checkGameOverState();
-            return;
-        }
-
+    private void moveRobOpponent(final HandOfShells robbersHand, final int duration){
         CupButton playersCup;
         CupButton robbedCup;
 
-        if (robbedIndex < 7){
+        if (board.isPlayerA(robbersHand.belongsToPlayer())){
             playersCup = cupButtons[15];
-            robbedCup = cupButtons[robbedIndex];
-            hand.setNextCup(15);
+            robbedCup = cupButtons[robbersHand.currentCupIndex()];
+            robbersHand.setNextCup(15);
         }
         else{
             playersCup = cupButtons[7];
-            robbedCup = cupButtons[robbedIndex];
-            hand.setNextCup(7);
+            robbedCup = cupButtons[robbersHand.currentCupIndex()];
+            robbersHand.setNextCup(7);
         }
 
         ArrayList<View> images = robbedCup.getShells();
@@ -328,40 +321,61 @@ public class GameActivity extends Activity {
             new ShellTranslation(playersCup, image, coord, duration).startAnimation();
         }
 
-        hand.dropAllShells();
+        robbersHand.dropAllShells();
         playersCup.addShells(images);
 
         playersCup.postDelayed(new Runnable() {
             @Override
             public void run() {
                 animationInProgress = false;
-                if (!board.getCurrentPlayer().hasValidMove()) {
-                    board.nextPlayersMove();
-                    hand.addMessage(board.getOpponent().getName() + " was robbed of his only move... " + board.getCurrentPlayer().getName() + "'s turn.");
-                }
-                showAnimationMessages(hand);
-                checkGameOverState();
+                showAnimationMessages();
             }
         }, duration + 10);
     }
 
     /**
      * Displays messages that explains what happened during animation. TODO Display info messages on the screen.
-     * @param hand The object that stores messages.
      */
-    private void showAnimationMessages(HandOfShells hand){
-        ArrayList<String> msgs = hand.getMessages();
-        for (int i = 0; i < msgs.size(); i++) {
-            Log.i(TAG, msgs.get(i));
+    private void showAnimationMessages(){
+        ArrayList<BoardState> msgs = Board.getMessages();
+        for (BoardState state : msgs) {
+            switch (state){
+                case PLAYER_A_TURN:
+                    Log.i(TAG, board.getPlayerA().getName() + "'s turn.");
+                    break;
+                case PLAYER_B_TURN:
+                    Log.i(TAG, board.getPlayerB().getName() + "'s turn.");
+                    break;
+                case PLAYER_A_HAS_NO_VALID_MOVE:
+                    Log.i(TAG, board.getPlayerA().getName() + " has no valid move");
+                    break;
+                case PLAYER_B_HAS_NO_VALID_MOVE:
+                    Log.i(TAG, board.getPlayerB().getName() + " has no valid move");
+                    break;
+                case PLAYER_A_GETS_ANOTHER_TURN:
+                    Log.i(TAG, board.getPlayerA().getName() + " gets another turn.");
+                    break;
+                case PLAYER_B_GETS_ANOTHER_TURN:
+                    Log.i(TAG, board.getPlayerB().getName() + " gets another turn.");
+                    break;
+                case PLAYER_A_WAS_ROBBED:
+                    Log.i(TAG, board.getPlayerA().getName() + " was robbed.");
+                    break;
+                case PLAYER_B_WAS_ROBBED:
+                    Log.i(TAG, board.getPlayerB().getName() + " was robbed.");
+                    break;
+                case PLAYER_A_WAS_ROBBED_OF_HIS_FINAL_MOVE:
+                    Log.i(TAG, board.getPlayerA().getName() + " was robbed of his final move... " + board.getPlayerB().getName() + " gets another turn.");
+                    break;
+                case PLAYER_B_WAS_ROBBED_OF_HIS_FINAL_MOVE:
+                    Log.i(TAG, board.getPlayerB().getName() + " was robbed of his final move... " + board.getPlayerA().getName() + " gets another turn.");
+                    break;
+                case GAME_OVER:
+                    Log.i(TAG, "Game Over!!!");
+                    break;
+            }
         }
-    }
 
-    /**
-     * Checks if the game over state is reached and performs game over operations. TODO implement game over operations.
-     */
-    private void checkGameOverState(){
-        //if there are no valid moves
-        if (!board.hasValidMoves())
-            Log.i(TAG, "Game Over!!!");
+        msgs.clear();
     }
 }
