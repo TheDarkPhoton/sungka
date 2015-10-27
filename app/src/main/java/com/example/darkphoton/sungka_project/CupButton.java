@@ -67,8 +67,8 @@ public class CupButton extends Button {
         _cup_type = cType;
 
         _text = new TextView(context);
-        _text.setText("" + _cup.getCount());
-        _text.setTextSize(30 * sizes.scale);
+        _text.setText("" + _cup.getCount() + "/" + _shells.size());
+        _text.setTextSize(15 * sizes.scale);
         _text.addOnLayoutChangeListener(new OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
@@ -112,6 +112,7 @@ public class CupButton extends Button {
 
             _shells.add(shell);
         }
+        _text.setText("" + _cup.getCount() + "/" + _shells.size());
     }
 
     /**
@@ -196,12 +197,11 @@ public class CupButton extends Button {
      * @return array list of images removed.
      */
     public ArrayList<View> getShells(){
-        updateText();
-
         ArrayList<View> shells = new ArrayList<>();
         while (_shells.size() > 0) {
             shells.add(_shells.remove(_shells.size() - 1));
         }
+        updateText();
 
         return shells;
     }
@@ -210,7 +210,7 @@ public class CupButton extends Button {
      * Updates the content of the buttons text.
      */
     public void updateText(){
-        _text.setText("" + _cup.getCount());
+        _text.setText("" + _cup.getCount() + "/" + _shells.size());
     }
 
     /**
