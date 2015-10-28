@@ -236,10 +236,10 @@ public class GameActivity extends Activity {
             btn.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
-                    if (!board.isValid(indexA, false))
+                    if (!_board.isValid(indexA, false))
                         return false;
 
-                    cupButtons[indexA].onTouch(v, event);
+                    _cupButtons[indexA].onTouch(v, event);
                     return false;
                 }
             });
@@ -259,10 +259,10 @@ public class GameActivity extends Activity {
             btn.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
-                    if (!board.isValid(indexB, false))
+                    if (!_board.isValid(indexB, false))
                         return false;
 
-                    cupButtons[indexB].onTouch(v, event);
+                    _cupButtons[indexB].onTouch(v, event);
                     return false;
                 }
             });

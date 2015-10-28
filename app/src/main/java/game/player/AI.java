@@ -1,8 +1,11 @@
 package game.player;
 
 import android.os.Handler;
+import android.util.Log;
 
 import com.example.deathgull.sungka_project.GameActivity;
+
+import java.util.Random;
 
 import game.board.Board;
 
@@ -15,8 +18,27 @@ public class AI extends Player {
         super("AI");
     }
 
+    /**
+     * Activates the delay for realMoveStart to seem more natural
+     */
     @Override
     public void moveStart() {
+        Handler h = new Handler();
+        long delay = new Random().nextInt(2000) + 200;
+
+        h.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                realMoveStart();
+            }
+        }, delay);
+
+    }
+
+    /**
+     * Actually start the move computation
+     */
+    public void realMoveStart() {
         _playerActionListener.onMoveStart(this);
 
         int index = GameActivity.random.nextInt(7);
