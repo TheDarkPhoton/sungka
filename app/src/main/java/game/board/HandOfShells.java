@@ -1,6 +1,7 @@
-package game;
+package game.board;
 
-import java.util.ArrayList;
+import game.cup.Cup;
+import game.player.Player;
 
 /**
  * Creates a class representing a hand that has picked up some shells and will deposit them

@@ -1,4 +1,4 @@
-package com.example.darkphoton.sungka_project;
+package com.example.deathgull.sungka_project;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -13,7 +13,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Random;
 
-import game.Cup;
+import game.cup.Cup;
 
 public class CupButton extends Button {
     public static final int PLAYER_A = 0;
@@ -21,7 +21,6 @@ public class CupButton extends Button {
     public static final int STORE = 0;
     public static final int CUP = 1;
 
-    public static final Random random = new Random();
     public static CupMargins sizes;
     public static class CupMargins {
         public final float scale;
@@ -105,7 +104,7 @@ public class CupButton extends Button {
 
             shell.setLayoutParams(params);
 
-            shell.setImageDrawable(GameActivity.shells[random.nextInt(4)]);
+            shell.setImageDrawable(GameActivity.shells[GameActivity.random.nextInt(4)]);
             shell.setScaleType(ImageView.ScaleType.MATRIX);
             shell.setPivotX(shell.getWidth() / 2);
             shell.setPivotY(shell.getHeight() / 2);
@@ -183,8 +182,8 @@ public class CupButton extends Button {
         float offsetX = ((GridLayout)getParent()).getX();
         float offsetY = ((GridLayout)getParent()).getY();
 
-        float angle = (float)random.nextDouble() * (float)Math.PI * 2;
-        int radius = random.nextInt(getWidth()/3);
+        float angle = (float)GameActivity.random.nextDouble() * (float)Math.PI * 2;
+        int radius = GameActivity.random.nextInt(getWidth()/3);
 
         pos[0] = offsetX + ((float)Math.cos(angle) * radius) + getX() + (getWidth() / 2) - (shell.getWidth() / 2);
         pos[1] = offsetY + ((float)Math.sin(angle) * radius) + getY() + (getHeight() / 2) - (shell.getHeight() / 2);

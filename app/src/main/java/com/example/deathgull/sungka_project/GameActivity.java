@@ -1,4 +1,4 @@
-package com.example.darkphoton.sungka_project;
+package com.example.deathgull.sungka_project;
 
 import android.app.Activity;
 import android.content.Context;
@@ -7,7 +7,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.content.res.ResourcesCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -24,56 +23,70 @@ import android.widget.RelativeLayout;
 import java.util.ArrayList;
 import java.util.Random;
 
-import game.Board;
+import game.board.Board;
 import game.Game;
-import game.HandOfShells;
-import game.BoardState;
+import game.board.HandOfShells;
+import game.board.BoardState;
+import game.player.PlayerActionAdapter;
 
 public class GameActivity extends Activity {
     private static final String TAG = "GameActivity";
-
-    //Master layout
-    private FrameLayout layoutMaster;
-    //Base layout
-    private GridLayout layoutBase;
-
-    //Screen size
-    private int _screenWidth, _screenHeight;
-
-    private CupButton[] cupButtons;
-    private Game game;
-    private Board board;
-
+    public static final Random random = new Random();                                               //Object for random number generation
     public static Drawable[] shells;
+
+    private FrameLayout _layoutMaster;                                                              //Master layout
+    private GridLayout _layoutBase;                                                                 //Base layout
+    private int _screenWidth, _screenHeight;                                                        //Screen size
+
+    private CupButton[] _cupButtons;
+    private Game _game;
+    private Board _board;
+
+    private PlayerActionAdapter _playerActionListener = new PlayerActionAdapter() {
+        @Override
+        public void onMoveStart() {
+
+        }
+
+        @Override
+        public void onMove(int index) {
+            if (isActionInProgress())
+                return;
+
+            HandOfShells hand = _board.pickUpShells(index);
+            if (hand == null)
+                return;
+
+            setActionInProgress(true);
+            ArrayList<View> images = _cupButtons[index].getShells();
+            moveShellsRec(hand, images, 300);
+        }
+
+        @Override
+        public void onMoveEnd() {
+
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        shells = new Drawable[]{
+        shells =new Drawable[]{
                 ResourcesCompat.getDrawable(getResources(), R.drawable.shell1, null),
                 ResourcesCompat.getDrawable(getResources(), R.drawable.shell2, null),
                 ResourcesCompat.getDrawable(getResources(), R.drawable.shell3, null),
                 ResourcesCompat.getDrawable(getResources(), R.drawable.shell4, null),
         };
 
-        game = new Game();
-        board = game.getBoard();
+        _game = new Game(_playerActionListener);
+        _board = _game.getBoard();
 
-        //Hide navigation bar and system bar
-        hideNav();
-
-        //Set screen size
-        setScreenSize();
-
-        //Setup layouts
-        FrameLayout.LayoutParams params = initLayouts();
-
-        //Set view to base layout
-        setContentView(layoutMaster, params);
-
-        //Programmatically create and lay out elements
-        initView();
+        hideNav();                                                  //Hide navigation bar and system bar
+        setScreenSize();                                            //Set screen size
+        FrameLayout.LayoutParams params = initLayouts();            //Setup layouts
+        setContentView(_layoutMaster, params);                      //Set view to base layout
+        initView();                                                 //Programmatically create and lay out elements
     }
 
     @Override
@@ -97,7 +110,7 @@ public class GameActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        game.start();
+        _game.start();
     }
 
     /**
@@ -129,33 +142,33 @@ public class GameActivity extends Activity {
     private FrameLayout.LayoutParams initLayouts() {
 
         //Create FrameLayout and parameters
-        layoutMaster = new FrameLayout(this);
-        layoutMaster.setBackgroundResource(R.drawable.background);
+        _layoutMaster = new FrameLayout(this);
+        _layoutMaster.setBackgroundResource(R.drawable.background);
 
         //Create base layout and parameters
-        layoutBase = new GridLayout(this);
-        layoutBase.setLayoutParams(new GridLayout.LayoutParams());
-        layoutBase.setColumnCount(9);
-        layoutBase.setRowCount(3);
+        _layoutBase = new GridLayout(this);
+        _layoutBase.setLayoutParams(new GridLayout.LayoutParams());
+        _layoutBase.setColumnCount(9);
+        _layoutBase.setRowCount(3);
 
         //Create top layout
-        layoutBase.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
+        _layoutBase.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
 
         //Add layouts to master
-        layoutMaster.addView(layoutBase);
+        _layoutMaster.addView(_layoutBase);
 
-        layoutMaster.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        _layoutMaster.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             boolean once = false;
 
             @Override
             public void onGlobalLayout() {
-                layoutBase.setY((layoutMaster.getHeight()/2) - (layoutBase.getHeight()/2));
+                _layoutBase.setY((_layoutMaster.getHeight() / 2) - (_layoutBase.getHeight() / 2));
 
                 if (once)
                     return;
                 once = true;
-                
-                for (CupButton btn: cupButtons) {
+
+                for (CupButton btn : _cupButtons) {
                     btn.initShellLocation();
                 }
             }
@@ -175,7 +188,7 @@ public class GameActivity extends Activity {
         _screenHeight = displayMetrics.heightPixels;
 
         //Calculate sizes of store cups and small cups
-        CupButton.generateSizes(_screenWidth,_screenHeight);
+        CupButton.generateSizes(_screenWidth, _screenHeight);
     }
 
     /**
@@ -189,66 +202,46 @@ public class GameActivity extends Activity {
         }
 
         //Initialise button array
-        cupButtons = new CupButton[16];
+        _cupButtons = new CupButton[16];
 
         int topColumnIndex = 7;
         int bottomColumnIndex = 1;
         for(int i = 0; i < 7; i++) {
             //PLAYER A shell cup
-            CupButton btn = new CupButton(this, board.getCup(i), CupButton.PLAYER_A, CupButton.CUP);
-            btn.addToLayout(layoutBase, bottomColumnIndex++, 2);
-            cupButtons[i] = btn;
+            CupButton btn = new CupButton(this, _board.getCup(i), CupButton.PLAYER_A, CupButton.CUP);
+            btn.addToLayout(_layoutBase, bottomColumnIndex++, 2);
+            _cupButtons[i] = btn;
 
             final int indexA = i;
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    moveShells(indexA);
+                    _board.getCurrentPlayer().move(indexA);
                 }
             });
 
             //PlayerB shell cup
-            btn = new CupButton(this, board.getCup(i+8), CupButton.PLAYER_B, CupButton.CUP);
-            btn.addToLayout(layoutBase, topColumnIndex--, 0);
-            cupButtons[i+8] = btn;
+            btn = new CupButton(this, _board.getCup(i+8), CupButton.PLAYER_B, CupButton.CUP);
+            btn.addToLayout(_layoutBase, topColumnIndex--, 0);
+            _cupButtons[i+8] = btn;
 
             final int indexB = i+8;
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    moveShells(indexB);
+                    _board.getCurrentPlayer().move(indexB);
                 }
             });
         }
         //PLAYER A store
-        CupButton btnPlayerA = new CupButton(this, board.getCup(7), CupButton.PLAYER_A, CupButton.STORE);
-        btnPlayerA.addToLayout(layoutBase, 8, 1);
-        cupButtons[7] = btnPlayerA;
+        CupButton btnPlayerA = new CupButton(this, _board.getCup(7), CupButton.PLAYER_A, CupButton.STORE);
+        btnPlayerA.addToLayout(_layoutBase, 8, 1);
+        _cupButtons[7] = btnPlayerA;
 
         //PLAYER B store
-        CupButton btnPlayerB = new CupButton(this, board.getCup(15), CupButton.PLAYER_B, CupButton.STORE);
-        btnPlayerB.addToLayout(layoutBase, 0, 1);
-        cupButtons[15] = btnPlayerB;
-    }
-
-    private final Random r = new Random();                                  //Object for random number generation
-    private boolean animationInProgress = false;                            //Prevents buttons clicks while animation is in progress
-
-    /**
-     * Prepares variables for the animation.
-     * @param index the cup button pressed.
-     */
-    private void moveShells(int index){
-        if (animationInProgress)
-            return;
-
-        HandOfShells hand = board.pickUpShells(index);
-        if (hand == null)
-            return;
-
-        animationInProgress = true;
-        ArrayList<View> images = cupButtons[index].getShells();
-        moveShellsRec(hand, images, 300);
+        CupButton btnPlayerB = new CupButton(this, _board.getCup(15), CupButton.PLAYER_B, CupButton.STORE);
+        btnPlayerB.addToLayout(_layoutBase, 0, 1);
+        _cupButtons[15] = btnPlayerB;
     }
 
     /**
@@ -259,7 +252,7 @@ public class GameActivity extends Activity {
      */
     private void moveShellsRec(final HandOfShells hand, final ArrayList<View> images, final int duration) {
         int index = hand.getNextCup();
-        CupButton b = cupButtons[index];
+        CupButton b = _cupButtons[index];
 
         for (int i = 0; i < images.size(); i++) {
             View image = images.get(i);
@@ -277,10 +270,9 @@ public class GameActivity extends Activity {
                     moveShellsRec(hand, images, duration);
                 } else if (robersHand != null) {
                     moveRobOpponent(robersHand, duration * 2);
-                    showAnimationMessages();
+                    processBoardMessages();
                 } else {
-                    animationInProgress = false;
-                    showAnimationMessages();
+                    processEndOfMove();
                 }
             }
         }, duration + 25);
@@ -296,14 +288,14 @@ public class GameActivity extends Activity {
         CupButton playersCup;
         CupButton robbedCup;
 
-        if (board.isPlayerA(robbersHand.belongsToPlayer())){
-            playersCup = cupButtons[15];
-            robbedCup = cupButtons[robbersHand.currentCupIndex()];
+        if (_board.isPlayerA(robbersHand.belongsToPlayer())){
+            playersCup = _cupButtons[15];
+            robbedCup = _cupButtons[robbersHand.currentCupIndex()];
             robbersHand.setNextCup(15);
         }
         else{
-            playersCup = cupButtons[7];
-            robbedCup = cupButtons[robbersHand.currentCupIndex()];
+            playersCup = _cupButtons[7];
+            robbedCup = _cupButtons[robbersHand.currentCupIndex()];
             robbersHand.setNextCup(7);
         }
 
@@ -321,48 +313,55 @@ public class GameActivity extends Activity {
         playersCup.postDelayed(new Runnable() {
             @Override
             public void run() {
-                animationInProgress = false;
-                showAnimationMessages();
+                processEndOfMove();
             }
         }, duration + 10);
+    }
+
+    private void processEndOfMove(){
+        _playerActionListener.setActionInProgress(false);
+        processBoardMessages();
+
+        if (_board.hasValidMoves())
+            _board.getCurrentPlayer().moveStart();
     }
 
     /**
      * Displays messages that explains what happened during animation. TODO Display info messages on the screen.
      */
-    private void showAnimationMessages(){
+    private void processBoardMessages(){
         ArrayList<BoardState> msgs = Board.getMessages();
         for (BoardState state : msgs) {
             switch (state){
                 case PLAYER_A_TURN:
-                    Log.i(TAG, board.getPlayerA().getName() + "'s turn.");
+                    Log.i(TAG, _board.getPlayerA().get_name() + "'s turn.");
                     break;
                 case PLAYER_B_TURN:
-                    Log.i(TAG, board.getPlayerB().getName() + "'s turn.");
+                    Log.i(TAG, _board.getPlayerB().get_name() + "'s turn.");
                     break;
                 case PLAYER_A_HAS_NO_VALID_MOVE:
-                    Log.i(TAG, board.getPlayerA().getName() + " has no valid move");
+                    Log.i(TAG, _board.getPlayerA().get_name() + " has no valid move");
                     break;
                 case PLAYER_B_HAS_NO_VALID_MOVE:
-                    Log.i(TAG, board.getPlayerB().getName() + " has no valid move");
+                    Log.i(TAG, _board.getPlayerB().get_name() + " has no valid move");
                     break;
                 case PLAYER_A_GETS_ANOTHER_TURN:
-                    Log.i(TAG, board.getPlayerA().getName() + " gets another turn.");
+                    Log.i(TAG, _board.getPlayerA().get_name() + " gets another turn.");
                     break;
                 case PLAYER_B_GETS_ANOTHER_TURN:
-                    Log.i(TAG, board.getPlayerB().getName() + " gets another turn.");
+                    Log.i(TAG, _board.getPlayerB().get_name() + " gets another turn.");
                     break;
                 case PLAYER_A_WAS_ROBBED:
-                    Log.i(TAG, board.getPlayerA().getName() + " was robbed.");
+                    Log.i(TAG, _board.getPlayerA().get_name() + " was robbed.");
                     break;
                 case PLAYER_B_WAS_ROBBED:
-                    Log.i(TAG, board.getPlayerB().getName() + " was robbed.");
+                    Log.i(TAG, _board.getPlayerB().get_name() + " was robbed.");
                     break;
                 case PLAYER_A_WAS_ROBBED_OF_HIS_FINAL_MOVE:
-                    Log.i(TAG, board.getPlayerA().getName() + " was robbed of his final move... " + board.getPlayerB().getName() + " gets another turn.");
+                    Log.i(TAG, _board.getPlayerA().get_name() + " was robbed of his final move... " + _board.getPlayerB().get_name() + " gets another turn.");
                     break;
                 case PLAYER_B_WAS_ROBBED_OF_HIS_FINAL_MOVE:
-                    Log.i(TAG, board.getPlayerB().getName() + " was robbed of his final move... " + board.getPlayerA().getName() + " gets another turn.");
+                    Log.i(TAG, _board.getPlayerB().get_name() + " was robbed of his final move... " + _board.getPlayerA().get_name() + " gets another turn.");
                     break;
                 case GAME_OVER:
                     Log.i(TAG, "Game Over!!!");

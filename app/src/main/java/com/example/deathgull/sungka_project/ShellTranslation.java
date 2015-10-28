@@ -1,12 +1,9 @@
-package com.example.darkphoton.sungka_project;
+package com.example.deathgull.sungka_project;
 
-import android.content.Intent;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
-
-import java.util.concurrent.CountDownLatch;
 
 /**
  * Created by darkphoton on 25/10/15.

@@ -1,4 +1,4 @@
-package game;
+package game.player;
 
 /**
  * Stores the statistical data of a Players move in the game

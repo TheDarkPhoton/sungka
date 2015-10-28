@@ -1,6 +1,11 @@
-package game;
+package game.board;
 
 import java.util.ArrayList;
+
+import game.cup.Cup;
+import game.cup.PlayerCup;
+import game.cup.ShellCup;
+import game.player.Player;
 
 /**
  * An object that describes the state of the current game board
@@ -20,7 +25,7 @@ public class Board {
      * @param a Player one
      * @param b Player two
      */
-    Board(Player a, Player b){
+    public Board(Player a, Player b){
         _cups = new Cup[16];
         _playerOne = a;
         _playerTwo = b;

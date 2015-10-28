@@ -1,4 +1,4 @@
-package game;
+package game.cup;
 
 /**
  * Describes the sungka Cup
