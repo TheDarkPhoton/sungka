@@ -67,7 +67,6 @@ public class Board {
      */
     public HandOfShells pickUpShells(int index, boolean robber){
         Player player = robber ? getOpponent() : getCurrentPlayer();
-//        Player player = getCurrentPlayer();
         if (!_validMoveExists || !(player.isPlayersCup(_cups[index]) && _cups[index].getCount() > 0))
             return null;
 
@@ -85,16 +84,16 @@ public class Board {
      * @return the player that is the current player.
      */
     public Player nextPlayersMove(int players_cup){
+        _currentPlayer.moveEnd();
+
         if (!(isCurrentPlayersStore(players_cup) && _currentPlayer.hasValidMove()) && getOpponent().hasValidMove()){
             _currentPlayer = getOpponent();
         }
-
         else if (!getCurrentPlayer().hasValidMove() && !getOpponent().hasValidMove()){
             _currentPlayer = null;
             _validMoveExists = false;
             addStateMessage(BoardState.GAME_OVER);
         }
-
         return _currentPlayer;
     }
 
@@ -102,6 +101,7 @@ public class Board {
      * Gives turn to the next player.
      */
     public void nextPlayersMove(){
+        _currentPlayer.moveEnd();
         _currentPlayer = getOpponent();
     }
 

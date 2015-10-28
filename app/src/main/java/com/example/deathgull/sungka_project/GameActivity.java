@@ -7,6 +7,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.content.res.ResourcesCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -27,6 +28,7 @@ import game.board.Board;
 import game.Game;
 import game.board.HandOfShells;
 import game.board.BoardState;
+import game.player.Player;
 import game.player.PlayerActionAdapter;
 
 public class GameActivity extends Activity {
@@ -44,27 +46,30 @@ public class GameActivity extends Activity {
 
     private PlayerActionAdapter _playerActionListener = new PlayerActionAdapter() {
         @Override
-        public void onMoveStart() {
-
+        public void onMoveStart(Player player) {
+//            Log.i(TAG, player.get_name() + " started his turn");
         }
 
         @Override
-        public void onMove(int index) {
-            if (isActionInProgress())
-                return;
+        public boolean onMove(Player player, int index) {
+//            Log.i(TAG, player.get_name() + " performed an action on cup["+index+"]");
+
+            if (isAnimationInProgress())
+                return false;
 
             HandOfShells hand = _board.pickUpShells(index);
             if (hand == null)
-                return;
+                return true;
 
-            setActionInProgress(true);
+            setAnimationInProgress(true);
             ArrayList<View> images = _cupButtons[index].getShells();
             moveShellsRec(hand, images, 300);
+            return true;
         }
 
         @Override
-        public void onMoveEnd() {
-
+        public void onMoveEnd(Player player) {
+//            Log.i(TAG, player.get_name() + " ended his turn");
         }
     };
 
@@ -87,6 +92,14 @@ public class GameActivity extends Activity {
         FrameLayout.LayoutParams params = initLayouts();            //Setup layouts
         setContentView(_layoutMaster, params);                      //Set view to base layout
         initView();                                                 //Programmatically create and lay out elements
+
+        Handler h = new Handler();
+        h.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                _board.getCurrentPlayer().moveStart();
+            }
+        }, 3000);
     }
 
     @Override
@@ -272,7 +285,7 @@ public class GameActivity extends Activity {
                     moveRobOpponent(robersHand, duration * 2);
                     processBoardMessages();
                 } else {
-                    processEndOfMove();
+                    processEndOfAnimation();
                 }
             }
         }, duration + 25);
@@ -313,13 +326,13 @@ public class GameActivity extends Activity {
         playersCup.postDelayed(new Runnable() {
             @Override
             public void run() {
-                processEndOfMove();
+                processEndOfAnimation();
             }
         }, duration + 10);
     }
 
-    private void processEndOfMove(){
-        _playerActionListener.setActionInProgress(false);
+    private void processEndOfAnimation(){
+        _playerActionListener.setAnimationInProgress(false);
         processBoardMessages();
 
         if (_board.hasValidMoves())

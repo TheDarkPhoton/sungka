@@ -5,10 +5,10 @@ package game.player;
  * of a move being generated for it.
  */
 public class Human extends Player {
+
     /**
      * Initializes the PLAYER Object, along with initializing the values of the PLAYER's store and their respective
      * shell cups
-     *
      * @param name the name of the player
      */
     public Human(String name) {
@@ -17,16 +17,18 @@ public class Human extends Player {
 
     @Override
     public void moveStart() {
-        _playerActionListener.onMoveStart();
+        _playerActionListener.onMoveStart(this);
     }
 
     @Override
     public void move(int index) {
-        _playerActionListener.onMove(index);
+        //send to remote player
+
+        _playerActionListener.onMove(this, index);
     }
 
     @Override
     public void moveEnd() {
-        _playerActionListener.onMoveEnd();
+        _playerActionListener.onMoveEnd(this);
     }
 }

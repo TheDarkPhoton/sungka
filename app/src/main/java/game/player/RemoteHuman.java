@@ -11,16 +11,16 @@ public class RemoteHuman extends Player {
 
     @Override
     public void moveStart() {
-
+        _playerActionListener.onMoveStart(this);
     }
 
     @Override
-    public void move(int cupIndex) {
-
+    public void move(int index) {
+        _playerActionListener.onMove(this, index);
     }
 
     @Override
     public void moveEnd() {
-
+        _playerActionListener.onMoveEnd(this);
     }
 }

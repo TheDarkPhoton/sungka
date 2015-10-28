@@ -6,25 +6,25 @@ package game.player;
 public class PlayerActionAdapter implements PlayerActionListener {
     private boolean _actionInProgress = false;
 
-    public void setActionInProgress(boolean inProgress){
+    public void setAnimationInProgress(boolean inProgress){
         _actionInProgress = inProgress;
     }
-    public boolean isActionInProgress(){
+    public boolean isAnimationInProgress(){
         return _actionInProgress;
     }
 
     @Override
-    public void onMoveStart() {
+    public void onMoveStart(Player player) {
 
     }
 
     @Override
-    public void onMove(int cupIndex) {
-
+    public boolean onMove(Player player, int index) {
+        return false;
     }
 
     @Override
-    public void onMoveEnd() {
+    public void onMoveEnd(Player player) {
 
     }
 
