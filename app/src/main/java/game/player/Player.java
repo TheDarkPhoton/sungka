@@ -1,18 +1,22 @@
-package game;
+package game.player;
 
 import java.util.ArrayList;
+
+import game.cup.Cup;
 
 /**
  * PLAYER Class which represents a PLAYER. This class will be inherited to form a
  * Human player and a AI player.
  */
-public class Player {
-    private int moves;
-    private String name;
-    private int score;
-    private Cup store;
-    private Cup[] cups;
-    private ArrayList<MoveInfo> moveInfos;//arraylist to store the users moves in a game
+public abstract class Player {
+    private String _name;
+    protected int moves;
+    protected int score;
+    protected Cup _store;
+    protected Cup[] _cups;
+
+    protected ArrayList<MoveInfo> _moveInfos;                                                //arraylist to store the users moves in a game
+    protected PlayerActionListener _playerActionListener = new PlayerActionAdapter();
 
     /**
      * Initializes the PLAYER Object, along with initializing the values of the PLAYER's store and their respective
@@ -22,10 +26,10 @@ public class Player {
      * @param name the name of the player
      */
     public Player(String name){
-        this.name = name;
-        this.cups = new Cup[7];
-        this.store = null;
-        moveInfos = new ArrayList<MoveInfo>();
+        _name = name;
+        _cups = new Cup[7];
+        _store = null;
+        _moveInfos = new ArrayList<>();
     }
 
     /**
@@ -33,8 +37,16 @@ public class Player {
      * @param cup of the player.
      */
     public void bindStore(Cup cup){
-        store = cup;
+        _store = cup;
     }
+
+    public void setPlayerActionListener(PlayerActionListener listener){
+        _playerActionListener = listener;
+    }
+
+    public abstract void moveStart();
+    public abstract void move(int index);
+    public abstract void moveEnd();
 
     /**
      * Determines if the cup provided belongs to this player.
@@ -52,14 +64,14 @@ public class Player {
      * @return true if cup belongs to the player.
      */
     public boolean isPlayersCup(Cup cup, boolean just_store){
-        if (store == cup)
+        if (_store == cup)
             return true;
 
         if (just_store)
             return false;
 
-        for (int i = 0; i < cups.length; i++) {
-            if (cups[i] == cup)
+        for (int i = 0; i < _cups.length; i++) {
+            if (_cups[i] == cup)
                 return true;
         }
 
@@ -72,7 +84,7 @@ public class Player {
      * @param index array index that corresponds with the cup.
      */
     public void bindShellCup(Cup cup, int index){
-        cups[index] = cup;
+        _cups[index] = cup;
     }
 
     /**
@@ -80,15 +92,15 @@ public class Player {
      * @return the current amount of shells a PLAYER has in their store
      */
     public int getScore(){
-        return store.getCount();
+        return _store.getCount();
     }
 
     /**
      *
      * @return the name of the PLAYER
      */
-    public String getName(){
-        return name;
+    public String get_name(){
+        return _name;
     }
 
     /**
@@ -103,8 +115,8 @@ public class Player {
      * @return true if there are moves that this player can make.
      */
     public boolean hasValidMove(){
-        for (int i = 0; i < cups.length; i++) {
-            if (cups[i].getCount() > 0)
+        for (int i = 0; i < _cups.length; i++) {
+            if (_cups[i].getCount() > 0)
                 return true;
         }
 
@@ -119,7 +131,7 @@ public class Player {
     public boolean equals(Object object){
         try{
             Player otherPlayer = (Player) object;
-            if(otherPlayer.getName().equals(name)){
+            if(otherPlayer.get_name().equals(_name)){
                 return true;
             }
         }catch (Exception e){
@@ -133,14 +145,14 @@ public class Player {
      * @param moveInfo the information of the move that the player just finished
      */
     public void addMoveInfo(MoveInfo moveInfo){
-        moveInfos.add(moveInfo);
+        _moveInfos.add(moveInfo);
     }
 
     /**
      * Get the list of all the Moves the Player has made up to this point
      * @return an ArrayList that contains the Player's moves
      */
-    public ArrayList<MoveInfo> getMoveInfos(){
-        return moveInfos;
+    public ArrayList<MoveInfo> get_moveInfos(){
+        return _moveInfos;
     }
 }

@@ -1,4 +1,4 @@
-package game;
+package game.cup;
 
 /**
  * Describes the sungka Shell Cup
@@ -9,7 +9,7 @@ public class ShellCup extends Cup {
      * Sets the default cup attributes.
      * @param shells The initial number of shells in the cup.
      */
-    ShellCup(int shells){
+    public ShellCup(int shells){
         _shells = shells;
     }
 

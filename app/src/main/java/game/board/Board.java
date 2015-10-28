@@ -1,6 +1,11 @@
-package game;
+package game.board;
 
 import java.util.ArrayList;
+
+import game.cup.Cup;
+import game.cup.PlayerCup;
+import game.cup.ShellCup;
+import game.player.Player;
 
 /**
  * An object that describes the state of the current game board
@@ -20,7 +25,7 @@ public class Board {
      * @param a Player one
      * @param b Player two
      */
-    Board(Player a, Player b){
+    public Board(Player a, Player b){
         _cups = new Cup[16];
         _playerOne = a;
         _playerTwo = b;
@@ -62,7 +67,6 @@ public class Board {
      */
     public HandOfShells pickUpShells(int index, boolean robber){
         Player player = robber ? getOpponent() : getCurrentPlayer();
-//        Player player = getCurrentPlayer();
         if (!_validMoveExists || !(player.isPlayersCup(_cups[index]) && _cups[index].getCount() > 0))
             return null;
 
@@ -80,16 +84,16 @@ public class Board {
      * @return the player that is the current player.
      */
     public Player nextPlayersMove(int players_cup){
+        _currentPlayer.moveEnd();
+
         if (!(isCurrentPlayersStore(players_cup) && _currentPlayer.hasValidMove()) && getOpponent().hasValidMove()){
             _currentPlayer = getOpponent();
         }
-
         else if (!getCurrentPlayer().hasValidMove() && !getOpponent().hasValidMove()){
             _currentPlayer = null;
             _validMoveExists = false;
             addStateMessage(BoardState.GAME_OVER);
         }
-
         return _currentPlayer;
     }
 
@@ -97,6 +101,7 @@ public class Board {
      * Gives turn to the next player.
      */
     public void nextPlayersMove(){
+        _currentPlayer.moveEnd();
         _currentPlayer = getOpponent();
     }
 
