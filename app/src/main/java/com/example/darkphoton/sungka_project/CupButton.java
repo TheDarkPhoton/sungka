@@ -5,6 +5,9 @@ import android.graphics.Color;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
@@ -115,8 +118,6 @@ public class CupButton extends Button implements View.OnTouchListener {
             _shells.add(shell);
         }
         _text.setText("" + _cup.getCount() + "/" + _shells.size());
-
-        this.setOnTouchListener(this);
     }
 
     /**
@@ -272,14 +273,43 @@ public class CupButton extends Button implements View.OnTouchListener {
     public boolean onTouch(View v, MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                this.setScaleX(1.1f);
-                this.setScaleY(1.1f);
+                scaleUp();
                 break;
             case MotionEvent.ACTION_UP:
-                this.setScaleX(1.0f);
-                this.setScaleY(1.0f);
+                scaleDown();
                 break;
         }
         return false;
     }
+
+    private void scaleUp() {
+        changeSize(1.0f, 1.05f);
+    }
+
+    private void scaleDown() {
+        changeSize(1.05f, 1.0f);
+    }
+
+    private void changeSize(float fromValue, float toValue) {
+        float center = this.getWidth() / 2;
+
+        Animation scaleAnimation = new ScaleAnimation(fromValue, toValue, fromValue, toValue, center, center);
+        scaleAnimation.setDuration(50);
+        scaleAnimation.setFillAfter(true);
+        this.startAnimation(scaleAnimation);
+
+    }
+
+    private void startPulse() {
+        Animation pulseAnimation = new AlphaAnimation(1.0f, 0.7f);
+        pulseAnimation.setDuration(500);
+        pulseAnimation.setRepeatMode(Animation.REVERSE);
+        this.startAnimation(pulseAnimation);
+    }
+
+    private void stopPulse() {
+        this.clearAnimation();
+    }
+
+
 }
