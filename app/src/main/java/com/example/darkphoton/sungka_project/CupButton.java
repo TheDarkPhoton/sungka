@@ -3,6 +3,7 @@ package com.example.darkphoton.sungka_project;
 import android.content.Context;
 import android.graphics.Color;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -15,7 +16,7 @@ import java.util.Random;
 
 import game.Cup;
 
-public class CupButton extends Button {
+public class CupButton extends Button implements View.OnTouchListener {
     public static final int PLAYER_A = 0;
     public static final int PLAYER_B = 1;
     public static final int STORE = 0;
@@ -23,6 +24,7 @@ public class CupButton extends Button {
 
     public static final Random random = new Random();
     public static CupMargins sizes;
+
     public static class CupMargins {
         public final float scale;
         public final int store, cup, spaceTop, spaceLeft, spaceSmall, spaceStoreTop;
@@ -113,6 +115,8 @@ public class CupButton extends Button {
             _shells.add(shell);
         }
         _text.setText("" + _cup.getCount() + "/" + _shells.size());
+
+        this.setOnTouchListener(this);
     }
 
     /**
@@ -256,5 +260,26 @@ public class CupButton extends Button {
             _text.setY(text_y + getHeight());
         else if (_player_type == PLAYER_B)
             _text.setY(text_y - _text.getHeight());
+    }
+
+    /**
+     * Handle touch events
+     * @param v the view that was touched
+     * @param event Type of event (touch down, touch up, etc.)
+     * @return
+     */
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                this.setScaleX(1.1f);
+                this.setScaleY(1.1f);
+                break;
+            case MotionEvent.ACTION_UP:
+                this.setScaleX(1.0f);
+                this.setScaleY(1.0f);
+                break;
+        }
+        return false;
     }
 }
