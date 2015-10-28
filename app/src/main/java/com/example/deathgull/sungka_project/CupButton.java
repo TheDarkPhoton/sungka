@@ -3,7 +3,11 @@ package com.example.deathgull.sungka_project;
 import android.content.Context;
 import android.graphics.Color;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
@@ -15,13 +19,14 @@ import java.util.Random;
 
 import game.cup.Cup;
 
-public class CupButton extends Button {
+public class CupButton extends Button implements View.OnTouchListener {
     public static final int PLAYER_A = 0;
     public static final int PLAYER_B = 1;
     public static final int STORE = 0;
     public static final int CUP = 1;
 
     public static CupMargins sizes;
+
     public static class CupMargins {
         public final float scale;
         public final int store, cup, spaceTop, spaceLeft, spaceSmall, spaceStoreTop;
@@ -256,4 +261,54 @@ public class CupButton extends Button {
         else if (_player_type == PLAYER_B)
             _text.setY(text_y - _text.getHeight());
     }
+
+    /**
+     * Handle touch events
+     * @param v the view that was touched
+     * @param event Type of event (touch down, touch up, etc.)
+     * @return
+     */
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                scaleUp();
+                break;
+            case MotionEvent.ACTION_UP:
+                scaleDown();
+                break;
+        }
+        return false;
+    }
+
+    private void scaleUp() {
+        changeSize(1.0f, 1.05f);
+    }
+
+    private void scaleDown() {
+        changeSize(1.05f, 1.0f);
+    }
+
+    private void changeSize(float fromValue, float toValue) {
+        float center = this.getWidth() / 2;
+
+        Animation scaleAnimation = new ScaleAnimation(fromValue, toValue, fromValue, toValue, center, center);
+        scaleAnimation.setDuration(50);
+        scaleAnimation.setFillAfter(true);
+        this.startAnimation(scaleAnimation);
+
+    }
+
+    private void startPulse() {
+        Animation pulseAnimation = new AlphaAnimation(1.0f, 0.7f);
+        pulseAnimation.setDuration(500);
+        pulseAnimation.setRepeatMode(Animation.REVERSE);
+        this.startAnimation(pulseAnimation);
+    }
+
+    private void stopPulse() {
+        this.clearAnimation();
+    }
+
+
 }

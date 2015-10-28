@@ -13,6 +13,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
@@ -232,6 +233,16 @@ public class GameActivity extends Activity {
                     _board.getCurrentPlayer().move(indexA);
                 }
             });
+            btn.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (!board.isValid(indexA, false))
+                        return false;
+
+                    cupButtons[indexA].onTouch(v, event);
+                    return false;
+                }
+            });
 
             //PlayerB shell cup
             btn = new CupButton(this, _board.getCup(i+8), CupButton.PLAYER_B, CupButton.CUP);
@@ -243,6 +254,16 @@ public class GameActivity extends Activity {
                 @Override
                 public void onClick(View v) {
                     _board.getCurrentPlayer().move(indexB);
+                }
+            });
+            btn.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (!board.isValid(indexB, false))
+                        return false;
+
+                    cupButtons[indexB].onTouch(v, event);
+                    return false;
                 }
             });
         }

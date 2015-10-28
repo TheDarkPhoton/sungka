@@ -66,9 +66,10 @@ public class Board {
      * @return hand of shells object.
      */
     public HandOfShells pickUpShells(int index, boolean robber){
-        Player player = robber ? getOpponent() : getCurrentPlayer();
-        if (!_validMoveExists || !(player.isPlayersCup(_cups[index]) && _cups[index].getCount() > 0))
+        if (!isValid(index, robber))
             return null;
+
+        Player player = robber ? getOpponent() : getCurrentPlayer();
 
         HandOfShells hand = new HandOfShells(player, index, _cups[index].pickUpShells());
 
@@ -77,6 +78,22 @@ public class Board {
         hand.bindBoard(this);
         return hand;
     }
+
+    /**
+     * Checks whether a cup can be selected.
+     * @param index of the cup
+     * @param robber if set to true the opponents cups are valid instead of current players.
+     * @return if the move is valid
+     */
+    public boolean isValid(int index, boolean robber) {
+        Player player = robber ? getOpponent() : getCurrentPlayer();
+//        Player player = getCurrentPlayer();
+        if (!_validMoveExists || !(player.isPlayersCup(_cups[index]) && _cups[index].getCount() > 0))
+            return false;
+
+        return true;
+    }
+
 
     /**
      * Determines wheater to pass a turn to the next player.
