@@ -60,7 +60,8 @@ public class HandOfShells {
      * Drops all shells in the current cup.
      */
     public void dropAllShells(){
-        _board.nextPlayersMove();
+        if (_board.getOpponent().hasValidMove())
+            _board.nextPlayersMove();
         _board.getCup(_cup_index).addShells(_shells);
         _shells = 0;
     }
@@ -87,18 +88,19 @@ public class HandOfShells {
                     Board.addStateMessage(BoardState.PLAYER_B_WAS_ROBBED);
                     Board.addStateMessage(BoardState.PLAYER_B_TURN);
                 }
-                else
+                else {
                     Board.addStateMessage(BoardState.PLAYER_B_WAS_ROBBED_OF_HIS_FINAL_MOVE);
+                }
             }
             else if (_board.isPlayerB(_player)) {
                 if (_board.getPlayerA().hasValidMove()) {
                     Board.addStateMessage(BoardState.PLAYER_A_WAS_ROBBED);
                     Board.addStateMessage(BoardState.PLAYER_A_TURN);
                 }
-                else
+                else {
                     Board.addStateMessage(BoardState.PLAYER_A_WAS_ROBBED_OF_HIS_FINAL_MOVE);
+                }
             }
-//            _board.nextPlayersMove(_cup_index);
         }
         else if (_shells == 0){
             Player newPlayer = _board.nextPlayersMove(_cup_index);
