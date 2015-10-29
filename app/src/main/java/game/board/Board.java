@@ -1,5 +1,7 @@
 package game.board;
 
+import android.util.Pair;
+
 import java.util.ArrayList;
 
 import game.cup.Cup;
@@ -13,6 +15,7 @@ import game.player.Player;
 public class Board {
 
     private static final ArrayList<BoardState> STATE_MESSAGES = new ArrayList<>();
+    private ArrayList<Pair<Player, Integer>> _moves = new ArrayList<>();
 
     private Cup[] _cups;                                    // an array of board cups
     private Player _currentPlayer;                          // the player whose turn it is
@@ -37,6 +40,7 @@ public class Board {
         }
         _cups[7] = new PlayerCup(a);
         a.bindStore(_cups[7]);
+        a.bindBoard(this);
 
         //define player b cups
         for (int i = 8; i < 15; i++) {
@@ -45,9 +49,10 @@ public class Board {
         }
         _cups[15] = new PlayerCup(a);
         b.bindStore(_cups[15]);
+        b.bindBoard(this);
 
         // temporary player assignment
-        _currentPlayer = b;
+        _currentPlayer = a;
     }
 
     /**
@@ -239,5 +244,22 @@ public class Board {
      */
     public static ArrayList<BoardState> getMessages(){
         return STATE_MESSAGES;
+    }
+
+    /**
+     * Adds a move to the list of moves made this game.
+     * @param player Player that made the move.
+     * @param move Cup upon which the move was executed.
+     */
+    public void addMove(Player player, int move){
+        _moves.add(new Pair<Player, Integer>(player, move));
+    }
+
+    /**
+     * Gets the list of moves made in this game.
+     * @return an array list of player/move pairs.
+     */
+    public ArrayList<Pair<Player, Integer>> getMoves(){
+        return _moves;
     }
 }

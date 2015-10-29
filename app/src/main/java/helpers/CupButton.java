@@ -1,4 +1,4 @@
-package com.example.deathgull.sungka_project;
+package helpers;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -9,6 +9,9 @@ import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.deathgull.sungka_project.GameActivity;
+import com.example.deathgull.sungka_project.R;
 
 import java.util.ArrayList;
 import java.util.Random;

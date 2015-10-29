@@ -1,4 +1,4 @@
-package com.example.deathgull.sungka_project;
+package helpers;
 
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;

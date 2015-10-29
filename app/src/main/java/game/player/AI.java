@@ -1,10 +1,6 @@
 package game.player;
 
-import android.os.Handler;
-
 import com.example.deathgull.sungka_project.GameActivity;
-
-import game.board.Board;
 
 /**
  * Class that represents the AI class, that will play against the PLAYER in the PLAYER vs AI mode.
@@ -18,6 +14,7 @@ public class AI extends Player {
     @Override
     public void moveStart() {
         _playerActionListener.onMoveStart(this);
+        _cannotPerformAnAction = false;
 
         int index = GameActivity.random.nextInt(7);
         while (_cups[index].isEmpty())
@@ -28,17 +25,17 @@ public class AI extends Player {
 
     @Override
     public void move(int index) {
-        if (_actionChosen)
+        if (_cannotPerformAnAction)
             return;
 
-        _actionChosen = true;
+        _cannotPerformAnAction = true;
+        _board.addMove(this, index);
 
         _playerActionListener.onMove(this, index);
     }
 
     @Override
     public void moveEnd() {
-        _actionChosen = false;
 
         _playerActionListener.onMoveEnd(this);
     }

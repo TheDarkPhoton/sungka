@@ -12,21 +12,22 @@ public class RemoteHuman extends Player {
     @Override
     public void moveStart() {
         _playerActionListener.onMoveStart(this);
+        _cannotPerformAnAction = false;
     }
 
     @Override
     public void move(int index) {
-        if (_actionChosen)
+        if (_cannotPerformAnAction)
             return;
 
-        _actionChosen = true;
+        _cannotPerformAnAction = true;
+        _board.addMove(this, index);
 
         _playerActionListener.onMove(this, index);
     }
 
     @Override
     public void moveEnd() {
-        _actionChosen = false;
 
         _playerActionListener.onMoveEnd(this);
     }

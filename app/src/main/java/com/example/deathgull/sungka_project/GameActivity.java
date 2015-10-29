@@ -1,7 +1,6 @@
 package com.example.deathgull.sungka_project;
 
 import android.app.Activity;
-import android.app.Instrumentation;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -12,6 +11,7 @@ import android.os.Handler;
 import android.support.v4.content.res.ResourcesCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,7 +31,9 @@ import game.board.HandOfShells;
 import game.board.BoardState;
 import game.player.Player;
 import game.player.PlayerActionAdapter;
+import helpers.CupButton;
 import helpers.PauseThreadWhile;
+import helpers.ShellTranslation;
 
 public class GameActivity extends Activity {
     private static final String TAG = "GameActivity";
@@ -391,6 +393,9 @@ public class GameActivity extends Activity {
                     break;
                 case GAME_OVER:
                     Log.i(TAG, "Game Over!!!");
+                    for (Pair<Player, Integer> move: _board.getMoves()) {
+                        Log.i(TAG, move.first.get_name() + ": " + move.second);
+                    }
                     break;
             }
         }

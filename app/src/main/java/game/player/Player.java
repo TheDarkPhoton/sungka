@@ -2,6 +2,7 @@ package game.player;
 
 import java.util.ArrayList;
 
+import game.board.Board;
 import game.cup.Cup;
 
 /**
@@ -10,7 +11,7 @@ import game.cup.Cup;
  */
 public abstract class Player {
     private String _name;
-    protected int moves;
+    protected Board _board;
     protected int score;
     protected Cup _store;
     protected Cup[] _cups;
@@ -18,7 +19,7 @@ public abstract class Player {
     protected ArrayList<MoveInfo> _moveInfos;                                                //arraylist to store the users moves in a game
     protected PlayerActionListener _playerActionListener = new PlayerActionAdapter();
 
-    protected boolean _actionChosen = false;
+    protected boolean _cannotPerformAnAction = true;
 
     /**
      * Initializes the PLAYER Object, along with initializing the values of the PLAYER's store and their respective
@@ -42,6 +43,18 @@ public abstract class Player {
         _store = cup;
     }
 
+    /**
+     * Assigns the board to the player.
+     * @param board Board to be assigned.
+     */
+    public void bindBoard(Board board){
+        _board = board;
+    }
+
+    /**
+     * Assigns a player action listener to the player.
+     * @param listener Action listener to be assigned.
+     */
     public void setPlayerActionListener(PlayerActionListener listener){
         _playerActionListener = listener;
     }
@@ -103,13 +116,6 @@ public abstract class Player {
      */
     public String get_name(){
         return _name;
-    }
-
-    /**
-     * Increases the amount of moves a user has
-     */
-    public void addMove(){
-        moves++;
     }
 
     /**
