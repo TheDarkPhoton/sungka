@@ -50,29 +50,39 @@ public class GameActivity extends Activity {
     private PlayerActionAdapter _playerActionListener = new PlayerActionAdapter() {
         @Override
         public void onMoveStart(Player player) {
-//            Log.i(TAG, player.get_name() + " started his turn");
+            Log.i(TAG, player.get_name() + " started his turn");
         }
 
         @Override
-        public boolean onMove(Player player, int index) {
-//            Log.i(TAG, player.get_name() + " performed an action on cup["+index+"]");
+        public void onMove(final Player player, final int index) {
+            Thread t = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    new PauseThreadWhile<>(PlayerActionAdapter.class, "isAnimationInProgress");
 
-            if (isAnimationInProgress())
-                return false;
+                    Handler h = new Handler(_context.getMainLooper());
+                    h.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.i(TAG, player.get_name() + " performed an action on cup["+index+"]");
 
-            HandOfShells hand = _board.pickUpShells(index);
-            if (hand == null)
-                return true;
+                            HandOfShells hand = _board.pickUpShells(index);
+                            if (hand == null)
+                                return;
 
-            setAnimationInProgress(true);
-            ArrayList<View> images = _cupButtons[index].getShells();
-            moveShellsRec(hand, images, 300);
-            return true;
+                            setAnimationInProgress(true);
+                            ArrayList<View> images = _cupButtons[index].getShells();
+                            moveShellsRec(hand, images, 300);
+                        }
+                    });
+                }
+            });
+            t.start();
         }
 
         @Override
         public void onMoveEnd(Player player) {
-//            Log.i(TAG, player.get_name() + " ended his turn");
+            Log.i(TAG, player.get_name() + " ended his turn");
         }
     };
 
@@ -346,9 +356,6 @@ public class GameActivity extends Activity {
     private void processEndOfAnimation(){
         _playerActionListener.setAnimationInProgress(false);
         processBoardMessages();
-
-        if (_board.hasValidMoves())
-            _board.getCurrentPlayer().moveStart();
     }
 
     /**

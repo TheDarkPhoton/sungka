@@ -9,6 +9,26 @@ import java.util.concurrent.CountDownLatch;
  * Created by darkphoton on 29/10/15.
  */
 public class PauseThreadWhile<T> {
+    public PauseThreadWhile(Class<T> type, String methodName){
+        this(type, methodName, true);
+    }
+    public PauseThreadWhile(Class<T> type, String methodName, boolean positive){
+        try {
+            Method m = type.getMethod(methodName);
+            if (!boolean.class.isAssignableFrom(m.getReturnType()))
+                return;
+
+            while (positive ? (boolean)m.invoke(null) : !(boolean)m.invoke(null)){
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public PauseThreadWhile(T ref, String methodName){
         this(ref, methodName, true);
@@ -26,11 +46,7 @@ public class PauseThreadWhile<T> {
                     e.printStackTrace();
                 }
             }
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -53,11 +69,7 @@ public class PauseThreadWhile<T> {
                     }
                 }
             }
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

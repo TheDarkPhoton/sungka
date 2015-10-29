@@ -61,10 +61,11 @@ public class HandOfShells {
      * Drops all shells in the current cup.
      */
     public void dropAllShells(){
-        if (_board.getOpponent().hasValidMove())
-            _board.nextPlayersMove();
         _board.getCup(_cup_index).addShells(_shells);
         _shells = 0;
+
+        if (_board.getOpponent().hasValidMove())
+            _board.nextPlayersMove();
     }
 
     /**

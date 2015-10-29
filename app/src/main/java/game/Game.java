@@ -20,7 +20,8 @@ public class Game {
         Player playerOne = new Human("Player A");
         playerOne.setPlayerActionListener(playerActionListener);
 
-        Player playerTwo = new Human("Player B");
+//        Player playerTwo = new Human("Player B");
+        Player playerTwo = new AI();
         playerTwo.setPlayerActionListener(playerActionListener);
 
         board = new Board(playerOne, playerTwo);
