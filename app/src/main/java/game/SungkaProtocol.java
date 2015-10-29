@@ -1,23 +1,22 @@
 package game;
 
-import com.example.darkphoton.sungka_project.CupButton;
-import com.example.darkphoton.sungka_project.GameActivity;
+import game.player.RemoteHuman;
 
 /**
  * The protocol that will be used to process messages sent between the SungkaServer (the host of the game) and the SungkaClient (the player who
  * joined the game).
  */
 public class SungkaProtocol {
-    private GameActivity gameActivity;
+    private RemoteHuman remoteHuman;
     public static final String PLAYERMOVE = "MOVE:";
     public static final String PLAYEREND = "END";
 
     /**
      *Constructor to provide the Board object that we will use to reflect the changes the other user did on their device
-     * @param gameActivity the gameActivity that contains the current state of the Board as well as allowing to reflect the actions performed by the other user
+     * @param remoteHuman the other Player in the game
      */
-    public SungkaProtocol(GameActivity gameActivity){
-        this.gameActivity = gameActivity;
+    public SungkaProtocol(RemoteHuman remoteHuman){
+        this.remoteHuman = remoteHuman;
     }
 
     /**
@@ -29,11 +28,8 @@ public class SungkaProtocol {
         //TODO: update the board appropriately to the message received
         if(message.contains(PLAYERMOVE)){
             int indexMove = new Integer(message.split(PLAYERMOVE)[1]);
-            CupButton cupButton = gameActivity.getCupButton(indexMove);
-            if(cupButton != null){
-                cupButton.performClick();
-            }
-        }else if(message.contains(PLAYEREND)){
+            remoteHuman.move(indexMove);//perform the other players move on this device
+        }else if(message.equals(PLAYEREND)){//end the game
 
         }
     }

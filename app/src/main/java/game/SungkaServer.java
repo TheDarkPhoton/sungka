@@ -1,9 +1,6 @@
 package game;
 
-import android.os.AsyncTask;
 import android.os.Handler;
-
-import com.example.darkphoton.sungka_project.GameActivity;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,15 +9,18 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import game.player.RemoteHuman;
+//TODO: be able to let a user set up a server, and allow the server to be able handle all the operations
+//TODO:including passing information of the current state of the board between the Players, as well as their moves
+
 /**
  * This class represents the Server that one Player will set up, so that another Player
  * can connect to it. Then the Player's will be able to play against each other. This player hosts the game.
  */
-public class SungkaServer extends AsyncTask<String,Integer,Boolean> {
+public class SungkaServer extends SungkaConnection {
     private int portNumber;
     private ServerSocket serverSocket;
     private Socket clientSocket;
-    private PrintWriter printWriter;
     private BufferedReader bufferedReader;
     private Handler listenForClientHandler;
     private SungkaProtocol sungkaProtocol;
@@ -38,18 +38,16 @@ public class SungkaServer extends AsyncTask<String,Integer,Boolean> {
             }
         }
     };
-    //TODO: be able to let a user set up a server, and allow the server to be able handle all the operations
-    //TODO:including passing information of the current state of the board between the Players, as well as their moves
 
     /**
      * The constructor used to provide the necessary information to set up the ServerSocket
      * @param portNumber the port that the ServerSocket will bind to
-     * @param gameActivity the GameActivity of the current Player
+     * @param remoteHuman the other Player in the game
      */
-    public SungkaServer(int portNumber,GameActivity gameActivity){
+    public SungkaServer(int portNumber,RemoteHuman remoteHuman){
         this.portNumber = portNumber;
         listenForClientHandler = new Handler();
-        sungkaProtocol = new SungkaProtocol(gameActivity);
+        sungkaProtocol = new SungkaProtocol(remoteHuman);
     }
 
     /**
@@ -62,14 +60,6 @@ public class SungkaServer extends AsyncTask<String,Integer,Boolean> {
         clientSocket = serverSocket.accept();//waits for a client socket to connect to it
         printWriter = new PrintWriter(clientSocket.getOutputStream(),true);//to send messages to the other user
         bufferedReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));//to read what the other user sends
-    }
-
-    /**
-     * Send a message to the client, the user than joined the game
-     * @param message the message you wish to send to the client
-     */
-    public void sendMessage(String message){
-        printWriter.println(message);
     }
 
     /**

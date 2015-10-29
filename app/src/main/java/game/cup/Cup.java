@@ -1,4 +1,4 @@
-package game;
+package game.cup;
 
 /**
  * Describes the sungka Cup
@@ -24,6 +24,10 @@ public abstract class Cup {
      */
     public void addShell(){
         ++_shells;
+    }
+
+    public void addShells(int count){
+        _shells += count;
     }
 
     /**

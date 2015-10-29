@@ -1,18 +1,22 @@
-package game;
+package game.player;
 
 import java.util.ArrayList;
+
+import game.cup.Cup;
 
 /**
  * PLAYER Class which represents a PLAYER. This class will be inherited to form a
  * Human player and a AI player.
  */
-public class Player {
-    private int moves;
-    private String name;
-    private int score;
-    private Cup store;
-    private Cup[] shellCups;
-    private ArrayList<MoveInfo> moveInfos;//arraylist to store the users moves in a game
+public abstract class Player {
+    private String _name;
+    protected int moves;
+    protected int score;
+    protected Cup _store;
+    protected Cup[] _cups;
+
+    protected ArrayList<MoveInfo> _moveInfos;                                                //arraylist to store the users moves in a game
+    protected PlayerActionListener _playerActionListener = new PlayerActionAdapter();
 
     /**
      * Initializes the PLAYER Object, along with initializing the values of the PLAYER's store and their respective
@@ -22,10 +26,10 @@ public class Player {
      * @param name the name of the player
      */
     public Player(String name){
-        this.name = name;
-        this.shellCups = new Cup[7];
-        this.store = null;
-        moveInfos = new ArrayList<MoveInfo>();
+        _name = name;
+        _cups = new Cup[7];
+        _store = null;
+        _moveInfos = new ArrayList<>();
     }
 
     /**
@@ -33,11 +37,45 @@ public class Player {
      * @param cup of the player.
      */
     public void bindStore(Cup cup){
-        store = cup;
+        _store = cup;
     }
 
-    public Cup getStore(){
-        return store;
+    public void setPlayerActionListener(PlayerActionListener listener){
+        _playerActionListener = listener;
+    }
+
+    public abstract void moveStart();
+    public abstract void move(int index);
+    public abstract void moveEnd();
+
+    /**
+     * Determines if the cup provided belongs to this player.
+     * @param cup Cup in question.
+     * @return true if cup belongs to the player.
+     */
+    public boolean isPlayersCup(Cup cup){
+        return isPlayersCup(cup, false);
+    }
+
+    /**
+     * Determines if the cup provided belongs to this player.
+     * @param cup Cup in question.
+     * @param just_store Checks if the cup is the players store.
+     * @return true if cup belongs to the player.
+     */
+    public boolean isPlayersCup(Cup cup, boolean just_store){
+        if (_store == cup)
+            return true;
+
+        if (just_store)
+            return false;
+
+        for (int i = 0; i < _cups.length; i++) {
+            if (_cups[i] == cup)
+                return true;
+        }
+
+        return false;
     }
 
     /**
@@ -46,7 +84,7 @@ public class Player {
      * @param index array index that corresponds with the cup.
      */
     public void bindShellCup(Cup cup, int index){
-        shellCups[index] = cup;
+        _cups[index] = cup;
     }
 
     /**
@@ -54,15 +92,15 @@ public class Player {
      * @return the current amount of shells a PLAYER has in their store
      */
     public int getScore(){
-        return store.getCount();
+        return _store.getCount();
     }
 
     /**
      *
      * @return the name of the PLAYER
      */
-    public String getName(){
-        return name;
+    public String get_name(){
+        return _name;
     }
 
     /**
@@ -73,36 +111,17 @@ public class Player {
     }
 
     /**
-     * Checks if the provided cup is the PLAYER's store.
-     * @param cup the Cup to check
-     * @return true if the cup is the PLAYER's store
+     * Checks if player has any valid moves.
+     * @return true if there are moves that this player can make.
      */
-    public boolean isStore(Cup cup) {
-        return cup == store;
-    }
-
-    /**
-     * Determines if a Cup is one of the PLAYER's Shell Cups
-     * @param cup the Cup to check
-     * @param i the position of the Cup in the array
-     * @return true if the provided Shell Cup belongs to the PLAYER
-     */
-    public boolean isShellCup(Cup cup, int i) {
-        if (cup.isNotPlayerCup()) {
-            return shellCups[i % 8] == cup;
+    public boolean hasValidMove(){
+        for (int i = 0; i < _cups.length; i++) {
+            if (_cups[i].getCount() > 0)
+                return true;
         }
+
         return false;
     }
-
-    /**
-     * Capture shells from opponent's cup
-     * @param numShells the number of shells to put in the store
-     */
-    public void captureShells(int numShells) {
-        // need to cast to PlayerCup in order to be able to use this method
-        ((PlayerCup) store).addCapturedShells(numShells);
-    }
-
 
     /**
      * Method used to be able to identify between PLAYER objects
@@ -112,7 +131,7 @@ public class Player {
     public boolean equals(Object object){
         try{
             Player otherPlayer = (Player) object;
-            if(otherPlayer.getName().equals(name)){
+            if(otherPlayer.get_name().equals(_name)){
                 return true;
             }
         }catch (Exception e){
@@ -126,14 +145,14 @@ public class Player {
      * @param moveInfo the information of the move that the player just finished
      */
     public void addMoveInfo(MoveInfo moveInfo){
-        moveInfos.add(moveInfo);
+        _moveInfos.add(moveInfo);
     }
 
     /**
      * Get the list of all the Moves the Player has made up to this point
      * @return an ArrayList that contains the Player's moves
      */
-    public ArrayList<MoveInfo> getMoveInfos(){
-        return moveInfos;
+    public ArrayList<MoveInfo> get_moveInfos(){
+        return _moveInfos;
     }
 }
