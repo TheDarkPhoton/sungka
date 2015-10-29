@@ -47,7 +47,7 @@ public class Board {
         b.bindStore(_cups[15]);
 
         // temporary player assignment
-        _currentPlayer = a;
+        _currentPlayer = b;
     }
 
     /**

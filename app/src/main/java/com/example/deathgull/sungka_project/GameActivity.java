@@ -1,6 +1,7 @@
 package com.example.deathgull.sungka_project;
 
 import android.app.Activity;
+import android.app.Instrumentation;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -89,6 +90,11 @@ public class GameActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(
+                _layoutMaster = new FrameLayout(this),
+                new FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.MATCH_PARENT,
+                        FrameLayout.LayoutParams.MATCH_PARENT));
 
         shells =new Drawable[]{
                 ResourcesCompat.getDrawable(getResources(), R.drawable.shell1, null),
@@ -102,17 +108,8 @@ public class GameActivity extends Activity {
 
         hideNav();                                                  //Hide navigation bar and system bar
         setScreenSize();                                            //Set screen size
-        FrameLayout.LayoutParams params = initLayouts();            //Setup layouts
-        setContentView(_layoutMaster, params);                      //Set view to base layout
+        initLayouts();                                              //Setup layouts
         initView();                                                 //Programmatically create and lay out elements
-
-        Handler h = new Handler();
-        h.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                _board.getCurrentPlayer().moveStart();
-            }
-        }, 3000);
     }
 
     @Override
@@ -165,10 +162,8 @@ public class GameActivity extends Activity {
      *
      * @return - parameters for master layout
      */
-    private FrameLayout.LayoutParams initLayouts() {
-
-        //Create FrameLayout and parameters
-        _layoutMaster = new FrameLayout(this);
+    private void initLayouts() {
+        // Set root layout background
         _layoutMaster.setBackgroundResource(R.drawable.background);
 
         //Create base layout and parameters
@@ -197,10 +192,9 @@ public class GameActivity extends Activity {
                 for (CupButton btn : _cupButtons) {
                     btn.initShellLocation();
                 }
+                _board.getCurrentPlayer().moveStart();
             }
         });
-
-        return new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
     }
 
     /**

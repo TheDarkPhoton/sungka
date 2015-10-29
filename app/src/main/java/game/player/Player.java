@@ -18,6 +18,8 @@ public abstract class Player {
     protected ArrayList<MoveInfo> _moveInfos;                                                //arraylist to store the users moves in a game
     protected PlayerActionListener _playerActionListener = new PlayerActionAdapter();
 
+    protected boolean _actionChosen = false;
+
     /**
      * Initializes the PLAYER Object, along with initializing the values of the PLAYER's store and their respective
      * shell cups
