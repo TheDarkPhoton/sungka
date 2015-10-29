@@ -22,6 +22,11 @@ public class Human extends Player {
 
     @Override
     public void move(int index) {
+        if (_actionChosen)
+            return;
+
+        _actionChosen = true;
+
         //send to remote player
 
         _playerActionListener.onMove(this, index);
@@ -29,6 +34,8 @@ public class Human extends Player {
 
     @Override
     public void moveEnd() {
+        _actionChosen = false;
+
         _playerActionListener.onMoveEnd(this);
     }
 }

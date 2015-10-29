@@ -47,7 +47,7 @@ public class Board {
         b.bindStore(_cups[15]);
 
         // temporary player assignment
-        _currentPlayer = a;
+        _currentPlayer = b;
     }
 
     /**
@@ -94,6 +94,10 @@ public class Board {
             _validMoveExists = false;
             addStateMessage(BoardState.GAME_OVER);
         }
+
+        if (hasValidMoves())
+            _currentPlayer.moveStart();
+
         return _currentPlayer;
     }
 
@@ -102,7 +106,11 @@ public class Board {
      */
     public void nextPlayersMove(){
         _currentPlayer.moveEnd();
+
         _currentPlayer = getOpponent();
+
+        if (hasValidMoves())
+            _currentPlayer.moveStart();
     }
 
     /**

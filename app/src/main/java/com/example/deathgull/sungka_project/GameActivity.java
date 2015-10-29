@@ -1,6 +1,7 @@
 package com.example.deathgull.sungka_project;
 
 import android.app.Activity;
+import android.app.Instrumentation;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -30,11 +31,14 @@ import game.board.HandOfShells;
 import game.board.BoardState;
 import game.player.Player;
 import game.player.PlayerActionAdapter;
+import helpers.PauseThreadWhile;
 
 public class GameActivity extends Activity {
     private static final String TAG = "GameActivity";
     public static final Random random = new Random();                                               //Object for random number generation
     public static Drawable[] shells;
+
+    private final Context _context = this;
 
     private FrameLayout _layoutMaster;                                                              //Master layout
     private GridLayout _layoutBase;                                                                 //Base layout
@@ -47,35 +51,50 @@ public class GameActivity extends Activity {
     private PlayerActionAdapter _playerActionListener = new PlayerActionAdapter() {
         @Override
         public void onMoveStart(Player player) {
-//            Log.i(TAG, player.get_name() + " started his turn");
+            Log.i(TAG, player.get_name() + " started his turn");
         }
 
         @Override
-        public boolean onMove(Player player, int index) {
-//            Log.i(TAG, player.get_name() + " performed an action on cup["+index+"]");
+        public void onMove(final Player player, final int index) {
+            Thread t = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    new PauseThreadWhile<>(PlayerActionAdapter.class, "isAnimationInProgress");
 
-            if (isAnimationInProgress())
-                return false;
+                    Handler h = new Handler(_context.getMainLooper());
+                    h.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.i(TAG, player.get_name() + " performed an action on cup["+index+"]");
 
-            HandOfShells hand = _board.pickUpShells(index);
-            if (hand == null)
-                return true;
+                            HandOfShells hand = _board.pickUpShells(index);
+                            if (hand == null)
+                                return;
 
-            setAnimationInProgress(true);
-            ArrayList<View> images = _cupButtons[index].getShells();
-            moveShellsRec(hand, images, 300);
-            return true;
+                            setAnimationInProgress(true);
+                            ArrayList<View> images = _cupButtons[index].getShells();
+                            moveShellsRec(hand, images, 300);
+                        }
+                    });
+                }
+            });
+            t.start();
         }
 
         @Override
         public void onMoveEnd(Player player) {
-//            Log.i(TAG, player.get_name() + " ended his turn");
+            Log.i(TAG, player.get_name() + " ended his turn");
         }
     };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(
+                _layoutMaster = new FrameLayout(this),
+                new FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.MATCH_PARENT,
+                        FrameLayout.LayoutParams.MATCH_PARENT));
 
         shells =new Drawable[]{
                 ResourcesCompat.getDrawable(getResources(), R.drawable.shell1, null),
@@ -89,17 +108,8 @@ public class GameActivity extends Activity {
 
         hideNav();                                                  //Hide navigation bar and system bar
         setScreenSize();                                            //Set screen size
-        FrameLayout.LayoutParams params = initLayouts();            //Setup layouts
-        setContentView(_layoutMaster, params);                      //Set view to base layout
+        initLayouts();                                              //Setup layouts
         initView();                                                 //Programmatically create and lay out elements
-
-        Handler h = new Handler();
-        h.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                _board.getCurrentPlayer().moveStart();
-            }
-        }, 3000);
     }
 
     @Override
@@ -152,10 +162,8 @@ public class GameActivity extends Activity {
      *
      * @return - parameters for master layout
      */
-    private FrameLayout.LayoutParams initLayouts() {
-
-        //Create FrameLayout and parameters
-        _layoutMaster = new FrameLayout(this);
+    private void initLayouts() {
+        // Set root layout background
         _layoutMaster.setBackgroundResource(R.drawable.background);
 
         //Create base layout and parameters
@@ -184,10 +192,9 @@ public class GameActivity extends Activity {
                 for (CupButton btn : _cupButtons) {
                     btn.initShellLocation();
                 }
+                _board.getCurrentPlayer().moveStart();
             }
         });
-
-        return new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
     }
 
     /**
@@ -221,7 +228,7 @@ public class GameActivity extends Activity {
         int bottomColumnIndex = 1;
         for(int i = 0; i < 7; i++) {
             //PLAYER A shell cup
-            CupButton btn = new CupButton(this, _board.getCup(i), CupButton.PLAYER_A, CupButton.CUP);
+            CupButton btn = new CupButton(this, _board, i, CupButton.PLAYER_A, CupButton.CUP);
             btn.addToLayout(_layoutBase, bottomColumnIndex++, 2);
             _cupButtons[i] = btn;
 
@@ -234,7 +241,7 @@ public class GameActivity extends Activity {
             });
 
             //PlayerB shell cup
-            btn = new CupButton(this, _board.getCup(i+8), CupButton.PLAYER_B, CupButton.CUP);
+            btn = new CupButton(this, _board, i + 8, CupButton.PLAYER_B, CupButton.CUP);
             btn.addToLayout(_layoutBase, topColumnIndex--, 0);
             _cupButtons[i+8] = btn;
 
@@ -247,12 +254,12 @@ public class GameActivity extends Activity {
             });
         }
         //PLAYER A store
-        CupButton btnPlayerA = new CupButton(this, _board.getCup(7), CupButton.PLAYER_A, CupButton.STORE);
+        CupButton btnPlayerA = new CupButton(this, _board, 7, CupButton.PLAYER_A, CupButton.STORE);
         btnPlayerA.addToLayout(_layoutBase, 8, 1);
         _cupButtons[7] = btnPlayerA;
 
         //PLAYER B store
-        CupButton btnPlayerB = new CupButton(this, _board.getCup(15), CupButton.PLAYER_B, CupButton.STORE);
+        CupButton btnPlayerB = new CupButton(this, _board, 15, CupButton.PLAYER_B, CupButton.STORE);
         btnPlayerB.addToLayout(_layoutBase, 0, 1);
         _cupButtons[15] = btnPlayerB;
     }
@@ -265,30 +272,39 @@ public class GameActivity extends Activity {
      */
     private void moveShellsRec(final HandOfShells hand, final ArrayList<View> images, final int duration) {
         int index = hand.getNextCup();
-        CupButton b = _cupButtons[index];
+        final CupButton b = _cupButtons[index];
 
+        final ArrayList<ShellTranslation> animations = new ArrayList<>();
         for (int i = 0; i < images.size(); i++) {
-            View image = images.get(i);
-            float[] coord = b.randomPositionInCup(image);
-            new ShellTranslation(b, image, coord, duration).startAnimation();
+            animations.add(new ShellTranslation(images.get(i), b, duration));
+            animations.get(i).startAnimation();
         }
 
-        final HandOfShells robersHand = hand.dropShell();
-        b.addShell((ImageView) images.remove(images.size() - 1));
-
-        b.postDelayed(new Runnable() {
+        Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
-                if (images.size() > 0) {
-                    moveShellsRec(hand, images, duration);
-                } else if (robersHand != null) {
-                    moveRobOpponent(robersHand, duration * 2);
-                    processBoardMessages();
-                } else {
-                    processEndOfAnimation();
-                }
+                new PauseThreadWhile<>(animations, "hasEnded", false);
+
+                Handler h = new Handler(_context.getMainLooper());
+                h.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        final HandOfShells robersHand = hand.dropShell();
+                        b.addShell((ImageView) images.remove(images.size() - 1));
+
+                        if (images.size() > 0) {
+                            moveShellsRec(hand, images, duration);
+                        } else if (robersHand != null) {
+                            moveRobOpponent(robersHand, duration * 2);
+                            processBoardMessages();
+                        } else {
+                            processEndOfAnimation();
+                        }
+                    }
+                });
             }
-        }, duration + 25);
+        });
+        t.start();
     }
 
     /**
@@ -298,45 +314,42 @@ public class GameActivity extends Activity {
      * @param duration Duration of the animation.
      */
     private void moveRobOpponent(final HandOfShells robbersHand, final int duration){
-        CupButton playersCup;
-        CupButton robbedCup;
+        boolean handBelongsToPlayerA = _board.isPlayerA(robbersHand.belongsToPlayer());
 
-        if (_board.isPlayerA(robbersHand.belongsToPlayer())){
-            playersCup = _cupButtons[15];
-            robbedCup = _cupButtons[robbersHand.currentCupIndex()];
-            robbersHand.setNextCup(15);
-        }
-        else{
-            playersCup = _cupButtons[7];
-            robbedCup = _cupButtons[robbersHand.currentCupIndex()];
-            robbersHand.setNextCup(7);
-        }
+        final CupButton playersCup = handBelongsToPlayerA ? _cupButtons[15] : _cupButtons[7];
+        CupButton robbedCup = _cupButtons[robbersHand.currentCupIndex()];
+        robbersHand.setNextCup(playersCup.getCupIndex());
 
-        ArrayList<View> images = robbedCup.getShells();
-
+        final ArrayList<View> images = robbedCup.getShells();
+        final ArrayList<ShellTranslation> animations = new ArrayList<>();
         for (int i = 0; i < images.size(); i++) {
-            View image = images.get(i);
-            float[] coord = playersCup.randomPositionInCup(image);
-            new ShellTranslation(playersCup, image, coord, duration).startAnimation();
+            animations.add(new ShellTranslation(images.get(i), playersCup, duration));
+            animations.get(i).startAnimation();
         }
 
-        robbersHand.dropAllShells();
-        playersCup.addShells(images);
-
-        playersCup.postDelayed(new Runnable() {
+        Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
-                processEndOfAnimation();
+                new PauseThreadWhile<>(animations, "hasEnded", false);
+
+                Handler h = new Handler(_context.getMainLooper());
+                h.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        robbersHand.dropAllShells();
+                        playersCup.addShells(images);
+
+                        processEndOfAnimation();
+                    }
+                });
             }
-        }, duration + 10);
+        });
+        t.start();
     }
 
     private void processEndOfAnimation(){
         _playerActionListener.setAnimationInProgress(false);
         processBoardMessages();
-
-        if (_board.hasValidMoves())
-            _board.getCurrentPlayer().moveStart();
     }
 
     /**
