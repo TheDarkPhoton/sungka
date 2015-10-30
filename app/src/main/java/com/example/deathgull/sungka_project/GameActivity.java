@@ -52,7 +52,7 @@ public class GameActivity extends Activity {
         public void onMoveStart(Player player) {
             Log.i(TAG, player.get_name() + " started his turn");
             _yourMoveTextViews[player.getSide().ordinal()].show();
-            setupHighlights();
+            setupMove(player.getSide());
         }
 
         @Override
@@ -422,8 +422,13 @@ public class GameActivity extends Activity {
         msgs.clear();
     }
 
-    public void setupHighlights() {
+    /**
+     * Highlight all the buttons that need highlighting
+     */
+    public void setupMove(Side side) {
         for (int i = 0; i < _cupButtons.length; i++) {
+            _cupButtons[i].rotateTowards(side);
+
             if (_board.isOpponentStore(i) || _board.isCurrentPlayersStore(i))
                 continue;
 
@@ -435,10 +440,4 @@ public class GameActivity extends Activity {
         }
     }
 
-    public void removeHighlights(int except) {
-        for (int i = 0; i < _cupButtons.length; i++) {
-            if (i != except)
-               _cupButtons[i].dehighlight();
-        }
-    }
 }

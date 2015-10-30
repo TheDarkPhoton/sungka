@@ -9,6 +9,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
+import android.view.animation.RotateAnimation;
 import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -21,6 +22,7 @@ import java.util.Queue;
 import java.util.Random;
 
 import game.cup.Cup;
+import game.player.Side;
 
 public class CupButton extends Button implements View.OnTouchListener {
     public static final int PLAYER_A = 0;
@@ -46,8 +48,6 @@ public class CupButton extends Button implements View.OnTouchListener {
             spaceTop = ((screenHeight - ((store + (cup * 2) + (spaceStoreTop * 2)))) / 2) - cup / 2;
         }
     }
-
-    ;
 
     public static void generateSizes(int screenWidth, int screenHeight) {
         sizes = new CupMargins(screenWidth, screenHeight);
@@ -78,8 +78,7 @@ public class CupButton extends Button implements View.OnTouchListener {
         _cup_type = cType;
 
         _text = new TextView(context);
-        _text.setText("" + _cup.getCount() + "/" + _shells.size());
-        _text.setTextSize(15 * sizes.scale);
+        _text.setTextSize(18 * sizes.scale);
         _text.addOnLayoutChangeListener(new OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
@@ -120,7 +119,7 @@ public class CupButton extends Button implements View.OnTouchListener {
 
             _shells.add(shell);
         }
-        _text.setText("" + _cup.getCount() + "/" + _shells.size());
+        _text.setText("" + _cup.getCount());
 
     }
 
@@ -220,7 +219,7 @@ public class CupButton extends Button implements View.OnTouchListener {
      * Updates the content of the buttons text.
      */
     public void updateText() {
-        _text.setText("" + _cup.getCount() + "/" + _shells.size());
+        _text.setText("" + _cup.getCount());
     }
 
     /**
@@ -335,13 +334,38 @@ public class CupButton extends Button implements View.OnTouchListener {
 
     /**
      * Animates the change in the alpha value of this button
-     * @param toValue
+     * @param toValue float of the alpha value (eg. 1.05)
      */
     public void changeAlpha(float toValue) {
         Animation alphaAnimation = new AlphaAnimation(this.getAlpha(), toValue);
         alphaAnimation.setDuration(500);
         alphaAnimation.setFillAfter(true);
         startAnimation(alphaAnimation);
+    }
+
+    /**
+     * Rotate the text view to face a side
+     * @param side of the player that has the current move
+     */
+    public void rotateTowards(Side side) {
+        float fromRotation = (side != Side.A) ? 0 : 180;
+        float rotation = (side == Side.A) ? 0 : 180;
+
+        System.out.println("Rotation " + fromRotation + " to " + rotation);
+
+        if (rotation == fromRotation)
+            return;
+
+        float toRotation = rotation;
+
+        float pivotX = _text.getX() + _text.getWidth() / 2;
+        float pivotY = _text.getY() + _text.getHeight() / 2;
+
+        Animation rotateAnimation = new RotateAnimation(fromRotation, toRotation, pivotX, pivotY);
+        rotateAnimation.setDuration(500);
+        rotateAnimation.setFillAfter(true);
+        _text.startAnimation(rotateAnimation);
+
     }
 
 }
