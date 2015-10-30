@@ -19,39 +19,32 @@ public class AI extends Player {
     }
 
     /**
-     * Activates the delay for realMoveStart to seem more natural
+     * Calculates the move
      */
     @Override
     public void moveStart() {
-        Handler h = new Handler();
-        long delay = new Random().nextInt(2000) + 200;
-
-        h.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                realMoveStart();
-            }
-        }, delay);
-
-    }
-
-    /**
-     * Actually start the move computation
-     */
-    public void realMoveStart() {
         _playerActionListener.onMoveStart(this);
 
         int index = GameActivity.random.nextInt(7);
         while (_cups[index].isEmpty())
             index = GameActivity.random.nextInt(7);
 
-        move(index + 8);
+        final int moveIndex = index;
+
+        Handler h = new Handler();
+        long delay = GameActivity.random.nextInt(2000) + 200;
+
+        h.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                move(moveIndex + 8);
+            }
+        }, delay);
+
     }
 
     @Override
     public void move(int index) {
-        Handler h = new Handler();
-
         _playerActionListener.onMove(this, index);
     }
 
