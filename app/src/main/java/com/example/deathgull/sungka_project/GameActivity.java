@@ -386,8 +386,9 @@ public class GameActivity extends Activity {
                     break;
                 case GAME_OVER:
                     Log.i(TAG, "Game Over!!!");
-                    for (Pair<Player, Integer> move: _board.getMoves()) {
-                        Log.i(TAG, move.first.getName() + ": " + move.second);
+                    for (int i = 0; i < _board.getMoves().size(); i++) {
+                        Pair<Player, Integer> move = _board.getMoves().get(i);
+                        Log.i(TAG, i + ": " + move.second + " -> " + move.first.getName());
                     }
                     break;
             }

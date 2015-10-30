@@ -24,25 +24,17 @@ public class BoardSimulator extends Board {
     }
 
     private boolean givesExtraMove(int index){
-        boolean result = false;
-
         if (isPlayerA(getCurrentPlayer()))
-            result = 7 - _cups[index].getCount() == index;
+            return (7 - (_cups[index].getCount() + 1) == index);
         else
-            result = 15 - _cups[index].getCount() == index;
-
-        return result;
+            return (15 - (_cups[index].getCount() + 1) == index);
     }
 
     private boolean takesExtraMove(int index){
-        boolean result = false;
-
         if (isPlayerA(getCurrentPlayer()))
-            result = 15 - (_cups[index].getCount() - 1) == index;
+            return (7 - _cups[index].getCount() == index);
         else
-            result = 7 - (_cups[index].getCount() - 1) == index;
-
-        return result;
+            return (15 - _cups[index].getCount() == index);
     }
 
     private Integer[] getState(){
@@ -59,7 +51,6 @@ public class BoardSimulator extends Board {
     }
 
     private void exploreState(int index){
-        Player player = _currentPlayer;
         int score = 0;
 
         HandOfShells hand = pickUpShells(index);
@@ -71,9 +62,12 @@ public class BoardSimulator extends Board {
 
             if (_currentPlayer.isPlayersCup(_cups[i], true))
                 score += 2;
-
-            if (givesExtraMove(i) || takesExtraMove(i));
-                score += 1;
+            else{
+                if (givesExtraMove(i))
+                    ++score;
+                else if  (takesExtraMove(i))
+                    score -= 2;
+            }
 
             HandOfShells robbersHand = hand.dropShell();
             if (robbersHand != null){
@@ -98,15 +92,12 @@ public class BoardSimulator extends Board {
         }
         _state_messages.clear();
 
-        _current.addChild(new Node<>(new State(player, index, score, getState())));
+        _current.addChild(new Node<>(new State(getCurrentPlayer(), index, score, getState())));
     }
 
     public void explore(){
-        explore(false);
-    }
-    public void explore(boolean playerB){
         int startIndex = 0;
-        if (playerB)
+        if (isPlayerB(getCurrentPlayer()))
             startIndex = 8;
 
         for (int i = startIndex; i < startIndex + 7; i++) {

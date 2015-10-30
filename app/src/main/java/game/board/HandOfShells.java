@@ -66,6 +66,8 @@ public class HandOfShells {
 
         if (_board.getOpponent().hasValidMove())
             _board.nextPlayersMove();
+        else if (_board.hasValidMoves())
+            _board.getCurrentPlayer().moveStart();
     }
 
     /**

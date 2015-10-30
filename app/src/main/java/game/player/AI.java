@@ -43,7 +43,7 @@ public class AI extends Player {
         while (!opponentMoves.isEmpty())
             sim.doMove(opponentMoves.pop().second);
 
-        sim.explore(true);
+        sim.explore();
 
         move(sim.findBestMove());
     }

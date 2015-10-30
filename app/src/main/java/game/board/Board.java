@@ -32,10 +32,12 @@ public class Board {
         _cups = new Cup[16];
         _playerOne = a;
         _playerTwo = b;
+        // temporary player assignment
+        _currentPlayer = a;
 
         //define player a cups
         for (int i = 0; i < 7; i++) {
-            _cups[i] = new ShellCup(7);
+            _cups[i] = new ShellCup(1);
             a.bindShellCup(_cups[i], i);
         }
         _cups[7] = new PlayerCup(a);
@@ -44,15 +46,12 @@ public class Board {
 
         //define player b cups
         for (int i = 8; i < 15; i++) {
-            _cups[i] = new ShellCup(7);
+            _cups[i] = new ShellCup(1);
             b.bindShellCup(_cups[i], i - 8);
         }
         _cups[15] = new PlayerCup(a);
         b.bindStore(_cups[15]);
         b.bindBoard(this);
-
-        // temporary player assignment
-        _currentPlayer = a;
     }
 
     /**
