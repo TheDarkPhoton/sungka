@@ -114,7 +114,7 @@ public abstract class Player {
      *
      * @return the name of the PLAYER
      */
-    public String get_name(){
+    public String getName(){
         return _name;
     }
 
@@ -139,7 +139,7 @@ public abstract class Player {
     public boolean equals(Object object){
         try{
             Player otherPlayer = (Player) object;
-            if(otherPlayer.get_name().equals(_name)){
+            if(otherPlayer.getName().equals(_name)){
                 return true;
             }
         }catch (Exception e){

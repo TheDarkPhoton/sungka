@@ -1,5 +1,7 @@
 package game.player;
 
+import game.board.BoardSimulator;
+
 /**
  * Class that represents a Human PLAYER, where the player will be the one making the moves, instead
  * of a move being generated for it.
@@ -36,7 +38,6 @@ public class Human extends Player {
 
     @Override
     public void moveEnd() {
-
         _playerActionListener.onMoveEnd(this);
     }
 }

@@ -44,7 +44,6 @@ public class GameActivity extends Activity {
 
     private FrameLayout _layoutMaster;                                                              //Master layout
     private GridLayout _layoutBase;                                                                 //Base layout
-    private int _screenWidth, _screenHeight;                                                        //Screen size
 
     private CupButton[] _cupButtons;
     private Game _game;
@@ -53,7 +52,7 @@ public class GameActivity extends Activity {
     private PlayerActionAdapter _playerActionListener = new PlayerActionAdapter() {
         @Override
         public void onMoveStart(Player player) {
-            Log.i(TAG, player.get_name() + " started his turn");
+            Log.i(TAG, player.getName() + " started his turn");
         }
 
         @Override
@@ -67,7 +66,7 @@ public class GameActivity extends Activity {
                     h.post(new Runnable() {
                         @Override
                         public void run() {
-                            Log.i(TAG, player.get_name() + " performed an action on cup["+index+"]");
+                            Log.i(TAG, player.getName() + " performed an action on cup["+index+"]");
 
                             HandOfShells hand = _board.pickUpShells(index);
                             if (hand == null)
@@ -85,7 +84,7 @@ public class GameActivity extends Activity {
 
         @Override
         public void onMoveEnd(Player player) {
-            Log.i(TAG, player.get_name() + " ended his turn");
+            Log.i(TAG, player.getName() + " ended his turn");
         }
     };
 
@@ -160,10 +159,6 @@ public class GameActivity extends Activity {
         getWindow().getDecorView().setSystemUiVisibility(flags);
     }
 
-    /**
-     *
-     * @return - parameters for master layout
-     */
     private void initLayouts() {
         // Set root layout background
         _layoutMaster.setBackgroundResource(R.drawable.background);
@@ -206,11 +201,9 @@ public class GameActivity extends Activity {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         WindowManager wm = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
         wm.getDefaultDisplay().getMetrics(displayMetrics);
-        _screenWidth = displayMetrics.widthPixels;
-        _screenHeight = displayMetrics.heightPixels;
 
         //Calculate sizes of store cups and small cups
-        CupButton.generateSizes(_screenWidth, _screenHeight);
+        CupButton.generateSizes(displayMetrics.widthPixels, displayMetrics.heightPixels);
     }
 
     /**
@@ -291,13 +284,13 @@ public class GameActivity extends Activity {
                 h.post(new Runnable() {
                     @Override
                     public void run() {
-                        final HandOfShells robersHand = hand.dropShell();
+                        final HandOfShells robbersHand = hand.dropShell();
                         b.addShell((ImageView) images.remove(images.size() - 1));
 
                         if (images.size() > 0) {
                             moveShellsRec(hand, images, duration);
-                        } else if (robersHand != null) {
-                            moveRobOpponent(robersHand, duration * 2);
+                        } else if (robbersHand != null) {
+                            moveRobOpponent(robbersHand, duration * 2);
                             processBoardMessages();
                         } else {
                             processEndOfAnimation();
@@ -350,7 +343,7 @@ public class GameActivity extends Activity {
     }
 
     private void processEndOfAnimation(){
-        _playerActionListener.setAnimationInProgress(false);
+        PlayerActionAdapter.setAnimationInProgress(false);
         processBoardMessages();
     }
 
@@ -358,43 +351,43 @@ public class GameActivity extends Activity {
      * Displays messages that explains what happened during animation. TODO Display info messages on the screen.
      */
     private void processBoardMessages(){
-        ArrayList<BoardState> msgs = Board.getMessages();
+        ArrayList<BoardState> msgs = _board.getMessages();
         for (BoardState state : msgs) {
             switch (state){
                 case PLAYER_A_TURN:
-                    Log.i(TAG, _board.getPlayerA().get_name() + "'s turn.");
+                    Log.i(TAG, _board.getPlayerA().getName() + "'s turn.");
                     break;
                 case PLAYER_B_TURN:
-                    Log.i(TAG, _board.getPlayerB().get_name() + "'s turn.");
+                    Log.i(TAG, _board.getPlayerB().getName() + "'s turn.");
                     break;
                 case PLAYER_A_HAS_NO_VALID_MOVE:
-                    Log.i(TAG, _board.getPlayerA().get_name() + " has no valid move");
+                    Log.i(TAG, _board.getPlayerA().getName() + " has no valid move");
                     break;
                 case PLAYER_B_HAS_NO_VALID_MOVE:
-                    Log.i(TAG, _board.getPlayerB().get_name() + " has no valid move");
+                    Log.i(TAG, _board.getPlayerB().getName() + " has no valid move");
                     break;
                 case PLAYER_A_GETS_ANOTHER_TURN:
-                    Log.i(TAG, _board.getPlayerA().get_name() + " gets another turn.");
+                    Log.i(TAG, _board.getPlayerA().getName() + " gets another turn.");
                     break;
                 case PLAYER_B_GETS_ANOTHER_TURN:
-                    Log.i(TAG, _board.getPlayerB().get_name() + " gets another turn.");
+                    Log.i(TAG, _board.getPlayerB().getName() + " gets another turn.");
                     break;
                 case PLAYER_A_WAS_ROBBED:
-                    Log.i(TAG, _board.getPlayerA().get_name() + " was robbed.");
+                    Log.i(TAG, _board.getPlayerA().getName() + " was robbed.");
                     break;
                 case PLAYER_B_WAS_ROBBED:
-                    Log.i(TAG, _board.getPlayerB().get_name() + " was robbed.");
+                    Log.i(TAG, _board.getPlayerB().getName() + " was robbed.");
                     break;
                 case PLAYER_A_WAS_ROBBED_OF_HIS_FINAL_MOVE:
-                    Log.i(TAG, _board.getPlayerA().get_name() + " was robbed of his final move... " + _board.getPlayerB().get_name() + " gets another turn.");
+                    Log.i(TAG, _board.getPlayerA().getName() + " was robbed of his final move... " + _board.getPlayerB().getName() + " gets another turn.");
                     break;
                 case PLAYER_B_WAS_ROBBED_OF_HIS_FINAL_MOVE:
-                    Log.i(TAG, _board.getPlayerB().get_name() + " was robbed of his final move... " + _board.getPlayerA().get_name() + " gets another turn.");
+                    Log.i(TAG, _board.getPlayerB().getName() + " was robbed of his final move... " + _board.getPlayerA().getName() + " gets another turn.");
                     break;
                 case GAME_OVER:
                     Log.i(TAG, "Game Over!!!");
                     for (Pair<Player, Integer> move: _board.getMoves()) {
-                        Log.i(TAG, move.first.get_name() + ": " + move.second);
+                        Log.i(TAG, move.first.getName() + ": " + move.second);
                     }
                     break;
             }

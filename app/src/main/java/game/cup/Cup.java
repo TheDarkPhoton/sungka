@@ -1,5 +1,7 @@
 package game.cup;
 
+import game.player.Player;
+
 /**
  * Describes the sungka Cup
  */
@@ -30,6 +32,10 @@ public abstract class Cup {
         _shells += count;
     }
 
+    public void setShells(int count){
+        _shells = count;
+    }
+
     /**
      * Removes all shells from the shell count and returns it.
      * @return shell count.
@@ -54,5 +60,17 @@ public abstract class Cup {
      */
     public boolean isEmpty(){
         return _shells == 0;
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        if (this instanceof PlayerCup){
+            PlayerCup cup = new PlayerCup(((PlayerCup)this).getPlayer());
+            cup.addShells(_shells);
+            return cup;
+        }
+        else{
+            return new ShellCup(_shells);
+        }
     }
 }

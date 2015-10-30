@@ -13,14 +13,14 @@ import game.player.Player;
  * An object that describes the state of the current game board
  */
 public class Board {
+    protected ArrayList<BoardState> _state_messages = new ArrayList<>();
+    protected ArrayList<Pair<Player, Integer>> _moves = new ArrayList<>();
 
-    private static final ArrayList<BoardState> STATE_MESSAGES = new ArrayList<>();
-    private ArrayList<Pair<Player, Integer>> _moves = new ArrayList<>();
+    protected Cup[] _cups;                                    // an array of board cups
+    protected Player _currentPlayer;                          // the player whose turn it is
+    protected Player _playerOne;
+    protected Player _playerTwo;
 
-    private Cup[] _cups;                                    // an array of board cups
-    private Player _currentPlayer;                          // the player whose turn it is
-    private Player _playerOne;
-    private Player _playerTwo;
     private boolean _validMoveExists = true;
 
     /**
@@ -76,8 +76,6 @@ public class Board {
             return null;
 
         HandOfShells hand = new HandOfShells(player, index, _cups[index].pickUpShells());
-
-        //send to the other user
 
         hand.bindBoard(this);
         return hand;
@@ -234,16 +232,16 @@ public class Board {
      * Adds a message to the list of messages.
      * @param msg message to be added.
      */
-    public static void addStateMessage(BoardState msg){
-        STATE_MESSAGES.add(msg);
+    public void addStateMessage(BoardState msg){
+        _state_messages.add(msg);
     }
 
     /**
      * Gets all of the saved messages.
      * @return saved messages.
      */
-    public static ArrayList<BoardState> getMessages(){
-        return STATE_MESSAGES;
+    public ArrayList<BoardState> getMessages(){
+        return _state_messages;
     }
 
     /**

@@ -1,8 +1,5 @@
 package game.player;
 
-/**
- * Created by darkphoton on 28/10/15.
- */
 public class PlayerActionAdapter implements PlayerActionListener {
     private static boolean _actionInProgress = false;
 
