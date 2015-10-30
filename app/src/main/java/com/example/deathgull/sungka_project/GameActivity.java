@@ -52,12 +52,12 @@ public class GameActivity extends Activity {
         public void onMoveStart(Player player) {
             Log.i(TAG, player.get_name() + " started his turn");
             _yourMoveTextViews[player.getSide().ordinal()].show();
-            setupPulses();
+            setupHighlights();
         }
 
         @Override
         public boolean onMove(Player player, int index) {
-            Log.i(TAG, player.get_name() + " performed an action on cup["+index+"]");
+            Log.i(TAG, player.get_name() + " performed an action on cup[" + index + "]");
 
             if (isAnimationInProgress())
                 return false;
@@ -422,13 +422,23 @@ public class GameActivity extends Activity {
         msgs.clear();
     }
 
-    public void setupPulses() {
+    public void setupHighlights() {
         for (int i = 0; i < _cupButtons.length; i++) {
+            if (_board.isOpponentStore(i) || _board.isCurrentPlayersStore(i))
+                continue;
+
             if (_board.isValid(i, false)) {
-                _cupButtons[i].startPulse();
+                _cupButtons[i].highlight();
             } else {
-                _cupButtons[i].stopPulse();
+                _cupButtons[i].dehighlight();
             }
+        }
+    }
+
+    public void removeHighlights(int except) {
+        for (int i = 0; i < _cupButtons.length; i++) {
+            if (i != except)
+               _cupButtons[i].dehighlight();
         }
     }
 }
