@@ -15,6 +15,9 @@ public abstract class Player {
     protected Cup _store;
     protected Cup[] _cups;
 
+
+    private Side _side;
+
     protected ArrayList<MoveInfo> _moveInfos;                                                //arraylist to store the users moves in a game
     protected PlayerActionListener _playerActionListener = new PlayerActionAdapter();
 
@@ -154,5 +157,13 @@ public abstract class Player {
      */
     public ArrayList<MoveInfo> get_moveInfos(){
         return _moveInfos;
+    }
+
+    public Side getSide() {
+        return _side;
+    }
+
+    public void setSide(Side _side) {
+        this._side = _side;
     }
 }

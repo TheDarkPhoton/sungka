@@ -6,6 +6,7 @@ import game.cup.Cup;
 import game.cup.PlayerCup;
 import game.cup.ShellCup;
 import game.player.Player;
+import game.player.Side;
 
 /**
  * An object that describes the state of the current game board
@@ -29,6 +30,10 @@ public class Board {
         _cups = new Cup[16];
         _playerOne = a;
         _playerTwo = b;
+
+        // define which side each player is on
+        _playerOne.setSide(Side.A);
+        _playerTwo.setSide(Side.B);
 
         //define player a cups
         for (int i = 0; i < 7; i++) {

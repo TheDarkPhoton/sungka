@@ -31,6 +31,7 @@ import game.board.HandOfShells;
 import game.board.BoardState;
 import game.player.Player;
 import game.player.PlayerActionAdapter;
+import game.player.Side;
 
 public class GameActivity extends Activity {
     private static final String TAG = "GameActivity";
@@ -44,16 +45,18 @@ public class GameActivity extends Activity {
     private CupButton[] _cupButtons;
     private Game _game;
     private Board _board;
+    private YourMoveTextView[] _yourMoveTextViews;
 
     private PlayerActionAdapter _playerActionListener = new PlayerActionAdapter() {
         @Override
         public void onMoveStart(Player player) {
-//            Log.i(TAG, player.get_name() + " started his turn");
+            Log.i(TAG, player.get_name() + " started his turn");
+            _yourMoveTextViews[player.getSide().ordinal()].show();
         }
 
         @Override
         public boolean onMove(Player player, int index) {
-//            Log.i(TAG, player.get_name() + " performed an action on cup["+index+"]");
+            Log.i(TAG, player.get_name() + " performed an action on cup["+index+"]");
 
             if (isAnimationInProgress())
                 return false;
@@ -70,7 +73,8 @@ public class GameActivity extends Activity {
 
         @Override
         public void onMoveEnd(Player player) {
-//            Log.i(TAG, player.get_name() + " ended his turn");
+            Log.i(TAG, player.get_name() + " ended his turn");
+            _yourMoveTextViews[player.getSide().ordinal()].hide();
         }
     };
 
@@ -276,6 +280,17 @@ public class GameActivity extends Activity {
         CupButton btnPlayerB = new CupButton(this, _board.getCup(15), CupButton.PLAYER_B, CupButton.STORE);
         btnPlayerB.addToLayout(_layoutBase, 0, 1);
         _cupButtons[15] = btnPlayerB;
+
+        _yourMoveTextViews = new YourMoveTextView[2];
+
+        // PLAYER A your move label
+        _yourMoveTextViews[0] = new YourMoveTextView(this, Side.A);
+        _layoutMaster.addView(_yourMoveTextViews[0]);
+
+        // PLAYER B your move label
+        _yourMoveTextViews[1] = new YourMoveTextView(this, Side.B);
+        _layoutMaster.addView(_yourMoveTextViews[1]);
+
     }
 
     /**
