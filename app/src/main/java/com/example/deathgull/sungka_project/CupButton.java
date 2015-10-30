@@ -5,8 +5,10 @@ import android.graphics.Color;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -117,6 +119,7 @@ public class CupButton extends Button implements View.OnTouchListener {
             _shells.add(shell);
         }
         _text.setText("" + _cup.getCount() + "/" + _shells.size());
+
     }
 
     /**
@@ -299,14 +302,16 @@ public class CupButton extends Button implements View.OnTouchListener {
 
     }
 
-    private void startPulse() {
-        Animation pulseAnimation = new AlphaAnimation(1.0f, 0.7f);
-        pulseAnimation.setDuration(500);
+    public void startPulse() {
+        Animation pulseAnimation = new AlphaAnimation(1.0f, 0.8f);
+        pulseAnimation.setDuration(3000);
+        pulseAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
         pulseAnimation.setRepeatMode(Animation.REVERSE);
+        pulseAnimation.setRepeatCount(Integer.MAX_VALUE);
         this.startAnimation(pulseAnimation);
     }
 
-    private void stopPulse() {
+    public void stopPulse() {
         this.clearAnimation();
     }
 

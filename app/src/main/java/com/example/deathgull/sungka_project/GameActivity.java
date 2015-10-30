@@ -52,6 +52,7 @@ public class GameActivity extends Activity {
         public void onMoveStart(Player player) {
             Log.i(TAG, player.get_name() + " started his turn");
             _yourMoveTextViews[player.getSide().ordinal()].show();
+            setupPulses();
         }
 
         @Override
@@ -419,5 +420,15 @@ public class GameActivity extends Activity {
         }
 
         msgs.clear();
+    }
+
+    public void setupPulses() {
+        for (int i = 0; i < _cupButtons.length; i++) {
+            if (_board.isValid(i, false)) {
+                _cupButtons[i].startPulse();
+            } else {
+                _cupButtons[i].stopPulse();
+            }
+        }
     }
 }
