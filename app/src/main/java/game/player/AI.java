@@ -2,8 +2,6 @@ package game.player;
 
 import android.util.Pair;
 
-import com.example.deathgull.sungka_project.GameActivity;
-
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -44,7 +42,6 @@ public class AI extends Player {
             sim.doMove(opponentMoves.pop().second);
 
         sim.explore();
-
         move(sim.findBestMove());
     }
 

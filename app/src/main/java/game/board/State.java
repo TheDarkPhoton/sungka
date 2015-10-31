@@ -4,20 +4,22 @@ import java.util.Comparator;
 
 import game.player.Player;
 
-/**
- * Created by darkphoton on 30/10/15.
- */
-public class State implements Comparator<State> {
+public class State {
     private Integer _index;
     private Integer _value;
     private Integer[] _state;
     private Player _player;
 
-    public State(Player player, Integer index, Integer value, Integer[] state){
-        _player = player;
+    private boolean _extraTurn = false;
+    private boolean _deadEnd = false;
+    private boolean _goal = false;
+
+    public State(Integer index){
         _index = index;
-        _value = value;
-        _state = state;
+    }
+
+    public void setPlayer(Player player){
+        _player = player;
     }
 
     public Player getPlayer(){
@@ -28,17 +30,44 @@ public class State implements Comparator<State> {
         return _index;
     }
 
+    public void setValue(int value){
+        _value = value;
+    }
+
     public Integer getValue(){
         return _value;
+    }
+
+    public void setState(Integer[] state){
+        _state = state;
     }
 
     public Integer[] getState(){
         return _state;
     }
 
-    @Override
-    public int compare(State lhs, State rhs) {
-        return rhs.getValue().compareTo(lhs.getValue());
+    public void setDeadEnd(){
+        _deadEnd = true;
+    }
+
+    public boolean isDeadEnd(){
+        return _deadEnd;
+    }
+
+    public void setExtraTurn(){
+        _extraTurn = true;
+    }
+
+    public boolean leadsToExtraTurn(){
+        return _extraTurn;
+    }
+
+    public void setGoal(){
+        _goal = true;
+    }
+
+    public boolean isGoal(){
+        return _goal;
     }
 
     @Override
