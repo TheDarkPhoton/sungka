@@ -1,4 +1,4 @@
-package com.example.deathgull.sungka_project;
+package helpers;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -10,9 +10,13 @@ import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.deathgull.sungka_project.GameActivity;
+import com.example.deathgull.sungka_project.R;
+
 import java.util.ArrayList;
 import java.util.Random;
 
+import game.board.Board;
 import game.cup.Cup;
 
 public class CupButton extends Button {
@@ -47,21 +51,25 @@ public class CupButton extends Button {
 
     private FrameLayout _layoutMaster;
 
-    private ArrayList<View> _shells = new ArrayList<View>();
-    private Cup _cup;
+    private ArrayList<View> _shells = new ArrayList<>();
     private TextView _text;
+    private int _cup_index;
+    private Cup _cup;
 
     /**
      * Initialises default variables of the cup button.
      * @param context The screen it belongs to.
-     * @param cup The cup it represents.
+     * @param board Reference to the board.
+     * @param cup_index The cup it represents.
      * @param pType The player it represents.
      * @param cType Type of the button.
      */
-    public CupButton(Context context, Cup cup, int pType, int cType) {
+    public CupButton(Context context, Board board, int cup_index, int pType, int cType) {
         super(context);
 
-        _cup = cup;
+        _cup_index = cup_index;
+        _cup = board.getCup(cup_index);
+
         _player_type = pType;
         _cup_type = cType;
 
@@ -205,6 +213,10 @@ public class CupButton extends Button {
         return shells;
     }
 
+    public int getCupIndex(){
+        return _cup_index;
+    }
+
     /**
      * Updates the content of the buttons text.
      */
@@ -218,6 +230,7 @@ public class CupButton extends Button {
      */
     public void addShell(ImageView image){
         _shells.add(image);
+        updateText();
     }
 
     /**
@@ -226,6 +239,7 @@ public class CupButton extends Button {
      */
     public void addShells(ArrayList<View> shells){
         _shells.addAll(shells);
+        updateText();
     }
 
     /**

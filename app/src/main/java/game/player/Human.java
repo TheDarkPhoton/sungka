@@ -1,5 +1,7 @@
 package game.player;
 
+import game.board.BoardSimulator;
+
 /**
  * Class that represents a Human PLAYER, where the player will be the one making the moves, instead
  * of a move being generated for it.
@@ -18,10 +20,16 @@ public class Human extends Player {
     @Override
     public void moveStart() {
         _playerActionListener.onMoveStart(this);
+        _cannotPerformAnAction = false;
     }
 
     @Override
     public void move(int index) {
+        if (_cannotPerformAnAction)
+            return;
+
+        _cannotPerformAnAction = true;
+
         //send to remote player
 
         _playerActionListener.onMove(this, index);

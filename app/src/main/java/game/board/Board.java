@@ -1,5 +1,7 @@
 package game.board;
 
+import android.util.Pair;
+
 import java.util.ArrayList;
 
 import game.cup.Cup;
@@ -11,14 +13,15 @@ import game.player.Player;
  * An object that describes the state of the current game board
  */
 public class Board {
+    protected ArrayList<BoardState> _state_messages = new ArrayList<>();
+    protected ArrayList<Pair<Player, Integer>> _moves = new ArrayList<>();
 
-    private static final ArrayList<BoardState> STATE_MESSAGES = new ArrayList<>();
+    protected Cup[] _cups;                                    // an array of board cups
+    protected Player _currentPlayer;                          // the player whose turn it is
+    protected Player _playerOne;
+    protected Player _playerTwo;
 
-    private Cup[] _cups;                                    // an array of board cups
-    private Player _currentPlayer;                          // the player whose turn it is
-    private Player _playerOne;
-    private Player _playerTwo;
-    private boolean _validMoveExists = true;
+    protected boolean _validMoveExists = true;
 
     /**
      * Constructs board with default attributes.
@@ -29,6 +32,8 @@ public class Board {
         _cups = new Cup[16];
         _playerOne = a;
         _playerTwo = b;
+        // temporary player assignment
+        _currentPlayer = a;
 
         //define player a cups
         for (int i = 0; i < 7; i++) {
@@ -37,6 +42,7 @@ public class Board {
         }
         _cups[7] = new PlayerCup(a);
         a.bindStore(_cups[7]);
+        a.bindBoard(this);
 
         //define player b cups
         for (int i = 8; i < 15; i++) {
@@ -45,9 +51,7 @@ public class Board {
         }
         _cups[15] = new PlayerCup(a);
         b.bindStore(_cups[15]);
-
-        // temporary player assignment
-        _currentPlayer = a;
+        b.bindBoard(this);
     }
 
     /**
@@ -70,9 +74,8 @@ public class Board {
         if (!_validMoveExists || !(player.isPlayersCup(_cups[index]) && _cups[index].getCount() > 0))
             return null;
 
+        addMove(getCurrentPlayer(), index);
         HandOfShells hand = new HandOfShells(player, index, _cups[index].pickUpShells());
-
-        //send to the other user
 
         hand.bindBoard(this);
         return hand;
@@ -94,6 +97,10 @@ public class Board {
             _validMoveExists = false;
             addStateMessage(BoardState.GAME_OVER);
         }
+
+        if (hasValidMoves())
+            _currentPlayer.moveStart();
+
         return _currentPlayer;
     }
 
@@ -102,7 +109,11 @@ public class Board {
      */
     public void nextPlayersMove(){
         _currentPlayer.moveEnd();
+
         _currentPlayer = getOpponent();
+
+        if (hasValidMoves())
+            _currentPlayer.moveStart();
     }
 
     /**
@@ -221,15 +232,32 @@ public class Board {
      * Adds a message to the list of messages.
      * @param msg message to be added.
      */
-    public static void addStateMessage(BoardState msg){
-        STATE_MESSAGES.add(msg);
+    public void addStateMessage(BoardState msg){
+        _state_messages.add(msg);
     }
 
     /**
      * Gets all of the saved messages.
      * @return saved messages.
      */
-    public static ArrayList<BoardState> getMessages(){
-        return STATE_MESSAGES;
+    public ArrayList<BoardState> getMessages(){
+        return _state_messages;
+    }
+
+    /**
+     * Adds a move to the list of moves made this game.
+     * @param player Player that made the move.
+     * @param move Cup upon which the move was executed.
+     */
+    public void addMove(Player player, int move){
+        _moves.add(new Pair<Player, Integer>(player, move));
+    }
+
+    /**
+     * Gets the list of moves made in this game.
+     * @return an array list of player/move pairs.
+     */
+    public ArrayList<Pair<Player, Integer>> getMoves(){
+        return _moves;
     }
 }

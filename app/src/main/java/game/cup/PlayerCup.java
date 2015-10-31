@@ -40,5 +40,4 @@ public class PlayerCup extends Cup {
     public boolean isNotPlayerCup() {
         return false;
     }
-
 }

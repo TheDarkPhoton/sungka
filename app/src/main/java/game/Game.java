@@ -17,9 +17,10 @@ public class Game {
     public Game(PlayerActionListener playerActionListener) {
 
         // for now, assume human players
-        Player playerOne = new Human("Shell Master");
+        Player playerOne = new Human("Player A");
         playerOne.setPlayerActionListener(playerActionListener);
 
+//        Player playerTwo = new Human("Player B");
         Player playerTwo = new AI();
         playerTwo.setPlayerActionListener(playerActionListener);
 
@@ -31,6 +32,6 @@ public class Game {
     }
 
     public void start() {
-//        board.giveMove();
+        board.getCurrentPlayer().moveStart();
     }
 }

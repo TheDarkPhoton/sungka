@@ -1,8 +1,6 @@
 package game.player;
 
-/**
- * Created by darkphoton on 28/10/15.
- */
+
 public class RemoteHuman extends Player {
 
     public RemoteHuman(String name){
@@ -12,10 +10,16 @@ public class RemoteHuman extends Player {
     @Override
     public void moveStart() {
         _playerActionListener.onMoveStart(this);
+        _cannotPerformAnAction = false;
     }
 
     @Override
     public void move(int index) {
+        if (_cannotPerformAnAction)
+            return;
+
+        _cannotPerformAnAction = true;
+
         _playerActionListener.onMove(this, index);
     }
 
