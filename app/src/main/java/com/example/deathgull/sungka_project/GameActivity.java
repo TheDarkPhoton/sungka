@@ -46,6 +46,7 @@ public class GameActivity extends Activity {
     private Game _game;
     private Board _board;
     private YourMoveTextView[] _yourMoveTextViews;
+    private float _animationDurationFactor = 1.0f;
 
     private PlayerActionAdapter _playerActionListener = new PlayerActionAdapter() {
         @Override
@@ -292,6 +293,18 @@ public class GameActivity extends Activity {
         _yourMoveTextViews[1] = new YourMoveTextView(this, Side.B);
         _layoutMaster.addView(_yourMoveTextViews[1]);
 
+        // Setup animation speed listener
+        _layoutMaster.getRootView().setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    _animationDurationFactor = 0.5f;
+                } else {
+                    _animationDurationFactor = 1.0f;
+                }
+                return false;
+            }
+        });
     }
 
     /**
@@ -304,10 +317,12 @@ public class GameActivity extends Activity {
         int index = hand.getNextCup();
         CupButton b = _cupButtons[index];
 
+        final int finalDuration = (int) (_animationDurationFactor * duration);
+
         for (int i = 0; i < images.size(); i++) {
             View image = images.get(i);
             float[] coord = b.randomPositionInCup(image);
-            new ShellTranslation(b, image, coord, duration).startAnimation();
+            new ShellTranslation(b, image, coord, finalDuration).startAnimation();
         }
 
         final HandOfShells robersHand = hand.dropShell();
@@ -325,7 +340,7 @@ public class GameActivity extends Activity {
                     processEndOfAnimation();
                 }
             }
-        }, duration + 25);
+        }, finalDuration + 25);
     }
 
     /**
