@@ -66,11 +66,13 @@ public class GameActivity extends Activity {
                     h.post(new Runnable() {
                         @Override
                         public void run() {
-                            Log.i(TAG, player.getName() + " performed an action on cup["+index+"]");
-
                             HandOfShells hand = _board.pickUpShells(index);
-                            if (hand == null)
+                            if (hand == null) {
+                                player.setPlayerCannotPerformAction(false);
                                 return;
+                            }
+
+                            Log.i(TAG, player.getName() + " performed an action on cup["+index+"]");
 
                             setAnimationInProgress(true);
                             ArrayList<View> images = _cupButtons[index].getShells();

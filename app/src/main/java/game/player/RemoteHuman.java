@@ -19,7 +19,6 @@ public class RemoteHuman extends Player {
             return;
 
         _cannotPerformAnAction = true;
-        _board.addMove(this, index);
 
         _playerActionListener.onMove(this, index);
     }

@@ -59,6 +59,10 @@ public abstract class Player {
         _playerActionListener = listener;
     }
 
+    public void setPlayerCannotPerformAction(boolean yes){
+        _cannotPerformAnAction = yes;
+    }
+
     public abstract void moveStart();
     public abstract void move(int index);
     public abstract void moveEnd();

@@ -51,7 +51,6 @@ public class AI extends Player {
             return;
 
         _cannotPerformAnAction = true;
-        _board.addMove(this, index);
 
         _playerActionListener.onMove(this, index);
     }

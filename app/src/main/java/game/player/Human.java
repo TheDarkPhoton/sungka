@@ -29,7 +29,6 @@ public class Human extends Player {
             return;
 
         _cannotPerformAnAction = true;
-        _board.addMove(this, index);
 
         //send to remote player
 

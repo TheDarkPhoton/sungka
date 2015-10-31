@@ -74,6 +74,7 @@ public class Board {
         if (!_validMoveExists || !(player.isPlayersCup(_cups[index]) && _cups[index].getCount() > 0))
             return null;
 
+        addMove(getCurrentPlayer(), index);
         HandOfShells hand = new HandOfShells(player, index, _cups[index].pickUpShells());
 
         hand.bindBoard(this);
