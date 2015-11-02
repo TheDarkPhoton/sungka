@@ -8,6 +8,7 @@ import game.cup.Cup;
 import game.cup.PlayerCup;
 import game.cup.ShellCup;
 import game.player.Player;
+import game.player.Side;
 
 /**
  * An object that describes the state of the current game board
@@ -34,6 +35,10 @@ public class Board {
         _playerTwo = b;
         // temporary player assignment
         _currentPlayer = a;
+
+        // define which side each player is on
+        _playerOne.setSide(Side.A);
+        _playerTwo.setSide(Side.B);
 
         //define player a cups
         for (int i = 0; i < 7; i++) {
@@ -70,16 +75,32 @@ public class Board {
      * @return hand of shells object.
      */
     public HandOfShells pickUpShells(int index, boolean robber){
-        Player player = robber ? getOpponent() : getCurrentPlayer();
-        if (!_validMoveExists || !(player.isPlayersCup(_cups[index]) && _cups[index].getCount() > 0))
+        if (!isValid(index, robber))
             return null;
 
         addMove(getCurrentPlayer(), index);
+        
+        Player player = robber ? getOpponent() : getCurrentPlayer();
         HandOfShells hand = new HandOfShells(player, index, _cups[index].pickUpShells());
 
         hand.bindBoard(this);
         return hand;
     }
+
+    /**
+     * Checks whether a cup can be selected.
+     * @param index of the cup
+     * @param robber if set to true the opponents cups are valid instead of current players.
+     * @return if the move is valid
+     */
+    public boolean isValid(int index, boolean robber) {
+        Player player = robber ? getOpponent() : getCurrentPlayer();
+        if (!_validMoveExists || !(player.isPlayersCup(_cups[index]) && _cups[index].getCount() > 0))
+            return false;
+
+        return true;
+    }
+
 
     /**
      * Determines wheater to pass a turn to the next player.

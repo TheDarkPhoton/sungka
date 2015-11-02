@@ -1,6 +1,9 @@
 package game.player;
 
 import android.util.Pair;
+import android.os.Handler;
+
+import com.example.deathgull.sungka_project.GameActivity;
 
 import java.util.ArrayList;
 import java.util.Stack;
@@ -18,6 +21,9 @@ public class AI extends Player {
         super("AI");
     }
 
+    /**
+     * Calculates the move
+     */
     @Override
     public void bindBoard(Board board) {
         super.bindBoard(board);
@@ -42,7 +48,17 @@ public class AI extends Player {
             sim.doMove(opponentMoves.pop().second);
 
         sim.explore();
-        move(sim.findBestMove());
+
+        Handler h = new Handler();
+        long delay = GameActivity.random.nextInt(2000) + 200;
+
+        h.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                move(sim.findBestMove());
+            }
+        }, delay);
+
     }
 
     @Override

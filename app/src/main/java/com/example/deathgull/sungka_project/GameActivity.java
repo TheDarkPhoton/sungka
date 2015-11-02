@@ -14,6 +14,7 @@ import android.util.Log;
 import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
@@ -34,6 +35,7 @@ import game.player.PlayerActionAdapter;
 import helpers.CupButton;
 import helpers.PauseThreadWhile;
 import helpers.ShellTranslation;
+import game.player.Side;
 
 public class GameActivity extends Activity {
     private static final String TAG = "GameActivity";
@@ -48,11 +50,15 @@ public class GameActivity extends Activity {
     private CupButton[] _cupButtons;
     private Game _game;
     private Board _board;
+    private YourMoveTextView[] _yourMoveTextViews;
+    private float _animationDurationFactor = 1.0f;
 
     private PlayerActionAdapter _playerActionListener = new PlayerActionAdapter() {
         @Override
         public void onMoveStart(Player player) {
             Log.i(TAG, player.getName() + " started his turn");
+            _yourMoveTextViews[player.getSide().ordinal()].show();
+            setupMove(player.getSide());
         }
 
         @Override
@@ -87,6 +93,7 @@ public class GameActivity extends Activity {
         @Override
         public void onMoveEnd(Player player) {
             Log.i(TAG, player.getName() + " ended his turn");
+            _yourMoveTextViews[player.getSide().ordinal()].hide();
         }
     };
 
@@ -236,6 +243,16 @@ public class GameActivity extends Activity {
                     _board.getCurrentPlayer().move(indexA);
                 }
             });
+            btn.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (!_board.isValid(indexA, false))
+                        return false;
+
+                    _cupButtons[indexA].onTouch(v, event);
+                    return false;
+                }
+            });
 
             //PlayerB shell cup
             btn = new CupButton(this, _board, i + 8, CupButton.PLAYER_B, CupButton.CUP);
@@ -249,6 +266,16 @@ public class GameActivity extends Activity {
                     _board.getCurrentPlayer().move(indexB);
                 }
             });
+            btn.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (!_board.isValid(indexB, false))
+                        return false;
+
+                    _cupButtons[indexB].onTouch(v, event);
+                    return false;
+                }
+            });
         }
         //PLAYER A store
         CupButton btnPlayerA = new CupButton(this, _board, 7, CupButton.PLAYER_A, CupButton.STORE);
@@ -259,6 +286,29 @@ public class GameActivity extends Activity {
         CupButton btnPlayerB = new CupButton(this, _board, 15, CupButton.PLAYER_B, CupButton.STORE);
         btnPlayerB.addToLayout(_layoutBase, 0, 1);
         _cupButtons[15] = btnPlayerB;
+
+        _yourMoveTextViews = new YourMoveTextView[2];
+
+        // PLAYER A your move label
+        _yourMoveTextViews[0] = new YourMoveTextView(this, Side.A);
+        _layoutMaster.addView(_yourMoveTextViews[0]);
+
+        // PLAYER B your move label
+        _yourMoveTextViews[1] = new YourMoveTextView(this, Side.B);
+        _layoutMaster.addView(_yourMoveTextViews[1]);
+
+        // Setup animation speed listener
+        _layoutMaster.getRootView().setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    _animationDurationFactor = 0.5f;
+                } else {
+                    _animationDurationFactor = 1.0f;
+                }
+                return false;
+            }
+        });
     }
 
     /**
@@ -272,8 +322,10 @@ public class GameActivity extends Activity {
         final CupButton b = _cupButtons[index];
 
         final ArrayList<ShellTranslation> animations = new ArrayList<>();
+        final int finalDuration = (int) (_animationDurationFactor * duration);
+
         for (int i = 0; i < images.size(); i++) {
-            animations.add(new ShellTranslation(images.get(i), b, duration));
+            animations.add(new ShellTranslation(images.get(i), b, finalDuration));
             animations.get(i).startAnimation();
         }
 
@@ -398,4 +450,23 @@ public class GameActivity extends Activity {
 
         msgs.clear();
     }
+
+    /**
+     * Highlight all the buttons that need highlighting
+     */
+    public void setupMove(Side side) {
+        for (int i = 0; i < _cupButtons.length; i++) {
+            _cupButtons[i].rotateTowards(side);
+
+            if (_board.isOpponentStore(i) || _board.isCurrentPlayersStore(i))
+                continue;
+
+            if (_board.isValid(i, false)) {
+                _cupButtons[i].highlight();
+            } else {
+                _cupButtons[i].dehighlight();
+            }
+        }
+    }
+
 }

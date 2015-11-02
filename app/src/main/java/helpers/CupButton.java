@@ -3,7 +3,12 @@ package helpers;
 import android.content.Context;
 import android.graphics.Color;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
+import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
@@ -18,19 +23,21 @@ import java.util.Random;
 
 import game.board.Board;
 import game.cup.Cup;
+import game.player.Side;
 
-public class CupButton extends Button {
+public class CupButton extends Button implements View.OnTouchListener {
     public static final int PLAYER_A = 0;
     public static final int PLAYER_B = 1;
     public static final int STORE = 0;
     public static final int CUP = 1;
 
     public static CupMargins sizes;
+
     public static class CupMargins {
         public final float scale;
         public final int store, cup, spaceTop, spaceLeft, spaceSmall, spaceStoreTop;
 
-        CupMargins(int screenWidth, int screenHeight){
+        CupMargins(int screenWidth, int screenHeight) {
             store = (int) (screenWidth * 0.156);                                                        //Store cups are 15.6% of the screen width
             cup = (int) (screenWidth * 0.078);                                                          //Small cups are 7.8% of the screen width
             scale = cup / 199.0f;                                                                       // A scale factor for text sizes
@@ -41,8 +48,9 @@ public class CupButton extends Button {
             spaceLeft = (screenWidth - (((store * 2) + (cup * 7) + (spaceSmall * 14)))) / 2;
             spaceTop = ((screenHeight - ((store + (cup * 2) + (spaceStoreTop * 2)))) / 2) - cup / 2;
         }
-    };
-    public static void generateSizes(int screenWidth, int screenHeight){
+    }
+
+    public static void generateSizes(int screenWidth, int screenHeight) {
         sizes = new CupMargins(screenWidth, screenHeight);
     }
 
@@ -74,8 +82,7 @@ public class CupButton extends Button {
         _cup_type = cType;
 
         _text = new TextView(context);
-        _text.setText("" + _cup.getCount() + "/" + _shells.size());
-        _text.setTextSize(15 * sizes.scale);
+        _text.setTextSize(30 * sizes.scale);
         _text.addOnLayoutChangeListener(new OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
@@ -83,22 +90,19 @@ public class CupButton extends Button {
             }
         });
 
-        if(_cup_type == STORE){
+        if (_cup_type == STORE) {
             if (_player_type == PLAYER_A) {
                 _text.setTextColor(Color.parseColor("#FFFFFF"));
                 setBackgroundResource(R.drawable.player_bigcup);
-            }
-            else if (_player_type == PLAYER_B) {
+            } else if (_player_type == PLAYER_B) {
                 _text.setTextColor(Color.parseColor("#000000"));
                 setBackgroundResource(R.drawable.opponent_bigcup);
             }
-        }
-        else if (_cup_type == CUP){
+        } else if (_cup_type == CUP) {
             if (_player_type == PLAYER_A) {
                 _text.setTextColor(Color.parseColor("#FFFFFF"));
                 setBackgroundResource(R.drawable.opponent_smallcup);
-            }
-            else if (_player_type == PLAYER_B) {
+            } else if (_player_type == PLAYER_B) {
                 _text.setTextColor(Color.parseColor("#000000"));
                 setBackgroundResource(R.drawable.player_smallcup);
             }
@@ -119,17 +123,17 @@ public class CupButton extends Button {
 
             _shells.add(shell);
         }
-        _text.setText("" + _cup.getCount() + "/" + _shells.size());
+        _text.setText("" + _cup.getCount());
     }
 
     /**
      * The layout to which dependencies need to be added to.
      * @param layoutBase Grid Layout in question.
-     * @param cupColumn Column of the cup position.
-     * @param cupRow Row of the cup position.
+     * @param cupColumn  Column of the cup position.
+     * @param cupRow     Row of the cup position.
      */
-    public void addToLayout(GridLayout layoutBase, int cupColumn, int cupRow){
-        _layoutMaster = (FrameLayout)layoutBase.getParent();
+    public void addToLayout(GridLayout layoutBase, int cupColumn, int cupRow) {
+        _layoutMaster = (FrameLayout) layoutBase.getParent();
 
         GridLayout.LayoutParams paramsButton = new GridLayout.LayoutParams();
         GridLayout.LayoutParams paramsText = new GridLayout.LayoutParams();
@@ -142,21 +146,19 @@ public class CupButton extends Button {
         paramsText.width = GridLayout.LayoutParams.WRAP_CONTENT;
         paramsText.height = GridLayout.LayoutParams.WRAP_CONTENT;
 
-        if(_cup_type == STORE){
+        if (_cup_type == STORE) {
             paramsButton.width = sizes.store;
             paramsButton.height = sizes.store;
-            if (_player_type == PLAYER_A){
+            if (_player_type == PLAYER_A) {
                 paramsButton.rightMargin = sizes.spaceSmall;
                 paramsButton.leftMargin = sizes.spaceLeft;
-            }
-            else if (_player_type == PLAYER_B){
+            } else if (_player_type == PLAYER_B) {
                 paramsButton.rightMargin = sizes.spaceLeft;
                 paramsButton.leftMargin = sizes.spaceSmall;
             }
             paramsButton.topMargin = sizes.spaceStoreTop;
             paramsButton.bottomMargin = sizes.spaceStoreTop;
-        }
-        else if (_cup_type == CUP){
+        } else if (_cup_type == CUP) {
             paramsButton.width = sizes.cup;
             paramsButton.height = sizes.cup;
         }
@@ -182,19 +184,19 @@ public class CupButton extends Button {
     /**
      * Generates a random position within a cup.
      * @param shell The shell to be moved.
-     * @return x,y position in a form of array.
+     * @return x, y position in a form of array.
      */
-    public float[] randomPositionInCup(View shell){
+    public float[] randomPositionInCup(View shell) {
         float[] pos = new float[2];
 
-        float offsetX = ((GridLayout)getParent()).getX();
-        float offsetY = ((GridLayout)getParent()).getY();
+        float offsetX = ((GridLayout) getParent()).getX();
+        float offsetY = ((GridLayout) getParent()).getY();
 
-        float angle = (float)GameActivity.random.nextDouble() * (float)Math.PI * 2;
-        int radius = GameActivity.random.nextInt(getWidth()/3);
+        float angle = (float) GameActivity.random.nextDouble() * (float) Math.PI * 2;
+        int radius = GameActivity.random.nextInt(getWidth() / 3);
 
-        pos[0] = offsetX + ((float)Math.cos(angle) * radius) + getX() + (getWidth() / 2) - (shell.getWidth() / 2);
-        pos[1] = offsetY + ((float)Math.sin(angle) * radius) + getY() + (getHeight() / 2) - (shell.getHeight() / 2);
+        pos[0] = offsetX + ((float) Math.cos(angle) * radius) + getX() + (getWidth() / 2) - (shell.getWidth() / 2);
+        pos[1] = offsetY + ((float) Math.sin(angle) * radius) + getY() + (getHeight() / 2) - (shell.getHeight() / 2);
 
         return pos;
     }
@@ -203,7 +205,7 @@ public class CupButton extends Button {
      * Removes all shell images from the cup and returns them in another array.
      * @return array list of images removed.
      */
-    public ArrayList<View> getShells(){
+    public ArrayList<View> getShells() {
         ArrayList<View> shells = new ArrayList<>();
         while (_shells.size() > 0) {
             shells.add(_shells.remove(_shells.size() - 1));
@@ -220,15 +222,15 @@ public class CupButton extends Button {
     /**
      * Updates the content of the buttons text.
      */
-    public void updateText(){
-        _text.setText("" + _cup.getCount() + "/" + _shells.size());
+    public void updateText() {
+        _text.setText("" + _cup.getCount());
     }
 
     /**
      * Adds a shell image to the list of shells.
      * @param image Shell to be added.
      */
-    public void addShell(ImageView image){
+    public void addShell(ImageView image) {
         _shells.add(image);
         updateText();
     }
@@ -237,7 +239,7 @@ public class CupButton extends Button {
      * Adds a list of shell images to the shells list.
      * @param shells Shells to be added.
      */
-    public void addShells(ArrayList<View> shells){
+    public void addShells(ArrayList<View> shells) {
         _shells.addAll(shells);
         updateText();
     }
@@ -245,7 +247,7 @@ public class CupButton extends Button {
     /**
      * Positions shells in the right location.
      */
-    public void initShellLocation(){
+    public void initShellLocation() {
         Random r = new Random();
         for (int i = 0; i < _shells.size(); i++) {
             float[] pos = randomPositionInCup(_shells.get(i));
@@ -258,9 +260,9 @@ public class CupButton extends Button {
     /**
      * Positions text view in the right location.
      */
-    private void updateTextLocation(){
-        float offsetX = ((GridLayout)getParent()).getX();
-        float offsetY = ((GridLayout)getParent()).getY();
+    private void updateTextLocation() {
+        float offsetX = ((GridLayout) getParent()).getX();
+        float offsetY = ((GridLayout) getParent()).getY();
 
         _text.setX(offsetX + getX() + (getWidth() / 2) - (_text.getWidth() / 2));
 
@@ -270,4 +272,104 @@ public class CupButton extends Button {
         else if (_player_type == PLAYER_B)
             _text.setY(text_y - _text.getHeight());
     }
+
+    /**
+     * Handle touch events
+     *
+     * @param v     the view that was touched
+     * @param event Type of event (touch down, touch up, etc.)
+     * @return
+     */
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                scaleUp();
+                break;
+            case MotionEvent.ACTION_UP:
+                scaleDown();
+                break;
+        }
+        return false;
+    }
+
+    /**
+     * Enlargens this button by 5%
+     */
+    private void scaleUp() {
+        changeSize(1.0f, 1.05f);
+    }
+
+    /**
+     * Scales down this button to 100%
+     */
+    private void scaleDown() {
+        changeSize(1.05f, 1.0f);
+    }
+
+    /**
+     * Scales this button
+     * @param fromValue the initial scale factor
+     * @param toValue
+     */
+    private void changeSize(float fromValue, float toValue) {
+        float center = this.getWidth() / 2;
+
+        Animation scaleAnimation = new ScaleAnimation(fromValue, toValue, fromValue, toValue, center, center);
+        scaleAnimation.setDuration(50);
+        scaleAnimation.setFillAfter(true);
+        this.startAnimation(scaleAnimation);
+
+    }
+
+    /**
+     * Highlights this button
+     */
+    public void highlight() {
+        changeAlpha(1.0f);
+    }
+
+    /**
+     * Removes the highlight on this button
+     */
+    public void dehighlight() {
+        changeAlpha(0.7f);
+    }
+
+    /**
+     * Animates the change in the alpha value of this button
+     * @param toValue float of the alpha value (eg. 1.05)
+     */
+    public void changeAlpha(float toValue) {
+        Animation alphaAnimation = new AlphaAnimation(this.getAlpha(), toValue);
+        alphaAnimation.setDuration(500);
+        alphaAnimation.setFillAfter(true);
+        startAnimation(alphaAnimation);
+    }
+
+    /**
+     * Rotate the text view to face a side
+     * @param side of the player that has the current move
+     */
+    public void rotateTowards(Side side) {
+        float fromRotation = (side != Side.A) ? 0 : 180;
+        float rotation = (side == Side.A) ? 0 : 180;
+
+        System.out.println("Rotation " + fromRotation + " to " + rotation);
+
+        if (rotation == fromRotation)
+            return;
+
+        float toRotation = rotation;
+
+        float pivotX = _text.getX() + _text.getWidth() / 2;
+        float pivotY = _text.getY() + _text.getHeight() / 2;
+
+        Animation rotateAnimation = new RotateAnimation(fromRotation, toRotation, pivotX, pivotY);
+        rotateAnimation.setDuration(500);
+        rotateAnimation.setFillAfter(true);
+        _text.startAnimation(rotateAnimation);
+
+    }
+
 }
