@@ -20,7 +20,7 @@ public class PauseThreadWhile<T> {
 
             while (positive ? (boolean)m.invoke(null) : !(boolean)m.invoke(null)){
                 try {
-                    Thread.sleep(10);
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -41,7 +41,7 @@ public class PauseThreadWhile<T> {
 
             while (positive ? (boolean)m.invoke(ref) : !(boolean)m.invoke(ref)){
                 try {
-                    Thread.sleep(10);
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -63,7 +63,7 @@ public class PauseThreadWhile<T> {
 
                 while (positive ? (boolean)m.invoke(ref.get(i)) : !(boolean)m.invoke(ref.get(i))){
                     try {
-                        Thread.sleep(10);
+                        Thread.sleep(100);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
