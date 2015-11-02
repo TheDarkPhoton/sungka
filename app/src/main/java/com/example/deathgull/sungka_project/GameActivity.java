@@ -30,8 +30,10 @@ import game.board.Board;
 import game.Game;
 import game.board.HandOfShells;
 import game.board.BoardState;
+import game.player.AI;
 import game.player.Player;
 import game.player.PlayerActionAdapter;
+import game.player.RemoteHuman;
 import helpers.CupButton;
 import helpers.PauseThreadWhile;
 import helpers.ShellTranslation;
@@ -240,6 +242,8 @@ public class GameActivity extends Activity {
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (_board.getCurrentPlayer() instanceof AI || _board.getCurrentPlayer() instanceof RemoteHuman)
+                        return;
                     _board.getCurrentPlayer().move(indexA);
                 }
             });
@@ -263,6 +267,8 @@ public class GameActivity extends Activity {
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (_board.getCurrentPlayer() instanceof AI || _board.getCurrentPlayer() instanceof RemoteHuman)
+                        return;
                     _board.getCurrentPlayer().move(indexB);
                 }
             });
@@ -302,7 +308,7 @@ public class GameActivity extends Activity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    _animationDurationFactor = 0.5f;
+                    _animationDurationFactor = 5f;
                 } else {
                     _animationDurationFactor = 1.0f;
                 }

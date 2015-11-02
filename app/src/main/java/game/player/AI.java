@@ -58,7 +58,6 @@ public class AI extends Player {
                 move(sim.findBestMove());
             }
         }, delay);
-
     }
 
     @Override

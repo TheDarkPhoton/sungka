@@ -16,7 +16,6 @@ public abstract class Player {
     protected Cup _store;
     protected Cup[] _cups;
 
-
     private Side _side;
 
     protected ArrayList<MoveInfo> _moveInfos;                                                //arraylist to store the users moves in a game
