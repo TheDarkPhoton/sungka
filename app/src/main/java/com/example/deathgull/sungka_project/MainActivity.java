@@ -1,4 +1,4 @@
-package com.example.darkphoton.sungka_project;
+package com.example.deathgull.sungka_project;
 
 import android.app.Activity;
 import android.content.Intent;

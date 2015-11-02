@@ -1,4 +1,4 @@
-package game;
+package game.board;
 
 /**
  * Created by darkphoton on 27/10/15.

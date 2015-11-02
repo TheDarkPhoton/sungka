@@ -1,9 +1,12 @@
-package com.example.darkphoton.sungka_project;
+package com.example.deathgull.sungka_project;
 
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.TouchUtils;
 import android.test.UiThreadTest;
 import android.util.Log;
+//import android.R;
+
+import helpers.CupButton;
 
 /**
  * Test the game activity.

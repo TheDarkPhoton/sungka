@@ -1,31 +1,26 @@
-package com.example.darkphoton.sungka_project;
+package helpers;
 
-import android.content.Intent;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 
-import java.util.concurrent.CountDownLatch;
-
 /**
  * Created by darkphoton on 25/10/15.
  */
 public class ShellTranslation implements Animation.AnimationListener {
-    private CupButton _btn;
     private View _view;
     private float[] _coords;
     private float[] _relativeCoords;
     private int _duration;
     TranslateAnimation _anim;
 
-    public ShellTranslation(CupButton btn, View view, float[] coords, int duration){
-        _btn = btn;
+    public ShellTranslation(View view, CupButton cup, int duration){
         _view = view;
-        _coords = coords;
+        _coords = cup.randomPositionInCup(view);
         _relativeCoords = new float[]{
-                coords[0] - _view.getX(),
-                coords[1] - _view.getY()};
+                _coords[0] - _view.getX(),
+                _coords[1] - _view.getY()};
         _duration = duration;
     }
 
@@ -54,8 +49,6 @@ public class ShellTranslation implements Animation.AnimationListener {
 
         _view.setX(_coords[0]);
         _view.setY(_coords[1]);
-
-        _btn.updateText();
     }
 
     @Override

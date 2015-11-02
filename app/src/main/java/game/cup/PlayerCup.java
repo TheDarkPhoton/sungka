@@ -1,4 +1,6 @@
-package game;
+package game.cup;
+
+import game.player.Player;
 
 /**
  * Describes the sungka PLAYER Cup (store)
@@ -10,7 +12,7 @@ public class PlayerCup extends Cup {
      * Constructs a players cup with a reference to the player.
      * @param p owner of the cup.
      */
-    PlayerCup(Player p){
+    public PlayerCup(Player p){
         _player = p;
     }
 
@@ -38,5 +40,4 @@ public class PlayerCup extends Cup {
     public boolean isNotPlayerCup() {
         return false;
     }
-
 }

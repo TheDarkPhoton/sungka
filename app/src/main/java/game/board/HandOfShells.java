@@ -1,6 +1,7 @@
-package game;
+package game.board;
 
-import java.util.ArrayList;
+import game.cup.Cup;
+import game.player.Player;
 
 /**
  * Creates a class representing a hand that has picked up some shells and will deposit them
@@ -60,9 +61,13 @@ public class HandOfShells {
      * Drops all shells in the current cup.
      */
     public void dropAllShells(){
-        _board.nextPlayersMove();
         _board.getCup(_cup_index).addShells(_shells);
         _shells = 0;
+
+        if (_board.getOpponent().hasValidMove())
+            _board.nextPlayersMove();
+        else if (_board.hasValidMoves())
+            _board.getCurrentPlayer().moveStart();
     }
 
     /**
@@ -84,55 +89,56 @@ public class HandOfShells {
         if (hand != null){
             if (_board.isPlayerA(_player)) {
                 if (_board.getPlayerB().hasValidMove()) {
-                    Board.addStateMessage(BoardState.PLAYER_B_WAS_ROBBED);
-                    Board.addStateMessage(BoardState.PLAYER_B_TURN);
+                    _board.addStateMessage(BoardState.PLAYER_B_WAS_ROBBED);
+                    _board.addStateMessage(BoardState.PLAYER_B_TURN);
                 }
-                else
-                    Board.addStateMessage(BoardState.PLAYER_B_WAS_ROBBED_OF_HIS_FINAL_MOVE);
+                else {
+                    _board.addStateMessage(BoardState.PLAYER_B_WAS_ROBBED_OF_HIS_FINAL_MOVE);
+                }
             }
             else if (_board.isPlayerB(_player)) {
                 if (_board.getPlayerA().hasValidMove()) {
-                    Board.addStateMessage(BoardState.PLAYER_A_WAS_ROBBED);
-                    Board.addStateMessage(BoardState.PLAYER_A_TURN);
+                    _board.addStateMessage(BoardState.PLAYER_A_WAS_ROBBED);
+                    _board.addStateMessage(BoardState.PLAYER_A_TURN);
                 }
-                else
-                    Board.addStateMessage(BoardState.PLAYER_A_WAS_ROBBED_OF_HIS_FINAL_MOVE);
+                else {
+                    _board.addStateMessage(BoardState.PLAYER_A_WAS_ROBBED_OF_HIS_FINAL_MOVE);
+                }
             }
-//            _board.nextPlayersMove(_cup_index);
         }
         else if (_shells == 0){
             Player newPlayer = _board.nextPlayersMove(_cup_index);
             if (_board.hasValidMoves()){
                 if (_player.isPlayersCup(_board.getCup(_cup_index), true)){
                     if (_board.isPlayerA(_player))
-                        Board.addStateMessage(BoardState.PLAYER_A_GETS_ANOTHER_TURN);
+                        _board.addStateMessage(BoardState.PLAYER_A_GETS_ANOTHER_TURN);
                     else
-                        Board.addStateMessage(BoardState.PLAYER_B_GETS_ANOTHER_TURN);
+                        _board.addStateMessage(BoardState.PLAYER_B_GETS_ANOTHER_TURN);
                 }
                 else if (_player == newPlayer){
                     Player opponent = _board.getOpponent();
                     if (!opponent.hasValidMove()){
                         if (_board.isPlayerA(opponent)){
-                            Board.addStateMessage(BoardState.PLAYER_A_HAS_NO_VALID_MOVE);
-                            Board.addStateMessage(BoardState.PLAYER_B_GETS_ANOTHER_TURN);
+                            _board.addStateMessage(BoardState.PLAYER_A_HAS_NO_VALID_MOVE);
+                            _board.addStateMessage(BoardState.PLAYER_B_GETS_ANOTHER_TURN);
                         }
                         else{
-                            Board.addStateMessage(BoardState.PLAYER_B_HAS_NO_VALID_MOVE);
-                            Board.addStateMessage(BoardState.PLAYER_A_GETS_ANOTHER_TURN);
+                            _board.addStateMessage(BoardState.PLAYER_B_HAS_NO_VALID_MOVE);
+                            _board.addStateMessage(BoardState.PLAYER_A_GETS_ANOTHER_TURN);
                         }
                     }
                     else{
                         if (_board.isPlayerA(_board.getCurrentPlayer()))
-                            Board.addStateMessage(BoardState.PLAYER_A_TURN);
+                            _board.addStateMessage(BoardState.PLAYER_A_TURN);
                         else
-                            Board.addStateMessage(BoardState.PLAYER_B_TURN);
+                            _board.addStateMessage(BoardState.PLAYER_B_TURN);
                     }
                 }
                 else {
                     if (_board.isPlayerA(_board.getCurrentPlayer()))
-                        Board.addStateMessage(BoardState.PLAYER_A_TURN);
+                        _board.addStateMessage(BoardState.PLAYER_A_TURN);
                     else
-                        Board.addStateMessage(BoardState.PLAYER_B_TURN);
+                        _board.addStateMessage(BoardState.PLAYER_B_TURN);
                 }
             }
         }
@@ -154,5 +160,13 @@ public class HandOfShells {
      */
     public int currentCupIndex(){
         return _cup_index;
+    }
+
+    public int getShellCount(){
+        return _shells;
+    }
+
+    public boolean isEmpty(){
+        return _shells == 0;
     }
 }
