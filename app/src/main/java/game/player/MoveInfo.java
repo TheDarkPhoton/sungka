@@ -8,14 +8,17 @@ public class MoveInfo {
     private double timeEndMoveMilli;
     private double durationOfMoveMilli;
     private int numOfShellsCollected;
+    private String playerName;
 
     /**
      * Call this method at the start of a Players turn
-     * @param timeStartMoveMilli the current time in milliseconds
+     * @param timeStartMoveMilli the current time in milliseconds.
+     * @param playerName the name of the Player for which we are storing the move information for
      */
-    public MoveInfo(double timeStartMoveMilli){
+    public MoveInfo(double timeStartMoveMilli,String playerName){
         this.timeStartMoveMilli = timeStartMoveMilli;
         timeEndMoveMilli = 0;
+        this.playerName = playerName;
     }
 
     /**

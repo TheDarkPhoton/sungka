@@ -1,5 +1,7 @@
 package game;
 
+import com.example.deathgull.sungka_project.GameActivity;
+
 import game.board.Board;
 import game.player.AI;
 import game.player.Human;
@@ -19,6 +21,7 @@ public class Game {
         // for now, assume human players
         Player playerOne = new Human("Shell Master");
         playerOne.setPlayerActionListener(playerActionListener);
+        //((Human) playerOne).setSungkaConnection(GameActivity.getUsersConnection());
 
         Player playerTwo = new AI();
         playerTwo.setPlayerActionListener(playerActionListener);

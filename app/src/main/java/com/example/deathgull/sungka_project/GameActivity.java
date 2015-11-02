@@ -24,6 +24,7 @@ import android.widget.RelativeLayout;
 import java.util.ArrayList;
 import java.util.Random;
 
+import game.SungkaConnection;
 import game.board.Board;
 import game.Game;
 import game.board.HandOfShells;
@@ -43,6 +44,8 @@ public class GameActivity extends Activity {
     private CupButton[] _cupButtons;
     private Game _game;
     private Board _board;
+
+    private static SungkaConnection usersConnection = null;
 
     private PlayerActionAdapter _playerActionListener = new PlayerActionAdapter() {
         @Override
@@ -383,5 +386,21 @@ public class GameActivity extends Activity {
         }
 
         msgs.clear();
+    }
+
+    /**
+     * Store the SungkaConnection, that has previously been set up, that the user will use for the the multiplayer
+     * @param sungkaConnection the SungkaConnection that corresponds to the user on this device
+     */
+    public static void setConnection(SungkaConnection sungkaConnection){
+        usersConnection = sungkaConnection;
+    }
+
+    /**
+     * Get the SungkaConnection that has previously been set up for a multiplayer game
+     * @return the SungkaConnection used to send messages between the devices
+     */
+    public static SungkaConnection getUsersConnection(){
+        return usersConnection;
     }
 }
