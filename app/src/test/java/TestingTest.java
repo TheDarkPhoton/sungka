@@ -1,11 +1,16 @@
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import org.junit.*;
+
 
 public class TestingTest {
     @Test
     public void myTest1() {
         int x = 3 * 4;
+        Board board = mock(Board.class);
+        when(board.isOpponentStore()).thenReturn(false);
+
         assertTrue(x == 12);
     }
 

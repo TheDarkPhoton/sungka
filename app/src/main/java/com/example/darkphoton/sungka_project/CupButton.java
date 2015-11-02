@@ -67,7 +67,7 @@ public class CupButton extends Button {
         _cup_type = cType;
 
         _text = new TextView(context);
-        _text.setText("" + _cup.getCount() + "/" + _shells.size());
+        _text.setText(String.format("%d", _cup.getCount()));
         _text.setTextSize(15 * sizes.scale);
         _text.addOnLayoutChangeListener(new OnLayoutChangeListener() {
             @Override
@@ -112,7 +112,7 @@ public class CupButton extends Button {
 
             _shells.add(shell);
         }
-        _text.setText("" + _cup.getCount() + "/" + _shells.size());
+        _text.setText(String.format("%d", _cup.getCount()));
     }
 
     /**
@@ -206,11 +206,16 @@ public class CupButton extends Button {
         return shells;
     }
 
+    @Override
+    public CharSequence getText() {
+        return _text.getText();
+    }
+
     /**
      * Updates the content of the buttons text.
      */
     public void updateText(){
-        _text.setText("" + _cup.getCount() + "/" + _shells.size());
+        _text.setText(String.format("%d", _cup.getCount()));
     }
 
     /**

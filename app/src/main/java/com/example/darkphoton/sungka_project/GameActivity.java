@@ -97,6 +97,8 @@ public class GameActivity extends Activity {
     protected void onResume() {
         super.onResume();
         game.start();
+
+
     }
 
     /**
@@ -160,10 +162,11 @@ public class GameActivity extends Activity {
                 if (once)
                     return;
                 once = true;
-                
+
                 for (CupButton btn: cupButtons) {
                     btn.initShellLocation();
                 }
+
             }
         });
 
@@ -181,7 +184,7 @@ public class GameActivity extends Activity {
         _screenHeight = displayMetrics.heightPixels;
 
         //Calculate sizes of store cups and small cups
-        CupButton.generateSizes(_screenWidth,_screenHeight);
+        CupButton.generateSizes(_screenWidth, _screenHeight);
     }
 
     /**
@@ -197,6 +200,9 @@ public class GameActivity extends Activity {
         //Initialise button array
         cupButtons = new CupButton[16];
 
+        // used when applying IDs
+        String packageName = getPackageName();
+
         int topColumnIndex = 7;
         int bottomColumnIndex = 1;
         for(int i = 0; i < 7; i++) {
@@ -204,6 +210,10 @@ public class GameActivity extends Activity {
             CupButton btn = new CupButton(this, board.getCup(i), CupButton.PLAYER_A, CupButton.CUP);
             btn.addToLayout(layoutBase, bottomColumnIndex++, 2);
             cupButtons[i] = btn;
+
+            // fetch and apply a unique identifier to the cup
+            int id = getResources().getIdentifier("cup1_" + (i+1), "id", packageName);
+            btn.setId(id);
 
             final int indexA = i;
             btn.setOnClickListener(new View.OnClickListener() {
@@ -218,6 +228,10 @@ public class GameActivity extends Activity {
             btn.addToLayout(layoutBase, topColumnIndex--, 0);
             cupButtons[i+8] = btn;
 
+            // fetch and apply id
+            id = getResources().getIdentifier("cup2_" + (i+1), "id", packageName);
+            btn.setId(id);
+
             final int indexB = i+8;
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -231,10 +245,16 @@ public class GameActivity extends Activity {
         btnPlayerA.addToLayout(layoutBase, 8, 1);
         cupButtons[7] = btnPlayerA;
 
+        int id = getResources().getIdentifier("cup1_store", "id", packageName);
+        btnPlayerA.setId(id);
+
         //PLAYER B store
         CupButton btnPlayerB = new CupButton(this, board.getCup(15), CupButton.PLAYER_B, CupButton.STORE);
         btnPlayerB.addToLayout(layoutBase, 0, 1);
         cupButtons[15] = btnPlayerB;
+
+        id = getResources().getIdentifier("cup2_store", "id", packageName);
+        btnPlayerB.setId(id);
     }
 
     private final Random r = new Random();                                  //Object for random number generation

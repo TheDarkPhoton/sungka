@@ -25,5 +25,4 @@
             android:theme="@android:style/Theme.DeviceDefault.Light.NoActionBar.Fullscreen" >
         </activity>
     </application>
-
 </manifest>
