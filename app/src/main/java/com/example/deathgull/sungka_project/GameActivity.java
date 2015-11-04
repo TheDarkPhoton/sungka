@@ -5,10 +5,12 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.res.ResourcesCompat;
+import android.text.format.Formatter;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
@@ -23,8 +25,11 @@ import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
 
+import game.SungkaClient;
 import game.SungkaConnection;
+import game.SungkaServer;
 import game.board.Board;
 import game.Game;
 import game.board.HandOfShells;
@@ -79,6 +84,30 @@ public class GameActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
+        String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
+        Log.v(TAG, "ip: " + ip);
+       /*SungkaClient sungkaClient = new SungkaClient("10.230.238.122",4000);
+        sungkaClient.execute();
+        try {
+            sungkaClient.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        setConnection(sungkaClient);*/
+        SungkaServer sungkaServer = new SungkaServer(4000);
+        sungkaServer.execute();
+
+        try {
+            sungkaServer.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        setConnection(sungkaServer);
 
         shells =new Drawable[]{
                 ResourcesCompat.getDrawable(getResources(), R.drawable.shell1, null),

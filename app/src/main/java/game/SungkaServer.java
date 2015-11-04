@@ -1,6 +1,8 @@
 package game;
 
+import android.os.AsyncTask;
 import android.os.Handler;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,23 +23,7 @@ public class SungkaServer extends SungkaConnection {
     private int portNumber;
     private ServerSocket serverSocket;
     private Socket clientSocket;
-    private BufferedReader bufferedReader;
-    private Handler listenForClientHandler;
-    private SungkaProtocol sungkaProtocol;
-    private Runnable listenForClient = new Runnable() {
-        @Override
-        public void run() {
-            String fromClient;
-            try {
-                while((fromClient = bufferedReader.readLine()) !=null) {
-                    //received a message from the client, do the appropriate change in the board
-                    sungkaProtocol.updateGame(fromClient);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    };
+
 
     /**
      * The constructor used to provide the necessary information to set up the ServerSocket
@@ -46,7 +32,16 @@ public class SungkaServer extends SungkaConnection {
      */
     public SungkaServer(int portNumber,RemoteHuman remoteHuman){
         this.portNumber = portNumber;
-        listenForClientHandler = new Handler();
+        sungkaProtocol = new SungkaProtocol(remoteHuman);
+    }
+
+    public SungkaServer(int portNumber){
+        this.portNumber = portNumber;
+        sungkaProtocol = null;
+
+    }
+
+    /*public void setSungkaProtocol(RemoteHuman remoteHuman){
         sungkaProtocol = new SungkaProtocol(remoteHuman);
     }
 
@@ -57,7 +52,9 @@ public class SungkaServer extends SungkaConnection {
      */
     private void setUpServer() throws IOException {
         serverSocket = new ServerSocket(portNumber);
+        Log.v("SungkaServer","Establishing connection");
         clientSocket = serverSocket.accept();//waits for a client socket to connect to it
+        Log.v("SungkaServer", "Connection established");
         printWriter = new PrintWriter(clientSocket.getOutputStream(),true);//to send messages to the other user
         bufferedReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));//to read what the other user sends
     }
@@ -86,7 +83,8 @@ public class SungkaServer extends SungkaConnection {
     protected void onPostExecute(Boolean result){
         //TODO:could remove that dialog since the connection has been established
         super.onPostExecute(result);
-        listenForClientHandler.postDelayed(listenForClient, 50);//start the listenForClient runnable thread in 50 ms
+       // listenForClientHandler.postDelayed(listenForClient, 50);//start the listenForClient runnable thread in 50 ms
+
     }
 
 
