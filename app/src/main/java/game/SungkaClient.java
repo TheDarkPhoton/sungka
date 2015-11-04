@@ -1,7 +1,5 @@
 package game;
 
-import android.os.AsyncTask;
-import android.os.Handler;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -38,6 +36,12 @@ public class SungkaClient extends SungkaConnection{
         this.portNumber = portNumber;
         //sungkaProtocol = new SungkaProtocol(remoteHuman);
     }
+
+    /**
+     * The constructor to provide the necessary information about the Server
+     * @param hostName the IP address of the server, it is the IPv4 address if both users are connected to the same network
+     * @param portNumber the port of the server which we want to connect to
+     */
     public SungkaClient(String hostName, int portNumber){
         this.hostName = hostName;
         this.portNumber = portNumber;

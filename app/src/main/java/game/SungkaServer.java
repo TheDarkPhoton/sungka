@@ -1,7 +1,5 @@
 package game;
 
-import android.os.AsyncTask;
-import android.os.Handler;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -35,16 +33,15 @@ public class SungkaServer extends SungkaConnection {
         //sungkaProtocol = new SungkaProtocol(remoteHuman);
     }
 
+    /**
+     * The constructor used to provide the necessary information to set up the ServerSocket
+     * @param portNumber the port that the ServerSocket will bind to
+     */
     public SungkaServer(int portNumber){
         this.portNumber = portNumber;
         sungkaProtocol = null;
 
     }
-
-    /*public void setSungkaProtocol(RemoteHuman remoteHuman){
-        sungkaProtocol = new SungkaProtocol(remoteHuman);
-    }
-
     /**
      * Sets up the ServerSocket and waits for a Socket to connect to it, as well as setting up a PrintWriter to send information to
      * the Client and a BufferedReader to receive message from the Client

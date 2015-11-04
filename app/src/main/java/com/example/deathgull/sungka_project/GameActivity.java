@@ -84,9 +84,11 @@ public class GameActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        /*//To get the ip
         WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
         String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
-        Log.v(TAG, "ip: " + ip);
+        Log.v(TAG, "ip: " + ip);*/
+        getIp();
         //In the case of a client connecting to the server, the server needs to be set up before
       /* SungkaClient sungkaClient = new SungkaClient("10.230.238.122",4000);
         sungkaClient.execute();
@@ -98,9 +100,10 @@ public class GameActivity extends Activity {
             e.printStackTrace();
         }
         setConnection(sungkaClient);*/
+        setUpConnection(SungkaConnection.JOIN_CONNECTION);
 
         //in the case of the server being set up
-        SungkaServer sungkaServer = new SungkaServer(4000);
+        /*SungkaServer sungkaServer = new SungkaServer(4000);
         sungkaServer.execute();
 
         try {
@@ -110,7 +113,8 @@ public class GameActivity extends Activity {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-        setConnection(sungkaServer);
+        setConnection(sungkaServer);*/
+        //setUpConnection(SungkaConnection.HOST_CONNECTION);
 
         shells =new Drawable[]{
                 ResourcesCompat.getDrawable(getResources(), R.drawable.shell1, null),
@@ -435,5 +439,49 @@ public class GameActivity extends Activity {
      */
     public static SungkaConnection getUsersConnection(){
         return usersConnection;
+    }
+
+    /**
+     * To set up the connection
+     * @param connectionType the type of connection we want to create, a Server (Host) connection or a Client (Join) connection
+     */
+    private void setUpConnection(String connectionType){
+        if(connectionType.equals(SungkaConnection.HOST_CONNECTION)){//uses SungkaServer, sets up the game
+            SungkaServer sungkaServer = new SungkaServer(4000);
+            sungkaServer.execute();
+            try {
+                sungkaServer.get();//wait for the connection to be established; returns true if it is set up,else false
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+            setConnection(sungkaServer);
+        }else if(connectionType.equals(SungkaConnection.JOIN_CONNECTION)){//uses SungkaClient, joins the game
+            // In the case of a client connecting to the server, the server needs to be set up before
+            SungkaClient sungkaClient = new SungkaClient("10.230.238.122",4000);//server ip and port need to be inserted by the user
+            sungkaClient.execute();                 //this is a test one
+            try {
+                sungkaClient.get();//wait for the connection to be established; returns true if it is set up, else false
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+            setConnection(sungkaClient);
+        }
+    }
+
+    /**
+     * Get the IP of the current device
+     * @return the IPv4 of the device
+     */
+    private String getIp(){
+        //To get the ip
+        //TODO: find another method to get the IP address
+        WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
+        String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
+        Log.v(TAG, "ip: " + ip);
+        return ip;
     }
 }
