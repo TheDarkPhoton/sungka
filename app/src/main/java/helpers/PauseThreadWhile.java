@@ -9,6 +9,8 @@ import java.util.concurrent.CountDownLatch;
  * Created by darkphoton on 29/10/15.
  */
 public class PauseThreadWhile<T> {
+    private final int _delay = 100;
+
     public PauseThreadWhile(Class<T> type, String methodName){
         this(type, methodName, true);
     }
@@ -20,7 +22,7 @@ public class PauseThreadWhile<T> {
 
             while (positive ? (boolean)m.invoke(null) : !(boolean)m.invoke(null)){
                 try {
-                    Thread.sleep(10);
+                    Thread.sleep(_delay);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -41,7 +43,7 @@ public class PauseThreadWhile<T> {
 
             while (positive ? (boolean)m.invoke(ref) : !(boolean)m.invoke(ref)){
                 try {
-                    Thread.sleep(10);
+                    Thread.sleep(_delay);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -63,7 +65,7 @@ public class PauseThreadWhile<T> {
 
                 while (positive ? (boolean)m.invoke(ref.get(i)) : !(boolean)m.invoke(ref.get(i))){
                     try {
-                        Thread.sleep(10);
+                        Thread.sleep(_delay);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
