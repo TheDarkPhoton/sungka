@@ -2,6 +2,7 @@ package game;
 
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -35,7 +36,7 @@ public class SungkaClient extends SungkaConnection{
     public SungkaClient(String hostName, int portNumber,RemoteHuman remoteHuman){
         this.hostName = hostName;
         this.portNumber = portNumber;
-        sungkaProtocol = new SungkaProtocol(remoteHuman);
+        //sungkaProtocol = new SungkaProtocol(remoteHuman);
     }
     public SungkaClient(String hostName, int portNumber){
         this.hostName = hostName;
@@ -43,16 +44,15 @@ public class SungkaClient extends SungkaConnection{
         sungkaProtocol = null;
     }
 
-    public void setSungkaProtocol(RemoteHuman remoteHuman){
-        sungkaProtocol = new SungkaProtocol(remoteHuman);
-    }
 
     /**
      * Sets up the Socket to connect to the server, as well as setting up a PrintWriter to send information to
      * the server and a BufferedReader to receive message from the Server
      */
     private void connectClient() throws IOException {
+        Log.v("SungkaClient","Establishing connection");
         clientSocket = new Socket(hostName,portNumber);
+        Log.v("SungkaClient","Connected");
         printWriter = new PrintWriter(clientSocket.getOutputStream(),true);
         bufferedReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 

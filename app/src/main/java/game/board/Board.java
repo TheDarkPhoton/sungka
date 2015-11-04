@@ -48,6 +48,7 @@ public class Board {
 
         // temporary player assignment
         _currentPlayer = a;
+        //_currentPlayer=b; //in the case when this player starts second
     }
 
     /**

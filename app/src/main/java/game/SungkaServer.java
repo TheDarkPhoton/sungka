@@ -32,7 +32,7 @@ public class SungkaServer extends SungkaConnection {
      */
     public SungkaServer(int portNumber,RemoteHuman remoteHuman){
         this.portNumber = portNumber;
-        sungkaProtocol = new SungkaProtocol(remoteHuman);
+        //sungkaProtocol = new SungkaProtocol(remoteHuman);
     }
 
     public SungkaServer(int portNumber){

@@ -3,6 +3,8 @@ package game;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.example.deathgull.sungka_project.GameActivity;
+
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 
@@ -17,6 +19,7 @@ public abstract class SungkaConnection extends AsyncTask<String,Integer,Boolean>
     protected SungkaProtocol sungkaProtocol;
     protected Thread communicationThread;
     protected BufferedReader bufferedReader;
+    protected GameActivity gameActivity;
 
     /**
      * Send a message to the other device
@@ -28,7 +31,11 @@ public abstract class SungkaConnection extends AsyncTask<String,Integer,Boolean>
     }
 
     public void setSungkaProtocol(RemoteHuman remoteHuman){
-        sungkaProtocol = new SungkaProtocol(remoteHuman);
+        sungkaProtocol = new SungkaProtocol(remoteHuman,gameActivity);
+    }
+
+    public void setActivity(GameActivity gameActivity){
+        this.gameActivity = gameActivity;
     }
 
     public void beginListening(){

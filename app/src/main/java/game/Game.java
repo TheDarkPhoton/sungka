@@ -17,7 +17,7 @@ public class Game {
 
     private Board board;
 
-    public Game(PlayerActionListener playerActionListener) {
+    public Game(PlayerActionListener playerActionListener,GameActivity gameActivity) {
 
         // for now, assume human players
         Player playerOne = new Human("Shell Master");
@@ -26,10 +26,12 @@ public class Game {
 
         Player playerTwo = new AI();
         playerTwo.setPlayerActionListener(playerActionListener);
-
+        //for the remote player
         RemoteHuman remoteHuman = new RemoteHuman("Remote Human");
         remoteHuman.setPlayerActionListener(playerActionListener);
+        GameActivity.getUsersConnection().setActivity(gameActivity);//need this so that the moves can be carried on the ui thread
         GameActivity.getUsersConnection().setSungkaProtocol(remoteHuman);
+
         GameActivity.getUsersConnection().beginListening();
 
         board = new Board(playerOne, remoteHuman);

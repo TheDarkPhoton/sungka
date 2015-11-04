@@ -87,7 +87,8 @@ public class GameActivity extends Activity {
         WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
         String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
         Log.v(TAG, "ip: " + ip);
-       /*SungkaClient sungkaClient = new SungkaClient("10.230.238.122",4000);
+        //In the case of a client connecting to the server, the server needs to be set up before
+      /* SungkaClient sungkaClient = new SungkaClient("10.230.238.122",4000);
         sungkaClient.execute();
         try {
             sungkaClient.get();
@@ -97,6 +98,8 @@ public class GameActivity extends Activity {
             e.printStackTrace();
         }
         setConnection(sungkaClient);*/
+
+        //in the case of the server being set up
         SungkaServer sungkaServer = new SungkaServer(4000);
         sungkaServer.execute();
 
@@ -116,7 +119,7 @@ public class GameActivity extends Activity {
                 ResourcesCompat.getDrawable(getResources(), R.drawable.shell4, null),
         };
 
-        _game = new Game(_playerActionListener);
+        _game = new Game(_playerActionListener,this);
         _board = _game.getBoard();
 
         hideNav();                                                  //Hide navigation bar and system bar
@@ -423,6 +426,7 @@ public class GameActivity extends Activity {
      */
     public static void setConnection(SungkaConnection sungkaConnection){
         usersConnection = sungkaConnection;
+
     }
 
     /**

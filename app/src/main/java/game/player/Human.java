@@ -1,6 +1,9 @@
 package game.player;
 
+import android.util.Log;
+
 import game.SungkaConnection;
+import game.SungkaProtocol;
 
 /**
  * Class that represents a Human PLAYER, where the player will be the one making the moves, instead
@@ -31,7 +34,8 @@ public class Human extends Player {
     public void move(int index) {
         //send to remote player//need to decide if the player is a host or not
         if(isOnline) {
-            sungkaConnection.sendMessage(Integer.toString(index));
+            Log.v("Human",SungkaProtocol.PLAYERMOVE+Integer.toString(index));
+            sungkaConnection.sendMessage(SungkaProtocol.PLAYERMOVE+Integer.toString(index));
         }
         _playerActionListener.onMove(this, index);
     }
