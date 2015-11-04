@@ -258,7 +258,7 @@ public class GameActivity extends Activity {
             });
 
             // fetch and apply a unique identifier to the Player B cup
-            id = getResources().getIdentifier("cup1_" + (i+1), "id", packageName);
+            id = getResources().getIdentifier("cup2_" + (i+1), "id", packageName);
             btn.setId(id);
         }
         //PLAYER A store
@@ -274,7 +274,7 @@ public class GameActivity extends Activity {
         // set IDs to stores
         int id = getResources().getIdentifier("cup1_store", "id", packageName);
         btnPlayerA.setId(id);
-        id = getResources().getIdentifier("cup1_store", "id", packageName);
+        id = getResources().getIdentifier("cup2_store", "id", packageName);
         btnPlayerB.setId(id);
 
     }

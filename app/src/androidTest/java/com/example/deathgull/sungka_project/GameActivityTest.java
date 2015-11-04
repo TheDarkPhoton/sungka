@@ -95,65 +95,27 @@ public class GameActivityTest extends ActivityInstrumentationTestCase2<GameActiv
     }
 
     public void testCupMove() {
-        final CupButton cup1_4 = (CupButton) activity.findViewById(R.id.cup1_1);
-        CupButton cup1_5 = (CupButton) activity.findViewById(R.id.cup1_2);
-//        final CupButton cup1_4 = (CupButton) activity.findViewById(R.id.cup1_4);
-//        CupButton cup1_5 = (CupButton) activity.findViewById(R.id.cup1_5);
-//        CupButton cup1_6 = (CupButton) activity.findViewById(R.id.cup1_6);
-//        CupButton cup1_7 = (CupButton) activity.findViewById(R.id.cup1_7);
-//        CupButton cup1_store = (CupButton) activity.findViewById(R.id.cup1_store);
-//        CupButton cup2_1 = (CupButton) activity.findViewById(R.id.cup2_1);
-//        CupButton cup2_2 = (CupButton) activity.findViewById(R.id.cup2_2);
-//        CupButton cup2_3 = (CupButton) activity.findViewById(R.id.cup2_3);
+        final CupButton cup1_4 = (CupButton) activity.findViewById(R.id.cup1_4);
+        CupButton cup1_5 = (CupButton) activity.findViewById(R.id.cup1_5);
+        CupButton cup1_6 = (CupButton) activity.findViewById(R.id.cup1_6);
+        CupButton cup1_7 = (CupButton) activity.findViewById(R.id.cup1_7);
+        CupButton cup1_store = (CupButton) activity.findViewById(R.id.cup1_store);
+        CupButton cup2_1 = (CupButton) activity.findViewById(R.id.cup2_1);
+        CupButton cup2_2 = (CupButton) activity.findViewById(R.id.cup2_2);
+        CupButton cup2_3 = (CupButton) activity.findViewById(R.id.cup2_3);
 
-        Log.i(TAG, "cup1_2 has " + cup1_5.getText().toString());
-
-        Runnable move = new Runnable() {
-            @Override
-            public void run() {
-                cup1_4.performClick();
-            }
-        };
-
-//        getInstrumentation().runOnMainSync(move);
-        activity.runOnUiThread(move);
-
-//        TouchUtils.clickView(this, cup1_4);
+        TouchUtils.clickView(this, cup1_4);
 
         getInstrumentation().waitForIdleSync();
-        Log.i(TAG, "cup1_2 has " + cup1_5.getText().toString());
 
         assertEquals("0", cup1_4.getText().toString());
         assertEquals("8", cup1_5.getText().toString());
-//        assertEquals("8", cup1_6.getText().toString());
-//        assertEquals("8", cup1_7.getText().toString());
-//        assertEquals("1", cup1_store.getText().toString());
-//        assertEquals("8", cup2_1.getText().toString());
-//        assertEquals("8", cup2_2.getText().toString());
-//        assertEquals("8", cup2_3.getText().toString());
-    }
-
-    /*public void testCupMove2() {
-        final CupButton cup1_1 = (CupButton) activity.findViewById(R.id.cup1_1);
-        CupButton cup1_6 = (CupButton) activity.findViewById(R.id.cup1_6);
-        CupButton cup1_7 = (CupButton) activity.findViewById(R.id.cup1_7);
-        CupButton cup2_store = (CupButton) activity.findViewById(R.id.cup2_store);
-
-        getInstrumentation().waitForIdleSync();
-
-        activity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                cup1_1.performClick();
-            }
-        });
-
-        getInstrumentation().waitForIdleSync();
-
-        assertEquals("1", cup1_1.getText().toString());
-        assertEquals("9", cup1_6.getText().toString());
+        assertEquals("8", cup1_6.getText().toString());
         assertEquals("8", cup1_7.getText().toString());
-        assertEquals("0", cup2_store.getText().toString());
+        assertEquals("1", cup1_store.getText().toString());
+        assertEquals("8", cup2_1.getText().toString());
+        assertEquals("8", cup2_2.getText().toString());
+        assertEquals("8", cup2_3.getText().toString());
     }
 
     public void testChangePlayer() {
@@ -253,5 +215,5 @@ public class GameActivityTest extends ActivityInstrumentationTestCase2<GameActiv
         assertEquals("0", cup1_3.getText().toString());
         assertEquals("0", cup2_5.getText().toString());
         assertEquals("10", cup1_store.getText().toString());
-    }*/
+    }
 }

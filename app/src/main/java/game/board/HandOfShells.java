@@ -79,6 +79,9 @@ public class HandOfShells {
 
         Cup cup = _board.getCup(_cup_index);
         HandOfShells hand = null;
+
+        // if the last shell went in a cup belonging to Player, but it isn't a store, and it
+        // was empty before that, then steal shells from opponent.
         if (!_player.isPlayersCup(cup, true) && _player.isPlayersCup(cup) && cup.getCount() == 1 && _shells == 0){
             if (_board.isPlayerA(_player))
                 hand = _board.pickUpShells(14 - _cup_index, true);
