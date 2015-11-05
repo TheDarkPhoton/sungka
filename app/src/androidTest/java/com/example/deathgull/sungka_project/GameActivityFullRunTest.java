@@ -4,10 +4,11 @@ import android.test.SingleLaunchActivityTestCase;
 import android.test.TouchUtils;
 
 import org.junit.FixMethodOrder;
-import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import helpers.CupButton;
+
+// TODO: decide if this test is worth keeping
 
 /**
  * Play a full game of sungka, running tests along the way.
