@@ -2,7 +2,6 @@ package game.board;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-import static org.mockito.AdditionalAnswers.returnsFirstArg;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -13,7 +12,6 @@ import java.util.ArrayList;
 
 import game.player.Player;
 import game.cup.Cup;
-import game.board.BoardState;
 
 /**
  * Test the HandOfShells class.

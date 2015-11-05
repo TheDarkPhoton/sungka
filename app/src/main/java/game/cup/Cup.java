@@ -41,6 +41,7 @@ public abstract class Cup {
      * @return shell count.
      */
     public int pickUpShells(){
+    // TODO: should this method be moved to ShellCup? PlayerCup shouldn't be able to be picked up from.
         int shells = _shells;
         _shells = 0;
         return shells;
