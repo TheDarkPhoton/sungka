@@ -181,9 +181,12 @@ public class BoardSimulator extends Board {
         }
     }
 
-    private void explore(List<Node<State>> initialLeafs, List<Node<State>> resultLeafs, Explore type){
+    private boolean explore(List<Node<State>> initialLeafs, List<Node<State>> resultLeafs, Explore type){
+        boolean allStatesExplored = true;
+
         for (int i = 0; i < initialLeafs.size(); i++){
-            if (initialLeafs.get(i) == null) continue;
+            if (!initialLeafs.get(i).getElement().isGoal())
+                allStatesExplored = false;
 
             List<Node<State>> newLeafs = new ArrayList<>();
 
@@ -195,7 +198,6 @@ public class BoardSimulator extends Board {
             if (type == Explore.MIN) {
                 minSort(newLeafs);
                 explore(newLeafs, resultLeafs, Explore.MAX);
-
             }
             else {
                 maxSort(newLeafs);
@@ -203,6 +205,8 @@ public class BoardSimulator extends Board {
                 resultLeafs.addAll(newLeafs);
             }
         }
+
+        return allStatesExplored;
     }
 
     public void explore(){
@@ -210,11 +214,12 @@ public class BoardSimulator extends Board {
         _leafs.add(_current);
         List<Node<State>> initialLeafs;
 
-        for (int i = 0; i < 50; i++) {
+        boolean allStatesExplored = false;
+        while (!allStatesExplored) {
             initialLeafs = _leafs;
             _leafs = new ArrayList<>();
 
-            explore(initialLeafs, _leafs, Explore.MIN);
+            allStatesExplored = explore(initialLeafs, _leafs, Explore.MIN);
 
             _leafs = _leafs.subList(0, _leafs.size() < 7 ? _leafs.size() : 7);
         }
