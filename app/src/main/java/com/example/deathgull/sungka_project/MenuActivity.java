@@ -7,7 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-public class MainActivity extends Activity {
+public class MenuActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -15,7 +15,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_menu);
 
         //start game without press
-        SinglePlayer(null);
+        //SinglePlayer(null);
     }
 
     @Override
@@ -45,7 +45,31 @@ public class MainActivity extends Activity {
      * @param view - the button
      */
     public void SinglePlayer(View view) {
-        Intent intent = new Intent(MainActivity.this, GameActivity.class);
+        Intent intent = new Intent(MenuActivity.this, GameActivity.class);
         startActivity(intent);
+    }
+
+    /**
+     * Start multiplayer game - switch intent
+     * @param view - the button
+     */
+    public void Multiplayer(View view) {
+
+    }
+
+    /**
+     * Start leaderboard - switch intent
+     * @param view - the button
+     */
+    public void Leaderboard(View view) {
+
+    }
+
+    /**
+     * Start options - switch intent
+     * @param view - the button
+     */
+    public void Options(View view) {
+
     }
 }

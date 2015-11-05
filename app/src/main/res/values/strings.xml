@@ -5,4 +5,8 @@
     <string name="str_Zero">0</string>
     <string name="str_SinglePlayer">Single Player</string>
     <string name="str_YourTurn">YOUR TURN</string>
+    <string name="strSingleplayer">Sinleplayer</string>
+    <string name="strMultiplayer">Multiplayer</string>
+    <string name="strLeaderboard">Leaderboard</string>
+    <string name="strOptions">Options</string>
 </resources>

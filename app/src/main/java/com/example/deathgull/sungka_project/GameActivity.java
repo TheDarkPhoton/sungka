@@ -121,7 +121,7 @@ public class GameActivity extends Activity {
         hideNav();                                                  //Hide navigation bar and system bar
         setScreenSize();                                            //Set screen size
         initLayouts();                                              //Setup layouts
-        initView();                                                 //Programmatically create and lay out elements
+        initView();
     }
 
     @Override
@@ -145,6 +145,7 @@ public class GameActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        System.out.println("Resume");
         _game.start();
     }
 
@@ -463,6 +464,7 @@ public class GameActivity extends Activity {
     public void setupMove(Side side) {
         for (int i = 0; i < _cupButtons.length; i++) {
             _cupButtons[i].rotateTowards(side);
+            _cupButtons[i].showText();
 
             if (_board.isOpponentStore(i) || _board.isCurrentPlayersStore(i))
                 continue;
@@ -474,5 +476,4 @@ public class GameActivity extends Activity {
             }
         }
     }
-
 }
