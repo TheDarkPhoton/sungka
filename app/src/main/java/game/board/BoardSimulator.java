@@ -85,7 +85,7 @@ public class BoardSimulator extends Board {
             _cups[i].setShells(state.getState()[i]);
     }
 
-    private Node<State> exploreState(Node<State> parent, int index){
+    private Node<State> explore(Node<State> parent, int index){
         Player player = getCurrentPlayer();
         Node<State> leaf = new Node<>(new State(index));
         int score = 0;
@@ -93,14 +93,12 @@ public class BoardSimulator extends Board {
         HandOfShells hand = pickUpShells(index);
         if (hand != null)
             ++score;
-        else
-            leaf.getElement().setDeadEnd();
 
         while (hand != null && !hand.isEmpty()){
             int i = hand.getNextCup();
 
             if (player.isPlayersCup(_cups[i], true)){
-                if (_cups[i].isEmpty()){
+                if (hand.getShellCount() == 1){
                     leaf.getElement().setExtraTurn();
                     score += 8;
                 }
@@ -122,112 +120,111 @@ public class BoardSimulator extends Board {
             }
         }
 
-        for (BoardState state : _state_messages){
-            switch (state){
-                case PLAYER_A_GETS_ANOTHER_TURN:
-                case PLAYER_B_GETS_ANOTHER_TURN:
-                    break;
-                case PLAYER_A_WAS_ROBBED_OF_HIS_FINAL_MOVE:
-                case PLAYER_B_WAS_ROBBED_OF_HIS_FINAL_MOVE:
-                    score += 2;
-                    break;
-                case GAME_OVER:
-                    leaf.getElement().setGoal();
-                    break;
+        if (hand == null){
+            return null;
+        } else {
+            for (BoardState state : _state_messages){
+                switch (state){
+                    case PLAYER_A_GETS_ANOTHER_TURN:
+                    case PLAYER_B_GETS_ANOTHER_TURN:
+                        break;
+                    case PLAYER_A_WAS_ROBBED_OF_HIS_FINAL_MOVE:
+                    case PLAYER_B_WAS_ROBBED_OF_HIS_FINAL_MOVE:
+                        score += 2;
+                        break;
+                    case GAME_OVER:
+                        leaf.getElement().setGoal();
+                        break;
+                }
             }
+            _state_messages.clear();
+
+            if (isPlayerA(player))
+                leaf.getElement().setValue(parent.getElement().getValue() + score);
+            else
+                leaf.getElement().setValue(parent.getElement().getValue() - score);
+
+            leaf.getElement().setPlayer(getCurrentPlayer());
+            leaf.getElement().setState(getState());
+
+            return leaf;
         }
-        _state_messages.clear();
-
-        if (isPlayerA(player))
-            leaf.getElement().setValue(parent.getElement().getValue() + score);
-        else
-            leaf.getElement().setValue(parent.getElement().getValue() - score);
-
-        leaf.getElement().setPlayer(getCurrentPlayer());
-        leaf.getElement().setState(getState());
-
-        return leaf;
     }
 
-    private List<Node<State>> exploreNode(Node<State> state, int index, Explore type){
-        List<Node<State>> extraTurnStates = new ArrayList<>();
-        for (int i = index; i < index + 7; i++) {
-            Node<State> node = exploreState(state, i);
-            if (node.getElement().leadsToExtraTurn() && !node.getElement().isGoal()) {
-                extraTurnStates.add(node);
-                state.addChild(node);
-            }
-            else if (!node.getElement().isDeadEnd()) {
-                if (type == Explore.MIN) _leafs.add(node);
-                state.addChild(node);
+    private void explore(Node<State> state, List<Node<State>> newLeafs, int index){
+        List<Node<State>> statesToBeExpanded = new ArrayList<>();
+        statesToBeExpanded.add(state);
+
+        for (int i = 0; i < statesToBeExpanded.size(); i++) {
+            boolean noLeafsFound = true;
+            for (int e = index; e < index + 7; e++) {
+                Node<State> s = statesToBeExpanded.get(i);
+                loadState(s.getElement());
+
+                Node<State> node = explore(s, e);
+                if (node == null) continue;
+
+                if (node.getElement().leadsToExtraTurn() && getOpponent().hasValidMove()) {
+                    statesToBeExpanded.add(node);
+                    s.addChild(node);
+                    noLeafsFound = false;
+                }
+                else {
+                    newLeafs.add(node);
+                    s.addChild(node);
+                    noLeafsFound = false;
+                }
             }
 
-            loadState(state.getElement());
+            if (noLeafsFound)
+                newLeafs.add(statesToBeExpanded.get(i));
         }
-
-        return extraTurnStates;
     }
 
-    private void minExplore(){
-        List<Node<State>> leafs = _leafs;
-        _leafs = new ArrayList<>();
+    private boolean explore(List<Node<State>> initialLeafs, List<Node<State>> resultLeafs, Explore type){
+        boolean allStatesExplored = true;
 
-        for (int i = 0; i < leafs.size(); i++){
-            loadState(leafs.get(i).getElement());
-            leafs.addAll(exploreNode(
-                            leafs.get(i),
-                            isPlayerA(getCurrentPlayer()) ? 0 : 8,
-                            Explore.MIN));
-        }
+        for (int i = 0; i < initialLeafs.size(); i++){
+            if (!initialLeafs.get(i).getElement().isGoal())
+                allStatesExplored = false;
 
-        loadState(_current.getElement());
+            List<Node<State>> newLeafs = new ArrayList<>();
 
-        minSort(_leafs);
-        _leafs = _leafs.subList(0, _leafs.size() < 7 ? _leafs.size() : 7);
-    }
+            explore(
+                    initialLeafs.get(i),
+                    newLeafs,
+                    type == Explore.MAX ? 0 : 8);
 
-    private void maxExplore(){
-        List<Node<State>> leafs = new ArrayList<>(_leafs);
-        for (int i = 0; i < leafs.size(); i++) {
-            loadState(leafs.get(i).getElement());
-            leafs.addAll(exploreNode(
-                    leafs.get(i),
-                    isPlayerA(getCurrentPlayer()) ? 0 : 8,
-                    Explore.MAX));
-        }
-
-        loadState(_current.getElement());
-
-        leafs = _leafs;
-        _leafs = new ArrayList<>();
-        for (int i = 0; i < leafs.size(); i++){
-            List<Node<State>> leafChildren = new ArrayList<>();
-            List<Node<State>> children = leafs.get(i).getChildren();
-            for (int e = 0; e < children.size(); e++) {
-                if (children.get(e).getChildrenCount() == 0)
-                    leafChildren.add(children.get(e));
-                else
-                    children.addAll(children.get(e).getChildren());
+            if (type == Explore.MIN) {
+                minSort(newLeafs);
+                explore(newLeafs, resultLeafs, Explore.MAX);
             }
-
-            if (leafChildren.size() > 0){
-                maxSort(leafChildren);
-                _leafs.add(leafChildren.get(0));
+            else {
+                maxSort(newLeafs);
+                newLeafs = newLeafs.subList(0, newLeafs.size() < 1 ? newLeafs.size() : 1);
+                resultLeafs.addAll(newLeafs);
             }
         }
 
-        if (_leafs.size() > 0)
-            minSort(_leafs);
-        else
-            _leafs.addAll(leafs);
+        return allStatesExplored;
     }
 
     public void explore(){
         _leafs = new ArrayList<>();
         _leafs.add(_current);
+        List<Node<State>> initialLeafs;
 
-        minExplore();
-        maxExplore();
+        boolean allStatesExplored = false;
+        while (!allStatesExplored) {
+            initialLeafs = _leafs;
+            _leafs = new ArrayList<>();
+
+            allStatesExplored = explore(initialLeafs, _leafs, Explore.MIN);
+
+            _leafs = _leafs.subList(0, _leafs.size() < 7 ? _leafs.size() : 7);
+        }
+
+        minSort(_leafs);
     }
 
     public int findBestMove() {
@@ -247,7 +244,9 @@ public class BoardSimulator extends Board {
 
     public void doMove(int index){
         _leafs = new ArrayList<>();
-        _leafs.add(exploreState(_current, index));
-        findBestMove();
+        _leafs.add(explore(_current, index));
+
+        if (_leafs.get(0) != null)
+            findBestMove();
     }
 }
