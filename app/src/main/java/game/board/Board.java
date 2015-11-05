@@ -103,14 +103,16 @@ public class Board {
 
 
     /**
-     * Determines wheater to pass a turn to the next player.
+     * Determines whether to change who the current player is. Will return the player
+     * that should move next.
      * @param players_cup is used to check if the last shell landed in his store.
      * @return the player that is the current player.
      */
     public Player nextPlayersMove(int players_cup){
         _currentPlayer.moveEnd();
 
-        if (!(isCurrentPlayersStore(players_cup) && _currentPlayer.hasValidMove()) && getOpponent().hasValidMove()){
+        if (!(isCurrentPlayersStore(players_cup) && _currentPlayer.hasValidMove()) &&
+                getOpponent().hasValidMove()) {
             _currentPlayer = getOpponent();
         }
         else if (!getCurrentPlayer().hasValidMove() && !getOpponent().hasValidMove()){
@@ -280,5 +282,12 @@ public class Board {
      */
     public ArrayList<Pair<Player, Integer>> getMoves(){
         return _moves;
+    }
+
+    /**
+     * Used in unit testing to ensure that _playerOne is the current player.
+     */
+    public void setCurrentPlayerA() {
+        _currentPlayer = _playerOne;
     }
 }

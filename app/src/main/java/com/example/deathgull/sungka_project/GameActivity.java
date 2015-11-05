@@ -230,6 +230,9 @@ public class GameActivity extends Activity {
         //Initialise button array
         _cupButtons = new CupButton[16];
 
+        // get package name for applying IDs
+        String packageName = getPackageName();
+
         int topColumnIndex = 7;
         int bottomColumnIndex = 1;
         for(int i = 0; i < 7; i++) {
@@ -258,6 +261,10 @@ public class GameActivity extends Activity {
                 }
             });
 
+            // fetch and apply a unique identifier to the Player A cup
+            int id = getResources().getIdentifier("cup1_" + (i+1), "id", packageName);
+            btn.setId(id);
+
             //PlayerB shell cup
             btn = new CupButton(this, _board, i + 8, CupButton.PLAYER_B, CupButton.CUP);
             btn.addToLayout(_layoutBase, topColumnIndex--, 0);
@@ -282,6 +289,10 @@ public class GameActivity extends Activity {
                     return false;
                 }
             });
+
+            // fetch and apply a unique identifier to the Player B cup
+            id = getResources().getIdentifier("cup2_" + (i+1), "id", packageName);
+            btn.setId(id);
         }
         //PLAYER A store
         CupButton btnPlayerA = new CupButton(this, _board, 7, CupButton.PLAYER_A, CupButton.STORE);
@@ -292,6 +303,13 @@ public class GameActivity extends Activity {
         CupButton btnPlayerB = new CupButton(this, _board, 15, CupButton.PLAYER_B, CupButton.STORE);
         btnPlayerB.addToLayout(_layoutBase, 0, 1);
         _cupButtons[15] = btnPlayerB;
+
+        // set IDs to stores
+        int id = getResources().getIdentifier("cup1_store", "id", packageName);
+        btnPlayerA.setId(id);
+        id = getResources().getIdentifier("cup2_store", "id", packageName);
+        btnPlayerB.setId(id);
+
 
         _yourMoveTextViews = new YourMoveTextView[2];
 

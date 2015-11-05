@@ -19,7 +19,6 @@ import com.example.deathgull.sungka_project.GameActivity;
 import com.example.deathgull.sungka_project.R;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 import game.board.Board;
 import game.cup.Cup;
@@ -53,6 +52,8 @@ public class CupButton extends Button implements View.OnTouchListener {
     public static void generateSizes(int screenWidth, int screenHeight) {
         sizes = new CupMargins(screenWidth, screenHeight);
     }
+
+    private boolean _isInitialisation = true;
 
     private int _player_type;
     private int _cup_type;
@@ -108,22 +109,8 @@ public class CupButton extends Button implements View.OnTouchListener {
             }
         }
 
-        for (int i = 0; i < _cup.getCount(); i++) {
-            ImageView shell = new ImageView(context);
-            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-                    FrameLayout.LayoutParams.WRAP_CONTENT,
-                    FrameLayout.LayoutParams.WRAP_CONTENT);
-
-            shell.setLayoutParams(params);
-
-            shell.setImageDrawable(GameActivity.shells[GameActivity.random.nextInt(4)]);
-            shell.setScaleType(ImageView.ScaleType.MATRIX);
-            shell.setPivotX(shell.getWidth() / 2);
-            shell.setPivotY(shell.getHeight() / 2);
-
-            _shells.add(shell);
-        }
-        _text.setText("" + _cup.getCount());
+        addShellImages(context, _cup.getCount());
+        _isInitialisation = false;
     }
 
     /**
@@ -215,6 +202,15 @@ public class CupButton extends Button implements View.OnTouchListener {
         return shells;
     }
 
+    @Override
+    public CharSequence getText() {
+        return _text.getText();
+    }
+
+    /**
+     * Returns the cup's index in the game board.
+     * @return the cup's index.
+     */
     public int getCupIndex(){
         return _cup_index;
     }
@@ -223,7 +219,7 @@ public class CupButton extends Button implements View.OnTouchListener {
      * Updates the content of the buttons text.
      */
     public void updateText() {
-        _text.setText("" + _cup.getCount());
+        _text.setText(String.format("%d", _cup.getCount()));
     }
 
     /**
@@ -245,10 +241,66 @@ public class CupButton extends Button implements View.OnTouchListener {
     }
 
     /**
+     * Adds ImageViews of shells to the cup.
+     *
+     * If used outside of the constructor (i.e. in testing), it adds these new shell images
+     * to the activity's layout and updates the backend Cup.
+     * @param context the screen which the shells belong to
+     * @param numShells the number of shells to add to the cup
+     */
+    public void addShellImages(Context context, int numShells) {
+        for (int i = 0; i < numShells; i++) {
+            ImageView shell = new ImageView(context);
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.WRAP_CONTENT,
+                    FrameLayout.LayoutParams.WRAP_CONTENT);
+
+            shell.setLayoutParams(params);
+
+            shell.setImageDrawable(GameActivity.shells[GameActivity.random.nextInt(4)]);
+            shell.setScaleType(ImageView.ScaleType.MATRIX);
+            shell.setPivotX(shell.getWidth() / 2);
+            shell.setPivotY(shell.getHeight() / 2);
+
+            _shells.add(shell);
+        }
+
+        if (!_isInitialisation) {
+            for (int i = _cup.getCount(); i < _shells.size(); i++) {
+                _layoutMaster.addView(_shells.get(i));
+            }
+
+            for (int i = _cup.getCount(); i < _shells.size(); i++) {
+                float[] pos = randomPositionInCup(_shells.get(i));
+
+                _shells.get(i).setX(pos[0]);
+                _shells.get(i).setY(pos[1]);
+            }
+
+            _cup.addShells(numShells);
+        }
+        updateText();
+    }
+
+    /**
+     * Removes all shells from the UI and the backend cup.
+     */
+    public void removeAllShells() {
+        if (_isInitialisation) return;
+
+        for (View shell : _shells) {
+            _layoutMaster.removeView(shell);
+        }
+
+        _shells = new ArrayList<>();
+        _cup.setShells(0);
+        updateText();
+    }
+
+    /**
      * Positions shells in the right location.
      */
-    public void initShellLocation() {
-        Random r = new Random();
+    public void initShellLocation(){
         for (int i = 0; i < _shells.size(); i++) {
             float[] pos = randomPositionInCup(_shells.get(i));
 
