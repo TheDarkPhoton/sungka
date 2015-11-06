@@ -186,7 +186,7 @@ public class GameActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        _game.start();
+        //_game.start();
     }
 
     /**
