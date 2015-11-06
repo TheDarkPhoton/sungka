@@ -95,10 +95,9 @@ public class Board {
      */
     public boolean isValid(int index, boolean robber) {
         Player player = robber ? getOpponent() : getCurrentPlayer();
-        if (!_validMoveExists || !(player.isPlayersCup(_cups[index]) && _cups[index].getCount() > 0))
-            return false;
+        Cup cup = _cups[index];
 
-        return true;
+        return (_validMoveExists && !player.isPlayersCup(cup) && cup.getCount() > 0);
     }
 
 

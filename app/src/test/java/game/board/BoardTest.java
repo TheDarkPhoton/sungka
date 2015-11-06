@@ -100,9 +100,9 @@ public class BoardTest {
      * Make sure that a null HandOfShells is returned when the specified cup is a Store.
      */
     @Test
-    public void testPickUpShellsNull() {
+    public void testCantPickUpFromStore() {
         when(playerA.isPlayersCup(any(Cup.class))).thenReturn(true);
 
-        assertNull(board.pickUpShells(anyInt(), eq(false)));
+        assertNull(board.pickUpShells(anyInt()));
     }
 }
