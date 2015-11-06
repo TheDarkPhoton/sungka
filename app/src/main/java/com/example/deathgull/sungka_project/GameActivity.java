@@ -41,9 +41,9 @@ import game.player.AI;
 import game.player.Player;
 import game.player.PlayerActionAdapter;
 import game.player.RemoteHuman;
-import helpers.CupButton;
-import helpers.PauseThreadWhile;
-import helpers.ShellTranslation;
+import helpers.frontend.CupButton;
+import helpers.backend.PauseThreadWhile;
+import helpers.frontend.ShellTranslation;
 import game.player.Side;
 
 public class GameActivity extends Activity {

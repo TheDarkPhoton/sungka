@@ -7,6 +7,7 @@ import game.connection.SungkaConnection;
 import game.player.AI;
 import game.player.Human;
 import game.player.Player;
+import game.player.PlayerActionAdapter;
 import game.player.PlayerActionListener;
 import game.player.RemoteHuman;
 
@@ -29,9 +30,9 @@ public class Game {
         // for now, assume human players
         playerOne = new Human("Shell Master");
         playerOne.setPlayerActionListener(playerActionListener);
-       
         
-        playerTwo= new AI();
+//        playerTwo = new Human("Player B");
+        playerTwo = new AI(100, 50);
         playerTwo.setPlayerActionListener(playerActionListener);
 
         if(isOnlineGame){
@@ -77,9 +78,5 @@ public class Game {
 
     public Board getBoard(){
         return board;
-    }
-
-    public void start() {
-//        board.giveMove();
     }
 }
