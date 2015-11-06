@@ -31,6 +31,7 @@ import game.Game;
 import game.board.HandOfShells;
 import game.board.BoardState;
 import game.player.AI;
+import game.player.Human;
 import game.player.Player;
 import game.player.PlayerActionAdapter;
 import game.player.RemoteHuman;
@@ -60,7 +61,10 @@ public class GameActivity extends Activity {
         public void onMoveStart(Player player) {
             Log.i(TAG, player.getName() + " started his turn");
             _yourMoveTextViews[player.getSide().ordinal()].show();
-            setupMove(player.getSide());
+
+            if (player instanceof Human) {
+                setupMove(player.getSide());
+            }
         }
 
         @Override
