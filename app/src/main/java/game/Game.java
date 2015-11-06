@@ -1,10 +1,12 @@
 package game;
 
+import com.example.deathgull.sungka_project.GameActivity;
+
 import game.board.Board;
+import game.connection.SungkaConnection;
 import game.player.AI;
 import game.player.Human;
 import game.player.Player;
-import game.player.PlayerActionAdapter;
 import game.player.PlayerActionListener;
 import game.player.RemoteHuman;
 
@@ -47,7 +49,7 @@ public class Game {
         board = new Board(playerOne, playerTwo);
 
         //need to decide which player starts first in a online game
-        //board.swapCurrentPlayer();
+       // board.swapCurrentPlayer();
     }
 
     /**

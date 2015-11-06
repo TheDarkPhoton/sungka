@@ -1,4 +1,4 @@
-package game;
+package game.connection;
 
 import android.os.Handler;
 import android.util.Log;

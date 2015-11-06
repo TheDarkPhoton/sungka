@@ -1,4 +1,4 @@
-package game;
+package game.connection;
 
 import android.os.AsyncTask;
 import android.util.Log;

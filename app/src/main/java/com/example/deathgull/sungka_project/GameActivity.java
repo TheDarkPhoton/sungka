@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.res.ResourcesCompat;
+import android.text.format.Formatter;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Pair;
@@ -29,9 +30,9 @@ import java.util.Random;
 
 import java.util.concurrent.ExecutionException;
 
-import game.SungkaClient;
-import game.SungkaConnection;
-import game.SungkaServer;
+import game.connection.SungkaClient;
+import game.connection.SungkaConnection;
+import game.connection.SungkaServer;
 import game.board.Board;
 import game.Game;
 import game.board.HandOfShells;
@@ -533,6 +534,7 @@ public class GameActivity extends Activity {
         }
     }
 
+    /**
      * Store the SungkaConnection, that has previously been set up, that the user will use for the the multiplayer
      * @param sungkaConnection the SungkaConnection that corresponds to the user on this device
      */
@@ -567,7 +569,7 @@ public class GameActivity extends Activity {
             setConnection(sungkaServer);
         }else if(connectionType.equals(SungkaConnection.JOIN_CONNECTION)){//uses SungkaClient, joins the game
             // In the case of a client connecting to the server, the server needs to be set up before
-            SungkaClient sungkaClient = new SungkaClient("10.230.238.122",4000);//server ip and port need to be inserted by the user
+            SungkaClient sungkaClient = new SungkaClient("10.230.211.57",4000);//server ip and port need to be inserted by the user
             sungkaClient.execute();                 //this is a test one
             try {
                 sungkaClient.get();//wait for the connection to be established; returns true if it is set up, else false

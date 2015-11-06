@@ -15,6 +15,7 @@ import java.util.Random;
 
 import game.cup.Cup;
 
+
 public class CupButton extends Button {
     public static final int PLAYER_A = 0;
     public static final int PLAYER_B = 1;

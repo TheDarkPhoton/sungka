@@ -1,5 +1,7 @@
 package game.cup;
 
+
+
 /**
  * Describes the sungka Shell Cup
  */

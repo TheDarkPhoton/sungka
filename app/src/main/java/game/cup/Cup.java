@@ -1,6 +1,4 @@
-package game;
-
-import game.player.Player;
+package game.cup;
 
 /**
  * Describes the sungka Cup
@@ -28,10 +26,18 @@ public abstract class Cup {
         ++_shells;
     }
 
+    /**
+     * Increments the shell count by the value provided
+     * @param count the amount by which we want to increase the shell count
+     */
     public void addShells(int count){
         _shells += count;
     }
 
+    /**
+     * Set the shell count to the value provided
+     * @param count the shell count  we want to set
+     */
     public void setShells(int count){
         _shells = count;
     }
@@ -41,7 +47,6 @@ public abstract class Cup {
      * @return shell count.
      */
     public int pickUpShells(){
-    // TODO: should this method be moved to ShellCup? PlayerCup shouldn't be able to be picked up from.
         int shells = _shells;
         _shells = 0;
         return shells;
@@ -61,17 +66,5 @@ public abstract class Cup {
      */
     public boolean isEmpty(){
         return _shells == 0;
-    }
-
-    @Override
-    protected Object clone() throws CloneNotSupportedException {
-        if (this instanceof PlayerCup){
-            PlayerCup cup = new PlayerCup(((PlayerCup)this).getPlayer());
-            cup.addShells(_shells);
-            return cup;
-        }
-        else{
-            return new ShellCup(_shells);
-        }
     }
 }
