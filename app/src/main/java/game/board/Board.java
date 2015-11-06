@@ -60,6 +60,17 @@ public class Board {
     }
 
     /**
+     * Used to swap the current player, used in the online game, in the case that one player starts before another
+     */
+    public void swapCurrentPlayer(){
+        if(_currentPlayer == _playerOne){
+            _currentPlayer = _playerTwo;
+        }else{
+            _currentPlayer = _playerOne;
+        }
+    }
+
+    /**
      * Picks up shells from the selected cup.
      * @param index of the cup
      * @return Hand of shells object.

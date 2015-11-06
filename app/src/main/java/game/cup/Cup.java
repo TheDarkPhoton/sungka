@@ -1,4 +1,4 @@
-package game.cup;
+package game;
 
 import game.player.Player;
 
