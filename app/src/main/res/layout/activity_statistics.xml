@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.deathgull.sungka_project.StatisticsActivity">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Back"/>
+
+        <TextView
+            android:id="@+id/statistics_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/str_Statistics"
+            android:textColor="#000"
+            android:textSize="13pt"
+            android:layout_weight="8"
+            android:layout_gravity="left" />
+
+        <Spinner
+            android:id="@+id/user_spinner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:textSize="15sp"
+            android:layout_weight="3"
+            ></Spinner>
+    </LinearLayout>
+
+    <GridLayout
+        android:id="@+id/statistics_gridlayout"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_centerHorizontal="true"
+        android:background="#000"
+        android:columnCount="2"
+        android:orientation="horizontal"
+        android:padding="20dp"
+        android:rowCount="2">
+
+        <LinearLayout
+            android:id="@+id/average_move_time_layout"
+            android:layout_column="0"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill"
+            android:layout_row="0"
+            android:layout_rowWeight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/average_move_time_label_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/str_AverageMoveTime"
+                android:textColor="#FFF"
+                android:textSize="7pt" />
+
+            <TextView
+                android:id="@+id/average_move_time_value_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1:44"
+                android:textColor="#50E3C2"
+                android:textSize="27pt" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/highest_capture_in_one_turn_layout"
+            android:layout_column="1"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill"
+            android:layout_row="0"
+            android:layout_rowWeight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/highest_capture_in_one_turn_label_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/str_HighestCaptureInOneTurn"
+                android:textColor="#FFF"
+                android:textSize="7pt" />
+
+            <TextView
+                android:id="@+id/highest_capture_in_one_turn_value_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="9"
+                android:textColor="#50E3C2"
+                android:textSize="27pt" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/average_score_per_game_layout"
+            android:layout_column="0"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill"
+            android:layout_row="1"
+            android:layout_rowWeight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/average_score_per_game_label_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/str_AverageScorePerGame"
+                android:textColor="#FFF"
+                android:textSize="7pt" />
+
+            <TextView
+                android:id="@+id/average_score_per_game_value_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="23.3"
+                android:textColor="#50E3C2"
+                android:textSize="27pt" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/highest_number_of_consecutive_turns_layout"
+            android:layout_column="1"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill"
+            android:layout_row="1"
+            android:layout_rowWeight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/highest_number_of_consecutive_turns_label_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/str_HighestNumberOfConsecutiveTurns"
+                android:textColor="#FFF"
+                android:textSize="7pt" />
+
+            <TextView
+                android:id="@+id/highest_number_of_consecutive_turns_value_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="12"
+                android:textColor="#50E3C2"
+                android:textSize="27pt" />
+        </LinearLayout>
+    </GridLayout>
+</LinearLayout>

@@ -1,27 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.deathgull.sungka_project" >
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/shellup"
         android:label="@string/app_name"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
 
-        <!--TODO Disabled because it isn't used at the moment and it is causing exception on start [Dovydas]-->
-        <!--<activity-->
-            <!--android:name="com.example.deathgull.sungka_project.MainActivity"-->
-            <!--android:label="@string/app_name"-->
-            <!--android:screenOrientation="landscape"-->
-            <!--android:theme="@android:style/Theme.DeviceDefault.Light.NoActionBar.Fullscreen" >-->
-        <!--</activity>-->
+        <!-- TODO Disabled because it isn't used at the moment and it is causing exception on start [Dovydas] -->
+        <!-- <activity -->
+        <!-- android:name="com.example.deathgull.sungka_project.MainActivity" -->
+        <!-- android:label="@string/app_name" -->
+        <!-- android:screenOrientation="landscape" -->
+        <!-- android:theme="@android:style/Theme.DeviceDefault.Light.NoActionBar.Fullscreen" > -->
+        <!-- </activity> -->
 
         <activity
-            android:name="com.example.deathgull.sungka_project.GameActivity"
+            android:name=".GameActivity"
             android:label="@string/app_name"
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.DeviceDefault.Light.NoActionBar.Fullscreen" >
+        </activity>
+        <activity android:name=".StatisticsActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

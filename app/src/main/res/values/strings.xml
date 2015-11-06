@@ -5,4 +5,9 @@
     <string name="str_Zero">0</string>
     <string name="str_SinglePlayer">Single Player</string>
     <string name="str_YourTurn">YOUR TURN</string>
+    <string name="str_Statistics">STATISTICS</string>
+    <string name="str_AverageMoveTime">Average Move Time</string>
+    <string name="str_HighestCaptureInOneTurn">Highest Capture in One Turn</string>
+    <string name="str_AverageScorePerGame">Average Score per Game</string>
+    <string name="str_HighestNumberOfConsecutiveTurns">Highest Number of Consecutive Turns</string>
 </resources>
