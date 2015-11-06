@@ -1,7 +1,5 @@
 package game.player;
 
-import game.board.BoardSimulator;
-
 /**
  * Class that represents a Human PLAYER, where the player will be the one making the moves, instead
  * of a move being generated for it.

@@ -3,7 +3,7 @@ package com.example.deathgull.sungka_project;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.TouchUtils;
 
-import helpers.CupButton;
+import helpers.frontend.CupButton;
 
 /**
  * Test the game activity.

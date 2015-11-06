@@ -1,24 +1,31 @@
-package game.board;
+package helpers.backend;
+
+import com.example.deathgull.sungka_project.GameActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import game.board.Board;
+import game.board.BoardState;
+import game.board.HandOfShells;
 import game.player.Human;
 import game.player.Player;
-import helpers.Node;
 
-public class BoardSimulator extends Board {
+public class Simulator extends Board {
     private Node<State> _current;
     private List<Node<State>> _leafs = new ArrayList<>();
 
     private enum Explore{MIN, MAX}
 
+    private float _accuracy;
+    private float _difficulty;
+
     /**
      * Constructs board with default attributes.
      */
-    public BoardSimulator(Board board) {
+    public Simulator(Board board, float accuracy, float difficulty) {
         super(new Human("A"), new Human("B"));
         if (board.isPlayerA(board.getCurrentPlayer()))
             _currentPlayer = getPlayerA();
@@ -29,6 +36,9 @@ public class BoardSimulator extends Board {
         _current.getElement().setPlayer(getCurrentPlayer());
         _current.getElement().setValue(0);
         _current.getElement().setState(getState());
+
+        _accuracy = accuracy;
+        _difficulty = difficulty;
     }
 
     private void minSort(List<Node<State>> state){
@@ -164,16 +174,13 @@ public class BoardSimulator extends Board {
                 Node<State> node = explore(s, e);
                 if (node == null) continue;
 
-                if (node.getElement().leadsToExtraTurn() && getOpponent().hasValidMove()) {
+                if (node.getElement().leadsToExtraTurn() && getOpponent().hasValidMove())
                     statesToBeExpanded.add(node);
-                    s.addChild(node);
-                    noLeafsFound = false;
-                }
-                else {
+                else
                     newLeafs.add(node);
-                    s.addChild(node);
-                    noLeafsFound = false;
-                }
+
+                s.addChild(node);
+                noLeafsFound = false;
             }
 
             if (noLeafsFound)
@@ -209,26 +216,43 @@ public class BoardSimulator extends Board {
         return allStatesExplored;
     }
 
-    public void explore(){
+    public void explore(float difficulty){
         _leafs = new ArrayList<>();
         _leafs.add(_current);
         List<Node<State>> initialLeafs;
 
+        int statesPerLevel = 7;
+
+        int index = 0;
         boolean allStatesExplored = false;
-        while (!allStatesExplored) {
+        while (!allStatesExplored && index++ < 10) {
             initialLeafs = _leafs;
             _leafs = new ArrayList<>();
 
             allStatesExplored = explore(initialLeafs, _leafs, Explore.MIN);
 
-            _leafs = _leafs.subList(0, _leafs.size() < 7 ? _leafs.size() : 7);
+            int offset = (int)Math.floor((_leafs.size() - statesPerLevel) * difficulty);
+            if (offset < 0)
+                offset = 0;
+
+            _leafs = _leafs.subList(
+                    offset,
+                    _leafs.size() < offset + statesPerLevel ?
+                            _leafs.size() :
+                            offset + statesPerLevel
+            );
         }
 
         minSort(_leafs);
     }
 
-    public int findBestMove() {
+    public int findBestMove(float accuracy) {
+        float test = GameActivity.random.nextFloat();
+
         Node<State> chosenState = _leafs.get(0);
+        if (GameActivity.random.nextFloat() > accuracy)
+            _leafs.get(GameActivity.random.nextInt(_leafs.size()));
+
         if (chosenState.getParent() != null){
             while (chosenState.getParent().getParent() != null){
                 chosenState = chosenState.getParent();
@@ -247,6 +271,6 @@ public class BoardSimulator extends Board {
         _leafs.add(explore(_current, index));
 
         if (_leafs.get(0) != null)
-            findBestMove();
+            findBestMove(1);
     }
 }

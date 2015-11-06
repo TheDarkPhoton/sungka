@@ -1,4 +1,4 @@
-package helpers;
+package helpers.frontend;
 
 import android.content.Context;
 import android.graphics.Color;

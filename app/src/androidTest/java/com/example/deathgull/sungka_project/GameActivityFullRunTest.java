@@ -6,7 +6,7 @@ import android.test.TouchUtils;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
 
-import helpers.CupButton;
+import helpers.frontend.CupButton;
 
 // TODO: decide if this test is worth keeping
 

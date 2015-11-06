@@ -9,16 +9,22 @@ import java.util.ArrayList;
 import java.util.Stack;
 
 import game.board.Board;
-import game.board.BoardSimulator;
+import helpers.backend.Simulator;
 
 /**
  * Class that represents the AI class, that will play against the PLAYER in the PLAYER vs AI mode.
  */
 public class AI extends Player {
-    private BoardSimulator sim;
+    private Simulator sim;
 
-    public AI(){
+    private float _accuracy;
+    private float _difficulty;
+
+    public AI(int accuracyInPercents, int difficultyInPercents){
         super("AI");
+
+        _accuracy = (accuracyInPercents > 100 || accuracyInPercents < 0) ? 1 : (float)accuracyInPercents / 100f;
+        _difficulty = (difficultyInPercents > 100 || difficultyInPercents < 50) ? 0.5f : 1f - ((float)difficultyInPercents / 100f);
     }
 
     /**
@@ -27,7 +33,7 @@ public class AI extends Player {
     @Override
     public void bindBoard(Board board) {
         super.bindBoard(board);
-        sim = new BoardSimulator(_board);
+        sim = new Simulator(_board, _accuracy, _difficulty);
     }
 
     @Override
@@ -47,15 +53,15 @@ public class AI extends Player {
         while (!opponentMoves.isEmpty())
             sim.doMove(opponentMoves.pop().second);
 
-        sim.explore();
+        sim.explore(_difficulty);
 
         Handler h = new Handler();
-        long delay = GameActivity.random.nextInt(2000) + 200;
+        long delay = GameActivity.random.nextInt(1000) + 200;
 
         h.postDelayed(new Runnable() {
             @Override
             public void run() {
-                move(sim.findBestMove());
+                move(sim.findBestMove(_accuracy));
             }
         }, delay);
     }

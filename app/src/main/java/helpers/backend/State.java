@@ -1,4 +1,4 @@
-package game.board;
+package helpers.backend;
 
 import java.util.Comparator;
 
