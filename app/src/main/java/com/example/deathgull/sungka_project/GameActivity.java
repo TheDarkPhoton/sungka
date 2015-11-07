@@ -53,14 +53,14 @@ public class GameActivity extends Activity {
     private CupButton[] _cupButtons;
     private Game _game;
     private Board _board;
-    private YourMoveTextView[] _yourMoveTextViews;
+    private MessageManager _messageManager;
     private float _animationDurationFactor = 1.0f;
 
     private PlayerActionAdapter _playerActionListener = new PlayerActionAdapter() {
         @Override
         public void onMoveStart(Player player) {
             Log.i(TAG, player.getName() + " started his turn");
-            _yourMoveTextViews[player.getSide().ordinal()].show();
+            _messageManager.onMoveStart(player);
 
             if (player instanceof Human) {
                 setupMove(player.getSide());
@@ -69,6 +69,8 @@ public class GameActivity extends Activity {
 
         @Override
         public void onMove(final Player player, final int index) {
+            dehighlightAllCups();
+
             Thread t = new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -99,7 +101,6 @@ public class GameActivity extends Activity {
         @Override
         public void onMoveEnd(Player player) {
             Log.i(TAG, player.getName() + " ended his turn");
-            _yourMoveTextViews[player.getSide().ordinal()].hide();
         }
     };
 
@@ -314,23 +315,15 @@ public class GameActivity extends Activity {
         id = getResources().getIdentifier("cup2_store", "id", packageName);
         btnPlayerB.setId(id);
 
-
-        _yourMoveTextViews = new YourMoveTextView[2];
-
-        // PLAYER A your move label
-        _yourMoveTextViews[0] = new YourMoveTextView(this, Side.A);
-        _layoutMaster.addView(_yourMoveTextViews[0]);
-
-        // PLAYER B your move label
-        _yourMoveTextViews[1] = new YourMoveTextView(this, Side.B);
-        _layoutMaster.addView(_yourMoveTextViews[1]);
+        // Setup message manager
+        _messageManager = new MessageManager(this, _layoutMaster);
 
         // Setup animation speed listener
         _layoutMaster.getRootView().setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    _animationDurationFactor = 5f;
+                    _animationDurationFactor = 0.5f;
                 } else {
                     _animationDurationFactor = 1.0f;
                 }
@@ -450,23 +443,32 @@ public class GameActivity extends Activity {
                     break;
                 case PLAYER_A_GETS_ANOTHER_TURN:
                     Log.i(TAG, _board.getPlayerA().getName() + " gets another turn.");
+                    _messageManager.playerGetsAnotherTurn(_board.getPlayerA());
+
                     break;
                 case PLAYER_B_GETS_ANOTHER_TURN:
                     Log.i(TAG, _board.getPlayerB().getName() + " gets another turn.");
+                    _messageManager.playerGetsAnotherTurn(_board.getPlayerB());
                     break;
                 case PLAYER_A_WAS_ROBBED:
                     Log.i(TAG, _board.getPlayerA().getName() + " was robbed.");
+                    _messageManager.playerGotRobbed(_board.getPlayerA());
                     break;
                 case PLAYER_B_WAS_ROBBED:
                     Log.i(TAG, _board.getPlayerB().getName() + " was robbed.");
+                    _messageManager.playerGotRobbed(_board.getPlayerB());
                     break;
                 case PLAYER_A_WAS_ROBBED_OF_HIS_FINAL_MOVE:
+                    _messageManager.playerGotRobbedOfHisFinalMove(_board.getPlayerA());
                     Log.i(TAG, _board.getPlayerA().getName() + " was robbed of his final move... " + _board.getPlayerB().getName() + " gets another turn.");
                     break;
                 case PLAYER_B_WAS_ROBBED_OF_HIS_FINAL_MOVE:
+                    _messageManager.playerGotRobbedOfHisFinalMove(_board.getPlayerB());
                     Log.i(TAG, _board.getPlayerB().getName() + " was robbed of his final move... " + _board.getPlayerA().getName() + " gets another turn.");
                     break;
                 case GAME_OVER:
+                    _messageManager.gameOver(_board.isDraw(), _board.getWinningPlayer());
+
                     Log.i(TAG, "Game Over!!!");
                     for (int i = 0; i < _board.getMoves().size(); i++) {
                         Pair<Player, Integer> move = _board.getMoves().get(i);
@@ -494,6 +496,16 @@ public class GameActivity extends Activity {
             } else {
                 _cupButtons[i].dehighlight();
             }
+        }
+    }
+
+    public void dehighlightAllCups() {
+        for (int i = 0; i < _cupButtons.length; i++) {
+            if (_board.isOpponentStore(i) || _board.isCurrentPlayersStore(i))
+                continue;
+
+            _cupButtons[i].dehighlight();
+
         }
     }
 
