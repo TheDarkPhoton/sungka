@@ -59,8 +59,39 @@ public class Human extends Player {
         _moveInfos.add(currentMove);//want to maybe get the points the user collected in that move
     }
 
+    /**
+     * Set the connection this Player will use in an online game to communicate to another Player when they make a move
+     * @param sungkaConnection the connection (either SungkaClient or SungkaServer) to communicate to another Player
+     */
     public void setSungkaConnection(SungkaConnection sungkaConnection){
         this.sungkaConnection = sungkaConnection;
         isOnline = true;
+    }
+
+    /**
+     * Get the maximum number of Shells this Player has collected in this Game
+     * @return the maximum number of Shells the Player has collected in this Game
+     */
+    public int getMaxNumberShellsCollected(){
+        int maxNumberShells = 0;
+        for(MoveInfo moveInfo : _moveInfos){
+            if(maxNumberShells < moveInfo.getNumOfShellsCollected()){
+                maxNumberShells = moveInfo.getNumOfShellsCollected();
+            }
+        }
+        return maxNumberShells;
+    }
+
+    /**
+     * Get the average turn (or move) time for this Player in this Game
+     * @return the average turn time for this Player in the this Game
+     */
+    public double getAverageTurnTime(){
+        double averageTurnTime = 0;
+        for(MoveInfo moveInfo:_moveInfos){
+            averageTurnTime+=moveInfo.getDurationOfMoveMillis();
+        }
+        averageTurnTime /= _moveInfos.size();
+        return  averageTurnTime;
     }
 }
