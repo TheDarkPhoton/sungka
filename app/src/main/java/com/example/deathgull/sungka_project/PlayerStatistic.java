@@ -152,7 +152,7 @@ public class PlayerStatistic {
      * @param gameAverageMoveTime the average time the Player took to make a move in a Game they just played
      */
     public void updateAverageMoveTimeInMillis(double gameAverageMoveTime){
-        averageMoveTimeInMillis = averageMoveTimeInMillis+ (gameAverageMoveTime/gamesPlayed);
+        averageMoveTimeInMillis = (averageMoveTimeInMillis*(gamesPlayed-1)+gameAverageMoveTime)/gamesPlayed;
     }
 
     /**
