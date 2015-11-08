@@ -25,6 +25,10 @@ import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -38,6 +42,7 @@ import game.Game;
 import game.board.HandOfShells;
 import game.board.BoardState;
 import game.player.AI;
+import game.player.Human;
 import game.player.Player;
 import game.player.PlayerActionAdapter;
 import game.player.RemoteHuman;
@@ -594,4 +599,82 @@ public class GameActivity extends Activity {
         Log.v(TAG, "ip: " + ip);
         return ip;
     }
+
+    private void storeStats(Player player) throws IOException {
+        //TODO: add move info for the players (Player class)
+        ArrayList<PlayerStatistic> playerStatistics= readStats();
+        for(PlayerStatistic playerStatistic: playerStatistics){
+            if(player.getName().equals(playerStatistic.getPlayerName())){
+                updateStats(player,playerStatistic);
+                break;
+            }
+        }
+        //store the stats
+        String fileName = "player_stats";
+        String data = "";
+        for(PlayerStatistic playerStatistic: playerStatistics){
+            data += playerStatistic.toString();
+        }
+        FileOutputStream fileOutputStream = openFileOutput(fileName,Context.MODE_PRIVATE);
+        fileOutputStream.write(data.getBytes());
+        fileOutputStream.close();
+        //replaced the old file with a new one that has the updated data
+    }
+
+    private void updateStats(Player player,PlayerStatistic playerStatistic){
+        playerStatistic.increaseGamesPlayed();
+        //TODO: figure out who won
+        if(player instanceof Human) {
+            playerStatistic.updateAverageMoveTimeInMillis(((Human)player).getAverageTurnTime());
+            if(playerStatistic.getMaxNumShellsCollected() < ((Human) player).getMaxNumberShellsCollected()){
+                playerStatistic.setMaxNumShellsCollected(((Human)player).getMaxNumberShellsCollected());
+            }
+        }
+
+    }
+
+    private ArrayList<PlayerStatistic> readStats() throws ArrayIndexOutOfBoundsException {
+        String fileName = "player_stats";
+        FileInputStream fileInputStream;
+        ArrayList<PlayerStatistic> playerStatistics = new ArrayList<PlayerStatistic>();
+        StringBuffer stringBuffer = new StringBuffer("");
+        byte[] buffer = new byte[1024];
+        int n;
+        try {
+            fileInputStream = openFileInput(fileName);
+            while ((n = fileInputStream.read()) != -1) {
+                stringBuffer.append(new String(buffer, 0, n));
+            }
+            String textInFile = stringBuffer.toString();
+            String[] players = textInFile.split("\n");
+            for (int i = 0; i < players.length; i++) {
+                String[] info = players[i].split(",");
+                String playerName = info[0];
+                String gamesPlayed = info[1];
+                String gamesWon = info[2];
+                String gamesLost = info[3];
+                String avgTimeInMillis = info[4];
+                String maxShellCollected = info[5];
+                PlayerStatistic playerStatistic = new PlayerStatistic(playerName);
+                playerStatistic.setGamesPlayed(new Integer(gamesPlayed));
+                playerStatistic.setGamesWon(new Integer(gamesWon));
+                playerStatistic.setGamesLost(new Integer(gamesLost));
+                playerStatistic.setAverageMoveTimeInMillis(new Double(avgTimeInMillis));
+                playerStatistic.setMaxNumShellsCollected(new Integer(maxShellCollected));
+                playerStatistics.add(playerStatistic);
+            }
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            return playerStatistics;
+        }
+    }
+
+
+
+
 }

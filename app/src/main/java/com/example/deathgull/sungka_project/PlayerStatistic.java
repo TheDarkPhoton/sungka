@@ -21,6 +21,14 @@ public class PlayerStatistic {
     }
 
     /**
+     * Get the Players name for which we are storing the statistics for
+     * @return the name of the Player
+     */
+    public String getPlayerName() {
+        return playerName;
+    }
+
+    /**
      * Get the games played by the Player
      * @return the games played by the Player
      */
@@ -136,6 +144,40 @@ public class PlayerStatistic {
             //now we will get a result of the type mm:ss, for the duration of the move
             finalTimerString += minutesAsString + ":" + secondsAsString;
         return finalTimerString;//and return it
+    }
+
+    /**
+     * Update the average time a Player takes to make a move, by including the average time they took to make a move
+     * in a Game
+     * @param gameAverageMoveTime the average time the Player took to make a move in a Game they just played
+     */
+    public void updateAverageMoveTimeInMillis(double gameAverageMoveTime){
+        averageMoveTimeInMillis = averageMoveTimeInMillis+ (gameAverageMoveTime/gamesPlayed);
+    }
+
+    /**
+     * Increase the amount of games played by the Player by 1
+     */
+    public void increaseGamesPlayed(){
+        gamesPlayed++;
+    }
+
+    /**
+     * Increase the amount of games won by the Player by 1
+     */
+    public void increaseGamesWon(){
+        gamesWon++;
+    }
+
+    /**
+     * Increase the amount of games lost by the Player by 1
+     */
+    public void increaseGamesLost(){
+        gamesLost++;
+    }
+
+    public String toString(){
+        return String.format("%s,%s,%s,%s,%s,%s;\n", playerName,gamesPlayed,gamesWon,gamesLost,averageMoveTimeInMillis,maxNumShellsCollected);
     }
 
 
