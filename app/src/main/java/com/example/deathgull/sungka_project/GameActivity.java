@@ -116,37 +116,7 @@ public class GameActivity extends Activity {
                 new FrameLayout.LayoutParams(
                         FrameLayout.LayoutParams.MATCH_PARENT,
                         FrameLayout.LayoutParams.MATCH_PARENT));
-        /*//To get the ip
-        WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
-        String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
-        Log.v(TAG, "ip: " + ip);*/
-        getIp();
-        //In the case of a client connecting to the server, the server needs to be set up before
-      /* SungkaClient sungkaClient = new SungkaClient("10.230.238.122",4000);
-        sungkaClient.execute();
-        try {
-            sungkaClient.get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-        setConnection(sungkaClient);*/
-        //setUpConnection(SungkaConnection.JOIN_CONNECTION);
 
-        //in the case of the server being set up
-        /*SungkaServer sungkaServer = new SungkaServer(4000);
-        sungkaServer.execute();
-
-        try {
-            sungkaServer.get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-        setConnection(sungkaServer);*/
-        //setUpConnection(SungkaConnection.HOST_CONNECTION);
 
         shells =new Drawable[]{
                 ResourcesCompat.getDrawable(getResources(), R.drawable.shell1, null),
@@ -186,7 +156,6 @@ public class GameActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        _game.start();
     }
 
     /**
@@ -464,6 +433,10 @@ public class GameActivity extends Activity {
     private void processEndOfAnimation(){
         PlayerActionAdapter.setAnimationInProgress(false);
         processBoardMessages();
+    }
+
+    public boolean animationFinished() {
+        return !PlayerActionAdapter.isAnimationInProgress();
     }
 
     /**

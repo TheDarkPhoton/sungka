@@ -103,6 +103,7 @@ public class BoardTest {
     public void testCantPickUpFromStore() {
         when(playerA.isPlayersCup(any(Cup.class))).thenReturn(true);
 
-        assertNull(board.pickUpShells(anyInt()));
+        assertNull(board.pickUpShells(7));
+        assertNull(board.pickUpShells(15));
     }
 }

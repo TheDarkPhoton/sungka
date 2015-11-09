@@ -2,6 +2,7 @@ package com.example.deathgull.sungka_project;
 
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.TouchUtils;
+import android.util.Log;
 
 import helpers.frontend.CupButton;
 
@@ -10,6 +11,8 @@ import helpers.frontend.CupButton;
  */
 public class GameActivityTest extends ActivityInstrumentationTestCase2<GameActivity> {
     private GameActivity activity;
+
+    private static final String TAG = "GameActivity";
 
     public GameActivityTest() {
         super(GameActivity.class);
@@ -23,6 +26,17 @@ public class GameActivityTest extends ActivityInstrumentationTestCase2<GameActiv
         activity = getActivity();
 
         // TODO will need to change things when first player is no longer fixed
+    }
+
+    private void waitForAnimations() {
+        boolean animationRunning = true;
+
+        while (animationRunning) {
+            getInstrumentation().waitForIdleSync();
+            if (activity.animationFinished()) {
+                animationRunning = false;
+            }
+        }
     }
 
     /**
@@ -117,7 +131,7 @@ public class GameActivityTest extends ActivityInstrumentationTestCase2<GameActiv
 
         TouchUtils.clickView(this, cup1_4);
 
-        getInstrumentation().waitForIdleSync();
+        waitForAnimations();
 
         assertEquals("0", cup1_4.getText().toString());
         assertEquals("8", cup1_5.getText().toString());
@@ -150,7 +164,9 @@ public class GameActivityTest extends ActivityInstrumentationTestCase2<GameActiv
         getInstrumentation().waitForIdleSync();
 
         TouchUtils.clickView(this, cup1_7);
-        getInstrumentation().waitForIdleSync();
+
+        waitForAnimations();
+//        getInstrumentation().waitForIdleSync();
 
         assertEquals("0", cup2_store.getText().toString());
         assertEquals("8", cup1_1.getText().toString());
@@ -167,15 +183,19 @@ public class GameActivityTest extends ActivityInstrumentationTestCase2<GameActiv
         CupButton cup1_4 = (CupButton) activity.findViewById(R.id.cup1_4);
 
         TouchUtils.clickView(this, cup1_1);
-        getInstrumentation().waitForIdleSync();
+        waitForAnimations();
+//        getInstrumentation().waitForIdleSync();
+
 
         // no move should happen
         TouchUtils.clickView(this, cup2_3);
-        getInstrumentation().waitForIdleSync();
+        waitForAnimations();
+//        getInstrumentation().waitForIdleSync();
         assertEquals("7", cup2_3.getText().toString());
 
         TouchUtils.clickView(this, cup1_4);
-        getInstrumentation().waitForIdleSync();
+        waitForAnimations();
+//        getInstrumentation().waitForIdleSync();
         assertEquals("0", cup1_4.getText().toString());
     }
 
@@ -216,7 +236,8 @@ public class GameActivityTest extends ActivityInstrumentationTestCase2<GameActiv
         getInstrumentation().waitForIdleSync();
 
         TouchUtils.clickView(this, cup1_3);
-        getInstrumentation().waitForIdleSync();
+        waitForAnimations();
+//        getInstrumentation().waitForIdleSync();
 
         assertEquals("0", cup2_3.getText().toString());
         assertEquals("0", cup1_5.getText().toString());
@@ -241,7 +262,8 @@ public class GameActivityTest extends ActivityInstrumentationTestCase2<GameActiv
         getInstrumentation().waitForIdleSync();
 
         TouchUtils.clickView(this, cup1_3);
-        getInstrumentation().waitForIdleSync();
+        waitForAnimations();
+//        getInstrumentation().waitForIdleSync();
 
         assertEquals("0", cup2_5.getText().toString());
         assertEquals("0", cup1_3.getText().toString());

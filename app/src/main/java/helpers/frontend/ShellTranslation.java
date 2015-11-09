@@ -5,8 +5,6 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 
-import helpers.frontend.CupButton;
-
 /**
  * Created by darkphoton on 25/10/15.
  */
