@@ -1,7 +1,9 @@
-package com.example.deathgull.sungka_project;
+package helpers;
 
 import android.content.Context;
 import android.widget.FrameLayout;
+
+import com.example.deathgull.sungka_project.R;
 
 import game.player.Player;
 import game.player.Side;

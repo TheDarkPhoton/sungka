@@ -1,13 +1,16 @@
-package com.example.deathgull.sungka_project;
+package helpers;
 
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Handler;
 import android.support.annotation.StringRes;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+
+import com.example.deathgull.sungka_project.R;
 
 import game.player.Side;
 
@@ -37,7 +40,10 @@ public class YourMoveTextView extends TextView {
 
         revertToDefault();
         this.setGravity(Gravity.CENTER);
-        this.setTextSize(30.0f);
+
+        Log.i("YourMove", "Text size " + getResources().getDimensionPixelSize(R.dimen.your_turn_text_size));
+
+        this.setTextSize(getResources().getDimensionPixelSize(R.dimen.your_turn_text_size));
         this.setHeight(130);
 
         switch (_side) {

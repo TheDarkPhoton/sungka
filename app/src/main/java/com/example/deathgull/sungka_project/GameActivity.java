@@ -36,6 +36,7 @@ import game.player.Player;
 import game.player.PlayerActionAdapter;
 import game.player.RemoteHuman;
 import helpers.CupButton;
+import helpers.MessageManager;
 import helpers.PauseThreadWhile;
 import helpers.ShellTranslation;
 import game.player.Side;
