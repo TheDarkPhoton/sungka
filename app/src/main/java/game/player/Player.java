@@ -18,7 +18,8 @@ public abstract class Player {
 
     private Side _side;
 
-    protected ArrayList<MoveInfo> _moveInfos;                                                //arraylist to store the users moves in a game
+    protected ArrayList<MoveInfo> _moveInfos;//arraylist to store the users moves in a game
+    protected MoveInfo _currentMove;
     protected PlayerActionListener _playerActionListener = new PlayerActionAdapter();
 
     protected boolean _cannotPerformAnAction = true;
@@ -65,9 +66,23 @@ public abstract class Player {
         _cannotPerformAnAction = yes;
     }
 
-    public abstract void moveStart();
+    public void moveStart(){
+        _currentMove = new MoveInfo(System.currentTimeMillis(),getName());//starting the move info object
+    }
+
     public abstract void move(int index);
-    public abstract void moveEnd();
+
+    public void moveEnd(){
+        _currentMove.endMove(System.currentTimeMillis());
+        if(_moveInfos.size() == 0){//this is the first move
+            _currentMove.setNumOfShellsCollected(_store.getCount());
+        }else{//the amount of shells collected in this move, is the amount of shells in the store now minus the amount of shells in the store in the previous turn
+            _currentMove.setNumOfShellsCollected(_store.getCount() - _moveInfos.get(_moveInfos.size() - 1).getNumOfShellsCollected());
+        }
+        _moveInfos.add(_currentMove);//want to maybe get the points the user collected in that move
+    }
+
+
 
     /**
      * Determines if the cup provided belongs to this player.
@@ -170,11 +185,42 @@ public abstract class Player {
         return _moveInfos;
     }
 
+    /**
+     * Get the side the Player is on
+     * @return the side the Player is on
+     */
     public Side getSide() {
         return _side;
     }
 
     public void setSide(Side _side) {
         this._side = _side;
+    }
+
+    /**
+     * Get the maximum number of Shells this Player has collected in this Game
+     * @return the maximum number of Shells the Player has collected in this Game
+     */
+    public int getMaxNumberShellsCollected(){
+        int maxNumberShells = 0;
+        for(MoveInfo moveInfo : _moveInfos){
+            if(maxNumberShells < moveInfo.getNumOfShellsCollected()){
+                maxNumberShells = moveInfo.getNumOfShellsCollected();
+            }
+        }
+        return maxNumberShells;
+    }
+
+    /**
+     * Get the average turn (or move) time for this Player in this Game
+     * @return the average turn time for this Player in the this Game
+     */
+    public double getAverageTurnTime(){
+        double averageTurnTime = 0;
+        for(MoveInfo moveInfo:_moveInfos){
+            averageTurnTime+=moveInfo.getDurationOfMoveMillis();
+        }
+        averageTurnTime /= _moveInfos.size();
+        return  averageTurnTime;
     }
 }

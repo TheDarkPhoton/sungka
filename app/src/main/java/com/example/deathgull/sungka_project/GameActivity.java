@@ -514,6 +514,21 @@ public class GameActivity extends Activity {
                         Pair<Player, Integer> move = _board.getMoves().get(i);
                         Log.i(TAG, i + ": " + move.second + " -> " + move.first.getName());
                     }
+                    //store the leaderboard data for non online games
+                    if(!(_board.getPlayerA() instanceof RemoteHuman)){//if the first player isnt a remote human than store data for them
+                        try {
+                            storeStats(_board.getPlayerA());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if(!(_board.getPlayerB() instanceof RemoteHuman)){//if the second player isnt a remote human than store data for them
+                        try {
+                            storeStats(_board.getPlayerB());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
                     break;
             }
         }
@@ -602,12 +617,26 @@ public class GameActivity extends Activity {
 
     private void storeStats(Player player) throws IOException {
         //TODO: add move info for the players (Player class)
+        boolean updatedStats = false;
         ArrayList<PlayerStatistic> playerStatistics= readStats();
         for(PlayerStatistic playerStatistic: playerStatistics){
             if(player.getName().equals(playerStatistic.getPlayerName())){
                 updateStats(player,playerStatistic);
+                updatedStats = true;
                 break;
             }
+        }
+        if(!updatedStats){//if the player doesnt exist in the file, because they havent played before
+            PlayerStatistic playerStatistic = new PlayerStatistic(player.getName());//make a new PlayerStatistic object
+            playerStatistic.increaseGamesPlayed();              //that holds the data for a Player that has just finished there first game
+            if(_board.getPlayerWon() == player){
+                playerStatistic.increaseGamesWon();
+            }else{
+                playerStatistic.increaseGamesLost();
+            }
+            playerStatistic.setAverageMoveTimeInMillis(player.getAverageTurnTime());
+            playerStatistic.setMaxNumShellsCollected(player.getMaxNumberShellsCollected());
+            playerStatistics.add(playerStatistic);
         }
         //store the stats
         String fileName = "player_stats";
@@ -623,14 +652,16 @@ public class GameActivity extends Activity {
 
     private void updateStats(Player player,PlayerStatistic playerStatistic){
         playerStatistic.increaseGamesPlayed();
-        //TODO: figure out who won
-        if(player instanceof Human) {
-            playerStatistic.updateAverageMoveTimeInMillis(((Human)player).getAverageTurnTime());
-            if(playerStatistic.getMaxNumShellsCollected() < ((Human) player).getMaxNumberShellsCollected()){
-                playerStatistic.setMaxNumShellsCollected(((Human)player).getMaxNumberShellsCollected());
-            }
+        //TODO: figure out who won, check who has the most shells
+        if(_board.getPlayerWon() == player){//check if this player has won the game or not
+            playerStatistic.increaseGamesWon();//if they have, then increase the games won by the player
+        }else{
+            playerStatistic.increaseGamesLost();//if they havent, then increase the games lost by the player
         }
-
+        playerStatistic.updateAverageMoveTimeInMillis(player.getAverageTurnTime());
+        if(playerStatistic.getMaxNumShellsCollected() < player.getMaxNumberShellsCollected()){
+            playerStatistic.setMaxNumShellsCollected(player.getMaxNumberShellsCollected());
+        }
     }
 
     private ArrayList<PlayerStatistic> readStats() throws ArrayIndexOutOfBoundsException {
@@ -643,25 +674,27 @@ public class GameActivity extends Activity {
         try {
             fileInputStream = openFileInput(fileName);
             while ((n = fileInputStream.read()) != -1) {
-                stringBuffer.append(new String(buffer, 0, n));
+                stringBuffer.append(new String(buffer, 0, n));//to read the data of the file
             }
             String textInFile = stringBuffer.toString();
-            String[] players = textInFile.split("\n");
-            for (int i = 0; i < players.length; i++) {
-                String[] info = players[i].split(",");
-                String playerName = info[0];
-                String gamesPlayed = info[1];
-                String gamesWon = info[2];
-                String gamesLost = info[3];
-                String avgTimeInMillis = info[4];
-                String maxShellCollected = info[5];
-                PlayerStatistic playerStatistic = new PlayerStatistic(playerName);
-                playerStatistic.setGamesPlayed(new Integer(gamesPlayed));
-                playerStatistic.setGamesWon(new Integer(gamesWon));
-                playerStatistic.setGamesLost(new Integer(gamesLost));
-                playerStatistic.setAverageMoveTimeInMillis(new Double(avgTimeInMillis));
-                playerStatistic.setMaxNumShellsCollected(new Integer(maxShellCollected));
-                playerStatistics.add(playerStatistic);
+            if(!textInFile.equals("")) {
+                String[] players = textInFile.split("\n");
+                for (int i = 0; i < players.length; i++) {
+                    String[] info = players[i].split(",");
+                    String playerName = info[0];
+                    String gamesPlayed = info[1];
+                    String gamesWon = info[2];
+                    String gamesLost = info[3];
+                    String avgTimeInMillis = info[4];
+                    String maxShellCollected = info[5];
+                    PlayerStatistic playerStatistic = new PlayerStatistic(playerName);
+                    playerStatistic.setGamesPlayed(new Integer(gamesPlayed));
+                    playerStatistic.setGamesWon(new Integer(gamesWon));
+                    playerStatistic.setGamesLost(new Integer(gamesLost));
+                    playerStatistic.setAverageMoveTimeInMillis(new Double(avgTimeInMillis));
+                    playerStatistic.setMaxNumShellsCollected(new Integer(maxShellCollected));
+                    playerStatistics.add(playerStatistic);
+                }
             }
 
         } catch (FileNotFoundException e) {

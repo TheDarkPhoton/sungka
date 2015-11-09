@@ -17,6 +17,11 @@ public class PlayerStatistic {
      */
     public PlayerStatistic(String playerName){
         this.playerName = playerName;
+        gamesPlayed = 0;
+        gamesLost = 0;
+        gamesWon = 0;
+        averageMoveTimeInMillis = 0;
+        maxNumShellsCollected = 0;
 
     }
 
@@ -177,7 +182,7 @@ public class PlayerStatistic {
     }
 
     public String toString(){
-        return String.format("%s,%s,%s,%s,%s,%s;\n", playerName,gamesPlayed,gamesWon,gamesLost,averageMoveTimeInMillis,maxNumShellsCollected);
+        return String.format("%s,%s,%s,%s,%s,%s\n", playerName,gamesPlayed,gamesWon,gamesLost,averageMoveTimeInMillis,maxNumShellsCollected);
     }
 
 

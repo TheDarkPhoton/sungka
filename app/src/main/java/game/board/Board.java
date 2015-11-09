@@ -304,4 +304,15 @@ public class Board {
     public void setCurrentPlayerA() {
         _currentPlayer = _playerOne;
     }
+
+    /**
+     * Get the Player that is currently winning or the one that has just won the Game
+     * @return the Player that is winning or has just won
+     */
+    public Player getPlayerWon(){
+        if(_playerOne.getScore() > _playerTwo.getScore()){
+            return _playerOne;
+        }
+        return _playerTwo;
+    }
 }

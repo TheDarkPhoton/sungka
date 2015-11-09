@@ -27,9 +27,10 @@ public class Human extends Player {
 
     @Override
     public void moveStart() {
+        super.moveStart();
         _playerActionListener.onMoveStart(this);
         _cannotPerformAnAction = false;
-        currentMove = new MoveInfo(System.currentTimeMillis(),getName());//starting the moveinfo object
+        //currentMove = new MoveInfo(System.currentTimeMillis(),getName());//starting the moveinfo object
     }
 
     @Override
@@ -49,14 +50,8 @@ public class Human extends Player {
 
     @Override
     public void moveEnd() {
+        super.moveEnd();
         _playerActionListener.onMoveEnd(this);
-        currentMove.endMove(System.currentTimeMillis());
-        if(_moveInfos.size() == 0){//this is the first move
-            currentMove.setNumOfShellsCollected(_store.getCount());
-        }else{//the amount of shells collected in this move, is the amount of shells in the store now minus the amount of shells in the store in the previous turn
-            currentMove.setNumOfShellsCollected(_store.getCount() - _moveInfos.get(_moveInfos.size() - 1).getNumOfShellsCollected());
-        }
-        _moveInfos.add(currentMove);//want to maybe get the points the user collected in that move
     }
 
     /**
@@ -68,30 +63,5 @@ public class Human extends Player {
         isOnline = true;
     }
 
-    /**
-     * Get the maximum number of Shells this Player has collected in this Game
-     * @return the maximum number of Shells the Player has collected in this Game
-     */
-    public int getMaxNumberShellsCollected(){
-        int maxNumberShells = 0;
-        for(MoveInfo moveInfo : _moveInfos){
-            if(maxNumberShells < moveInfo.getNumOfShellsCollected()){
-                maxNumberShells = moveInfo.getNumOfShellsCollected();
-            }
-        }
-        return maxNumberShells;
-    }
 
-    /**
-     * Get the average turn (or move) time for this Player in this Game
-     * @return the average turn time for this Player in the this Game
-     */
-    public double getAverageTurnTime(){
-        double averageTurnTime = 0;
-        for(MoveInfo moveInfo:_moveInfos){
-            averageTurnTime+=moveInfo.getDurationOfMoveMillis();
-        }
-        averageTurnTime /= _moveInfos.size();
-        return  averageTurnTime;
-    }
 }
