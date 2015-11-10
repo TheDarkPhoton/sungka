@@ -35,6 +35,8 @@ public class Game {
         playerTwo = new AI(100, 100);
         playerTwo.setPlayerActionListener(playerActionListener);
 
+
+
         if(isOnlineGame){
             setUpForOnlineGame();
         }

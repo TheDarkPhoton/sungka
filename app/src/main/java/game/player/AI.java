@@ -38,6 +38,7 @@ public class AI extends Player {
 
     @Override
     public void moveStart() {
+        super.moveStart();
         _playerActionListener.onMoveStart(this);
         _cannotPerformAnAction = false;
 
@@ -78,6 +79,7 @@ public class AI extends Player {
 
     @Override
     public void moveEnd() {
+        super.moveEnd();
         _playerActionListener.onMoveEnd(this);
     }
 }
