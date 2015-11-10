@@ -1,7 +1,9 @@
 package com.example.deathgull.sungka_project;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -375,6 +377,7 @@ public class GameActivity extends Activity {
         _layoutMaster.getRootView().setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                otherPlayerDidDisconnect(_board.getPlayerA());
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     _animationDurationFactor = 0.5f;
                 } else {
@@ -627,5 +630,27 @@ public class GameActivity extends Activity {
         String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
         Log.v(TAG, "ip: " + ip);
         return ip;
+    }
+
+    /**
+     * Displays a message saying other person disconnected and brings them to the main menu.
+     */
+    private void otherPlayerDidDisconnect(Player player) {
+        DialogInterface.OnClickListener goToMainMenuListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Go to main menu
+                finish();
+            }
+        };
+
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(_context);
+        alertBuilder
+                .setTitle(R.string.str_playerDisconnectedTitle)
+                .setMessage(R.string.str_playerDisconnected)
+                .setPositiveButton("OK", goToMainMenuListener);
+
+        AlertDialog alertDialog = alertBuilder.create();
+        alertDialog.show();
     }
 }

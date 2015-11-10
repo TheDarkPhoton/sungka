@@ -23,4 +23,6 @@
     <string name="strMultiplayer">Multiplayer</string>
     <string name="strLeaderboard">Leaderboard</string>
     <string name="strOptions">Options</string>
+    <string name="str_playerDisconnectedTitle">Player Disconnected</string>
+    <string name="str_playerDisconnected">It seems the other player left (rage quit).</string>
 </resources>
