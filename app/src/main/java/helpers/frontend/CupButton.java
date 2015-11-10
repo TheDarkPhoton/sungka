@@ -46,7 +46,7 @@ public class CupButton extends Button implements View.OnTouchListener {
             //Calculates spaces between cups
             spaceSmall = (int) (screenWidth * 0.005);
             spaceStoreTop = (int) (screenHeight * 0.05);
-            spaceLeft = (screenWidth - (((store * 2) + (cup * 7) + (spaceSmall * 14)))) / 2;
+            spaceLeft = (screenWidth - (((store * 2) + (cup * 7) + (spaceSmall * 16)))) / 2;
             spaceTop = ((screenHeight - ((store + (cup * 2) + (spaceStoreTop * 2)))) / 2) - cup / 2;
         }
     }
@@ -85,6 +85,7 @@ public class CupButton extends Button implements View.OnTouchListener {
         _cup_type = cType;
 
         _text = new TextView(context);
+        _text.setVisibility(View.GONE);
         _text.setTextSize(30 * sizes.scale);
         _text.addOnLayoutChangeListener(new OnLayoutChangeListener() {
             @Override
@@ -139,11 +140,11 @@ public class CupButton extends Button implements View.OnTouchListener {
             paramsButton.width = sizes.store;
             paramsButton.height = sizes.store;
             if (_player_type == PLAYER_A) {
-                paramsButton.rightMargin = sizes.spaceSmall;
-                paramsButton.leftMargin = sizes.spaceLeft;
-            } else if (_player_type == PLAYER_B) {
                 paramsButton.rightMargin = sizes.spaceLeft;
                 paramsButton.leftMargin = sizes.spaceSmall;
+            } else if (_player_type == PLAYER_B) {
+                paramsButton.rightMargin = sizes.spaceSmall;
+                paramsButton.leftMargin = sizes.spaceLeft;
             }
             paramsButton.topMargin = sizes.spaceStoreTop;
             paramsButton.bottomMargin = sizes.spaceStoreTop;
@@ -168,6 +169,8 @@ public class CupButton extends Button implements View.OnTouchListener {
                 updateTextLocation();
             }
         });
+
+        //_text.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -426,4 +429,11 @@ public class CupButton extends Button implements View.OnTouchListener {
 
     }
 
+    /**
+     * Set the text visibility to visible
+     */
+    public void showText() {
+        _text.setVisibility(View.VISIBLE);
+        //System.out.println("Show text");
+    }
 }
