@@ -37,21 +37,16 @@ import game.board.Board;
 import game.Game;
 import game.board.HandOfShells;
 import game.board.BoardState;
-import game.cup.Cup;
 import game.player.AI;
 import game.player.Human;
 import game.player.Player;
 import game.player.PlayerActionAdapter;
 import game.player.RemoteHuman;
-import helpers.CupButton;
 import helpers.MessageManager;
-import helpers.PauseThreadWhile;
-import helpers.ShellTranslation;
 import helpers.frontend.CupButton;
 import helpers.backend.PauseThreadWhile;
 import helpers.frontend.ShellTranslation;
 import game.player.Side;
-import helpers.frontend.YourMoveTextView;
 
 public class GameActivity extends Activity {
     private static final String TAG = "GameActivity";
