@@ -525,7 +525,7 @@ public class GameActivity extends Activity {
                         Pair<Player, Integer> move = _board.getMoves().get(i);
                         Log.i(TAG, i + ": " + move.second + " -> " + move.first.getName());
                     }
-                    ArrayList<PlayerStatistic> playerStatistics = readStats();//read the stats
+                    ArrayList<PlayerStatistic> playerStatistics = readStats(getApplicationContext());//read the stats
                     //store the leaderboard data for non online games
                     if(!(_board.getPlayerA() instanceof RemoteHuman)){//if the first player isnt a remote human than store data for them
                         updateList(_board.getPlayerA(),playerStatistics);
@@ -624,6 +624,12 @@ public class GameActivity extends Activity {
     }
 
 
+    /**
+     * Update the list of PlayerStatistic objects by updating data for the Player object provided, or add a new
+     * PlayerStatistic object for that Player, if there was no data for them before
+     * @param player the Player object that we are updating the data for
+     * @param playerStatistics the list of PlayerStatistic object that we are updating data on
+     */
     private void updateList(Player player,ArrayList<PlayerStatistic> playerStatistics){
         boolean updatedStats = false;
         for(PlayerStatistic playerStatistic: playerStatistics){
@@ -640,6 +646,11 @@ public class GameActivity extends Activity {
         }
     }
 
+    /**
+     * Store the list of PlayerStatistic objects in the data file "player_statistics"
+     * @param playerStatistics the list of PlayerStatistic objects we are storing
+     * @throws IOException if there is an error when opening the file output or writing to the file
+     */
     private void storeStats(ArrayList<PlayerStatistic> playerStatistics) throws IOException {
         //store the stats
         String data = "";
@@ -654,13 +665,18 @@ public class GameActivity extends Activity {
         fileOutputStream.close();
         //replaced the old file with a new one that has the updated data
         Log.v(TAG,"About ot read stats");
-        ArrayList<PlayerStatistic> stats = readStats();
+        ArrayList<PlayerStatistic> stats = readStats(getApplicationContext());
         for(PlayerStatistic player: stats){
             Log.v(TAG,player.toString());
         }
         Log.v(TAG,"Read stats");
     }
 
+    /**
+     * Add a new Player to the list of PlayerStatistics, if they are not in the list
+     * @param player the Player for which we are storing data for
+     * @param playerStatistics the list of PlayerStatistic objects, that we need to add the new PlayerStatistic object too
+     */
     private void addNewPlayerStats(Player player,ArrayList<PlayerStatistic> playerStatistics){
         PlayerStatistic playerStatistic = new PlayerStatistic(player.getName());//make a new PlayerStatistic object
         playerStatistic.increaseGamesPlayed();      //that holds the data for a Player that has just finished there first game
@@ -678,7 +694,11 @@ public class GameActivity extends Activity {
         Log.v(TAG,"Made a player Statistic: "+playerStatistic.toString());
     }
 
-
+    /**
+     * Updata the statistics in the PlayerStatistic object of a Player
+     * @param player the Player for which we are updating there data for
+     * @param playerStatistic the PlayerStatistic which we are updating data for
+     */
     private void updateStats(Player player,PlayerStatistic playerStatistic){
         playerStatistic.increaseGamesPlayed();
         if(_board.isDraw()){
@@ -694,24 +714,27 @@ public class GameActivity extends Activity {
         }
     }
 
-    private ArrayList<PlayerStatistic> readStats() {
+    /**
+     * Read the stats stored in the data file "player_statistics"
+     * @param context the context the application is currently in (to open the file input)
+     * @return an ArrayList of PlayerStatistic objects (can be empty if there is no data)
+     */
+    public static ArrayList<PlayerStatistic> readStats(Context context) {
         FileInputStream fileInputStream;
         ArrayList<PlayerStatistic> playerStatistics = new ArrayList<PlayerStatistic>();
         String textInFile = "";
-        //byte[] buffer = new byte[1024];//used to get the characters in the text
         int n;
         try {
-            fileInputStream = openFileInput(fileName);
+            fileInputStream = context.openFileInput(fileName);
             while ((n = fileInputStream.read()) != -1) {
                 textInFile += Character.toString((char) n);
             }
-            //String textInFile = stringBuffer.toString();
             Log.v(TAG,textInFile);
             if(!textInFile.equals("")) {
                 String[] players = textInFile.split("\n");
                 for (int i = 0; i < players.length; i++) {
                     Log.v(TAG,players[i]);
-                    String[] info = players[i].split(",");
+                    String[] info = players[i].split(",");//to get the individual data of a PlayerStatistic
                     String playerName = info[0];
                     String gamesPlayed = info[1];
                     String gamesWon = info[2];
@@ -720,8 +743,8 @@ public class GameActivity extends Activity {
                     String avgTimeInMillis = info[5];
                     String maxShellCollected = info[6];
                     String maxConsecutiveMoves = info[7];
-                    PlayerStatistic playerStatistic = new PlayerStatistic(playerName);
-                    playerStatistic.setGamesPlayed(new Integer(gamesPlayed));
+                    PlayerStatistic playerStatistic = new PlayerStatistic(playerName);//make a PlayerStatistic object with the
+                    playerStatistic.setGamesPlayed(new Integer(gamesPlayed));   //data we just obtained
                     playerStatistic.setGamesWon(new Integer(gamesWon));
                     playerStatistic.setGamesLost(new Integer(gamesLost));
                     playerStatistic.setGamesDrawn(new Integer(gamesDrawn));
