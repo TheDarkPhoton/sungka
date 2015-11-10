@@ -19,4 +19,8 @@
     <string name="str_YouRobbedOtherPlayer">YOU ROBBED THE OTHER PLAYER</string>
     <string name="str_YouWereRobbedOfFinalMove">YOU WERE ROBBED OF YOUR FINAL MOVE</string>
     <string name="str_YouRobbedOtherPlayersFinalMove">YOU ROBBED OTHER PLAYER\'S FINAL MOVE</string>
+    <string name="strSingleplayer">Singleplayer</string>
+    <string name="strMultiplayer">Multiplayer</string>
+    <string name="strLeaderboard">Leaderboard</string>
+    <string name="strOptions">Options</string>
 </resources>
