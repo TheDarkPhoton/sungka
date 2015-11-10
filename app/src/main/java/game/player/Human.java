@@ -11,9 +11,10 @@ import game.connection.SungkaProtocol;
  */
 public class Human extends Player {
 
-    private SungkaConnection sungkaConnection;//only this extension of player has a sungka connection
+    private SungkaConnection sungkaConnection; //only this extension of player has a sungka connection
     private Boolean isOnline;
     private MoveInfo currentMove;
+
     /**
      * Initializes the PLAYER Object, along with initializing the values of the PLAYER's store and their respective
      * shell cups
@@ -59,6 +60,10 @@ public class Human extends Player {
         _moveInfos.add(currentMove);//want to maybe get the points the user collected in that move
     }
 
+    /**
+     * Set the connection this Player will use in an online game to communicate to another Player when they make a move
+     * @param sungkaConnection the connection (either SungkaClient or SungkaServer) to communicate to another Player
+     */
     public void setSungkaConnection(SungkaConnection sungkaConnection){
         this.sungkaConnection = sungkaConnection;
         isOnline = true;

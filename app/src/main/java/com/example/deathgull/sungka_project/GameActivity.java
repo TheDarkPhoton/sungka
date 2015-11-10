@@ -435,6 +435,10 @@ public class GameActivity extends Activity {
         processBoardMessages();
     }
 
+    /**
+     * A check to see whether shell animations are running.
+     * @return true if all shell animations have finished.
+     */
     public boolean animationFinished() {
         return !PlayerActionAdapter.isAnimationInProgress();
     }
