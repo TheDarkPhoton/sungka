@@ -24,6 +24,7 @@ import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -45,6 +46,7 @@ import game.player.RemoteHuman;
 import helpers.MessageManager;
 import helpers.frontend.CupButton;
 import helpers.backend.PauseThreadWhile;
+import helpers.frontend.PlayerNameTextView;
 import helpers.frontend.ShellTranslation;
 import game.player.Side;
 
@@ -62,6 +64,8 @@ public class GameActivity extends Activity {
     private Game _game;
     private Board _board;
     private MessageManager _messageManager;
+    private PlayerNameTextView[] _playerTextViews;
+
     private float _animationDurationFactor = 1.0f;
 
     private static SungkaConnection usersConnection = null;
@@ -359,6 +363,14 @@ public class GameActivity extends Activity {
         // Setup message manager
         _messageManager = new MessageManager(this, _layoutMaster);
 
+        // Setup Player views
+        _playerTextViews = new PlayerNameTextView[2];
+
+        _playerTextViews[0] = new PlayerNameTextView(this, _board.getPlayerA());
+        _playerTextViews[1] = new PlayerNameTextView(this, _board.getPlayerB());
+        _layoutMaster.addView(_playerTextViews[0]);
+        _layoutMaster.addView(_playerTextViews[1]);
+
         // Setup animation speed listener
         _layoutMaster.getRootView().setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -492,7 +504,6 @@ public class GameActivity extends Activity {
                 case PLAYER_A_GETS_ANOTHER_TURN:
                     Log.i(TAG, _board.getPlayerA().getName() + " gets another turn.");
                     _messageManager.playerGetsAnotherTurn(_board.getPlayerA());
-
                     break;
                 case PLAYER_B_GETS_ANOTHER_TURN:
                     Log.i(TAG, _board.getPlayerB().getName() + " gets another turn.");
