@@ -37,6 +37,7 @@ import game.board.Board;
 import game.Game;
 import game.board.HandOfShells;
 import game.board.BoardState;
+import game.cup.Cup;
 import game.player.AI;
 import game.player.Player;
 import game.player.PlayerActionAdapter;
@@ -409,7 +410,7 @@ public class GameActivity extends Activity {
                         if (images.size() > 0) {
                             moveShellsRec(hand, images, duration);
                         } else if (robbersHand != null) {
-                            moveRobOpponent(robbersHand, duration * 2);
+                            moveRobOpponent(_board.pickUpShells(hand.currentCupIndex()), robbersHand, duration * 2);
                             processBoardMessages();
                         } else {
                             processEndOfAnimation();
@@ -424,17 +425,22 @@ public class GameActivity extends Activity {
     /**
      * Method that handles the case where the opponents cup is robbed because shell
      * landed in the current players cup.
-     * @param robbersHand The index of the opponents cup to be robbed.
+     * @param activatorHand The hand object of the cup that initiated the rob move.
+     * @param robbersHand The hand object of the cup that was robbed.
      * @param duration Duration of the animation.
      */
-    private void moveRobOpponent(final HandOfShells robbersHand, final int duration){
+    private void moveRobOpponent(final HandOfShells activatorHand, final HandOfShells robbersHand, final int duration){
         boolean handBelongsToPlayerA = _board.isPlayerA(robbersHand.belongsToPlayer());
 
         final CupButton playersCup = handBelongsToPlayerA ? _cupButtons[15] : _cupButtons[7];
+        CupButton activatorCup = _cupButtons[activatorHand.currentCupIndex()];
         CupButton robbedCup = _cupButtons[robbersHand.currentCupIndex()];
         robbersHand.setNextCup(playersCup.getCupIndex());
+        activatorHand.setNextCup(playersCup.getCupIndex());
 
         final ArrayList<View> images = robbedCup.getShells();
+        images.addAll(activatorCup.getShells());
+
         final ArrayList<ShellTranslation> animations = new ArrayList<>();
         for (int i = 0; i < images.size(); i++) {
             animations.add(new ShellTranslation(images.get(i), playersCup, duration));
@@ -450,9 +456,11 @@ public class GameActivity extends Activity {
                 h.post(new Runnable() {
                     @Override
                     public void run() {
+                        activatorHand.dropAllShells();
                         robbersHand.dropAllShells();
                         playersCup.addShells(images);
 
+                        _board.nextPlayersMove();
                         processEndOfAnimation();
                     }
                 });

@@ -124,9 +124,15 @@ public class Simulator extends Board {
             HandOfShells robbersHand = hand.dropShell();
             if (robbersHand != null){
                 boolean handBelongsToPlayerA = isPlayerA(robbersHand.belongsToPlayer());
+
+                HandOfShells activatorHand = pickUpShells(hand.currentCupIndex());
+                activatorHand.setNextCup(handBelongsToPlayerA ? 15 : 7);
                 robbersHand.setNextCup(handBelongsToPlayerA ? 15 : 7);
+
                 score += robbersHand.getShellCount() * 2;
+                activatorHand.dropAllShells();
                 robbersHand.dropAllShells();
+                nextPlayersMove();
             }
         }
 
