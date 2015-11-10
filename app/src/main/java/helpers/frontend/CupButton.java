@@ -85,7 +85,7 @@ public class CupButton extends Button implements View.OnTouchListener {
         _cup_type = cType;
 
         _text = new TextView(context);
-        _text.setVisibility(View.GONE);
+        //_text.setVisibility(View.GONE);
         _text.setTextSize(30 * sizes.scale);
         _text.addOnLayoutChangeListener(new OnLayoutChangeListener() {
             @Override
@@ -169,8 +169,6 @@ public class CupButton extends Button implements View.OnTouchListener {
                 updateTextLocation();
             }
         });
-
-        //_text.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -427,13 +425,5 @@ public class CupButton extends Button implements View.OnTouchListener {
         rotateAnimation.setFillAfter(true);
         _text.startAnimation(rotateAnimation);
 
-    }
-
-    /**
-     * Set the text visibility to visible
-     */
-    public void showText() {
-        _text.setVisibility(View.VISIBLE);
-        //System.out.println("Show text");
     }
 }

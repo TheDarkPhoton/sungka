@@ -62,7 +62,8 @@ public class MenuActivity extends Activity {
      * @param view - the button
      */
     public void Leaderboard(View view) {
-
+        Intent intent = new Intent(MenuActivity.this, StatisticsActivity.class);
+        startActivity(intent);
     }
 
     /**

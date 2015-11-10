@@ -14,11 +14,12 @@
 
         <FrameLayout
             android:layout_width="wrap_content"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_marginRight="10dp">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="150dp"
+                android:layout_height="45dp"
                 android:id="@+id/title"
                 android:layout_gravity="center_vertical|right"
                 android:background="@drawable/title" />
@@ -29,11 +30,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:padding="10dp">
+            android:padding="10dp"
+            android:layout_marginLeft="10dp">
 
             <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="175dp"
+                android:layout_height="45dp"
                 android:id="@+id/btnSinglePlayer"
                 android:onClick="SinglePlayer"
                 android:background="@drawable/btnsingleplayer"
@@ -42,8 +44,8 @@
                 android:layout_gravity="center" />
 
             <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="175dp"
+                android:layout_height="45dp"
                 android:id="@+id/btnMultiPlayer"
                 android:onClick="Multiplayer"
                 android:layout_gravity="center"
@@ -52,8 +54,8 @@
                 android:contentDescription="@string/strMultiplayer" />
 
             <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="175dp"
+                android:layout_height="45dp"
                 android:id="@+id/btnLeaderboard"
                 android:onClick="Leaderboard"
                 android:background="@drawable/btnleaderboard"
@@ -62,8 +64,8 @@
                 android:layout_gravity="center" />
 
             <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="175dp"
+                android:layout_height="45dp"
                 android:id="@+id/btnOptions"
                 android:onClick="Options"
                 android:layout_gravity="center"
