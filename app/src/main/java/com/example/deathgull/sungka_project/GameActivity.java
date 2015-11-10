@@ -123,7 +123,7 @@ public class GameActivity extends Activity {
                         FrameLayout.LayoutParams.MATCH_PARENT,
                         FrameLayout.LayoutParams.MATCH_PARENT));
 
-      /*  ArrayList<PlayerStatistic> stats = readStats();
+       /* ArrayList<PlayerStatistic> stats = readStats(getApplicationContext());
         for(PlayerStatistic playerStatistic: stats){
             Log.v(TAG,playerStatistic.toString());
         }
