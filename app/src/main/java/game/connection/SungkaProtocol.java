@@ -32,18 +32,18 @@ public class SungkaProtocol {
      */
     public void updateGame(String message){
         //TODO: update the board appropriately to the message received
-        if(message.contains(PLAYERMOVE)){
+        if(message.contains(PLAYERMOVE)) {
             Log.v("SungkaProtocol", message);
             final int indexMove = new Integer(message.split(PLAYERMOVE)[1])+8;
             Log.v("SungkaProtocol","Index: "+indexMove);
             gameActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    remoteHuman.move(indexMove);//perform the other players move on this device
+                    remoteHuman.move(indexMove);                                                    //perform the other players move on this device
                 }
             });
 
-        }else if(message.equals(PLAYEREND)){//end the game
+        } else if (message.equals(PLAYEREND)){                                                        //end the game
 
         }
     }

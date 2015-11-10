@@ -22,7 +22,7 @@ import java.util.ArrayList;
 
 import game.board.Board;
 import game.cup.Cup;
-import game.player.Side;
+import game.player.Player;
 
 public class CupButton extends Button implements View.OnTouchListener {
     public static final int PLAYER_A = 0;
@@ -400,14 +400,13 @@ public class CupButton extends Button implements View.OnTouchListener {
     }
 
     /**
-     * Rotate the text view to face a side
-     * @param side of the player that has the current move
+     * Rotate the text view to face a side.
+     * @param player Player that has the current move.
      */
-    public void rotateTowards(Side side) {
-        float fromRotation = (side != Side.A) ? 0 : 180;
-        float rotation = (side == Side.A) ? 0 : 180;
-
-        System.out.println("Rotation " + fromRotation + " to " + rotation);
+    public void rotateTowards(Player player) {
+        Board board = player.getBoard();
+        float fromRotation = board.isPlayerA(player) ? 0 : 180;
+        float rotation = board.isPlayerA(player) ? 0 : 180;
 
         if (rotation == fromRotation)
             return;

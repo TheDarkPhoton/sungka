@@ -16,12 +16,12 @@ public abstract class Player {
     protected Cup _store;
     protected Cup[] _cups;
 
-    private Side _side;
-
-    protected ArrayList<MoveInfo> _moveInfos;                                                //arraylist to store the users moves in a game
+    protected ArrayList<MoveInfo> _moveInfos;                                                       //arraylist to store the users moves in a game
     protected PlayerActionListener _playerActionListener = new PlayerActionAdapter();
 
     protected boolean _cannotPerformAnAction = true;
+    protected boolean _firstMovesExhausted = false;
+    private boolean _animationInProgress = false;                                                   //this is only used for the first turn operations.
 
     /**
      * Initializes the PLAYER Object, along with initializing the values of the PLAYER's store and their respective
@@ -51,6 +51,10 @@ public abstract class Player {
      */
     public void bindBoard(Board board){
         _board = board;
+    }
+
+    public Board getBoard(){
+        return _board;
     }
 
     /**
@@ -170,11 +174,19 @@ public abstract class Player {
         return _moveInfos;
     }
 
-    public Side getSide() {
-        return _side;
+    public boolean isAnimationInProgress(){
+        return _animationInProgress;
     }
 
-    public void setSide(Side _side) {
-        this._side = _side;
+    public void setAnimationInProgress(boolean animationInProgress){
+        _animationInProgress = animationInProgress;
+    }
+
+    public boolean isFirstMovesExhausted(){
+        return _firstMovesExhausted;
+    }
+
+    public void setFirstMovesExhausted(boolean exhausted){
+        _firstMovesExhausted = exhausted;
     }
 }

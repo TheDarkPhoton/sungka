@@ -9,39 +9,26 @@ import android.widget.TextView;
 
 import com.example.deathgull.sungka_project.R;
 
-import game.player.Side;
-
-
-/**
- * Created by martinkubat on 30/10/15.
- */
 public class YourMoveTextView extends TextView {
-    private Side _side;
-    private FrameLayout.LayoutParams _layoutParams;
 
-    public YourMoveTextView(Context context, Side side) {
+    public YourMoveTextView(Context context, boolean playerA) {
         super(context);
 
-        _side = side;
-
-        _layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        this.setLayoutParams(_layoutParams);
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        this.setLayoutParams(layoutParams);
 
         this.setText(R.string.str_YourTurn);
         this.setGravity(Gravity.CENTER);
         this.setTextSize(30.0f);
         this.setHeight(130);
 
-        switch (_side) {
-            case A:
-                _layoutParams.gravity = Gravity.BOTTOM;
-                this.setTextColor(Color.WHITE);
-                break;
-            case B:
-                _layoutParams.gravity = Gravity.TOP;
-                this.setTextColor(Color.BLACK);
-                this.setRotation(180);
-                break;
+        if (playerA){
+            layoutParams.gravity = Gravity.BOTTOM;
+            this.setTextColor(Color.WHITE);
+        } else {
+            layoutParams.gravity = Gravity.TOP;
+            this.setTextColor(Color.BLACK);
+            this.setRotation(180);
         }
     }
 

@@ -37,7 +37,6 @@ import game.board.Board;
 import game.Game;
 import game.board.HandOfShells;
 import game.board.BoardState;
-import game.cup.Cup;
 import game.player.AI;
 import game.player.Player;
 import game.player.PlayerActionAdapter;
@@ -45,7 +44,6 @@ import game.player.RemoteHuman;
 import helpers.frontend.CupButton;
 import helpers.backend.PauseThreadWhile;
 import helpers.frontend.ShellTranslation;
-import game.player.Side;
 import helpers.frontend.YourMoveTextView;
 
 public class GameActivity extends Activity {
@@ -59,9 +57,10 @@ public class GameActivity extends Activity {
     private GridLayout _layoutBase;                                                                 //Base layout
 
     private CupButton[] _cupButtons;
-    private Game _game;
     private Board _board;
-    private YourMoveTextView[] _yourMoveTextViews;
+    private YourMoveTextView _yourMoveTop;
+    private YourMoveTextView _yourMoveBottom;
+
     private float _animationDurationFactor = 1.0f;
 
     private static SungkaConnection usersConnection = null;
@@ -70,8 +69,13 @@ public class GameActivity extends Activity {
         @Override
         public void onMoveStart(Player player) {
             Log.i(TAG, player.getName() + " started his turn");
-            _yourMoveTextViews[player.getSide().ordinal()].show();
-            setupMove(player.getSide());
+
+            if (_board.isPlayerA(player))
+                _yourMoveBottom.show();
+            else
+                _yourMoveTop.show();
+
+            setupMove(player);
         }
 
         @Override
@@ -79,7 +83,10 @@ public class GameActivity extends Activity {
             Thread t = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    new PauseThreadWhile<>(PlayerActionAdapter.class, "isAnimationInProgress");
+                    if (_board.getCurrentPlayer() == null)
+                        new PauseThreadWhile<>(player, "isAnimationInProgress");
+                    else
+                        new PauseThreadWhile<>(PlayerActionAdapter.class, "isAnimationInProgress");
 
                     Handler h = new Handler(_context.getMainLooper());
                     h.post(new Runnable() {
@@ -93,7 +100,11 @@ public class GameActivity extends Activity {
 
                             Log.i(TAG, player.getName() + " performed an action on cup["+index+"]");
 
-                            setAnimationInProgress(true);
+                            if (_board.getCurrentPlayer() == null)
+                                player.setAnimationInProgress(true);
+                            else
+                                setAnimationInProgress(true);
+
                             ArrayList<View> images = _cupButtons[index].getShells();
                             moveShellsRec(hand, images, 300);
                         }
@@ -106,7 +117,11 @@ public class GameActivity extends Activity {
         @Override
         public void onMoveEnd(Player player) {
             Log.i(TAG, player.getName() + " ended his turn");
-            _yourMoveTextViews[player.getSide().ordinal()].hide();
+
+            if (_board.isPlayerA(player))
+                _yourMoveBottom.hide();
+            else
+                _yourMoveTop.hide();
         }
     };
 
@@ -118,37 +133,8 @@ public class GameActivity extends Activity {
                 new FrameLayout.LayoutParams(
                         FrameLayout.LayoutParams.MATCH_PARENT,
                         FrameLayout.LayoutParams.MATCH_PARENT));
-        /*//To get the ip
-        WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
-        String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
-        Log.v(TAG, "ip: " + ip);*/
+
         getIp();
-        //In the case of a client connecting to the server, the server needs to be set up before
-      /* SungkaClient sungkaClient = new SungkaClient("10.230.238.122",4000);
-        sungkaClient.execute();
-        try {
-            sungkaClient.get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-        setConnection(sungkaClient);*/
-        //setUpConnection(SungkaConnection.JOIN_CONNECTION);
-
-        //in the case of the server being set up
-        /*SungkaServer sungkaServer = new SungkaServer(4000);
-        sungkaServer.execute();
-
-        try {
-            sungkaServer.get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-        setConnection(sungkaServer);*/
-        //setUpConnection(SungkaConnection.HOST_CONNECTION);
 
         shells =new Drawable[]{
                 ResourcesCompat.getDrawable(getResources(), R.drawable.shell1, null),
@@ -158,8 +144,8 @@ public class GameActivity extends Activity {
         };
 
         
-        _game = new Game(_playerActionListener,this);
-        _board = _game.getBoard();
+        Game game = new Game(_playerActionListener,this);
+        _board = game.getBoard();
 
         hideNav();                                                  //Hide navigation bar and system bar
         setScreenSize();                                            //Set screen size
@@ -242,7 +228,8 @@ public class GameActivity extends Activity {
                 for (CupButton btn : _cupButtons) {
                     btn.initShellLocation();
                 }
-                _board.getCurrentPlayer().moveStart();
+                _board.getPlayerA().moveStart();
+                _board.getPlayerB().moveStart();
             }
         });
     }
@@ -257,6 +244,48 @@ public class GameActivity extends Activity {
 
         //Calculate sizes of store cups and small cups
         CupButton.generateSizes(displayMetrics.widthPixels, displayMetrics.heightPixels);
+    }
+
+    private void initCupButtonSmall(String name_id, int index, int row, int column, int player) {
+        initCupButton(name_id, index, row, column, player, CupButton.CUP);
+    }
+
+    private void initCupButton(String name_id, int index, int row, int column, int player, int type){
+        CupButton btn = new CupButton(this, _board, index, player, type);
+        btn.addToLayout(_layoutBase, column, row);
+        _cupButtons[index] = btn;
+
+        if (type == CupButton.CUP){
+            final int finalIndex = index;
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Player player = _board.getPlayerA();
+                    if (finalIndex > 7 && finalIndex < 15){
+                        player = _board.getPlayerB();
+                    }
+
+                    if (player instanceof AI || player instanceof RemoteHuman)
+                        return;
+
+                    player.move(finalIndex);
+                }
+            });
+            btn.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (!_board.isValid(finalIndex, false))
+                        return false;
+
+                    _cupButtons[finalIndex].onTouch(v, event);
+                    return false;
+                }
+            });
+        }
+
+        // fetch and apply a unique identifier to the Player A cup
+        int id = getResources().getIdentifier(name_id, "id", getPackageName());
+        btn.setId(id);
     }
 
     /**
@@ -278,90 +307,22 @@ public class GameActivity extends Activity {
         int topColumnIndex = 7;
         int bottomColumnIndex = 1;
         for(int i = 0; i < 7; i++) {
-            //PLAYER A shell cup
-            CupButton btn = new CupButton(this, _board, i, CupButton.PLAYER_A, CupButton.CUP);
-            btn.addToLayout(_layoutBase, bottomColumnIndex++, 2);
-            _cupButtons[i] = btn;
-
-            final int indexA = i;
-            btn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (_board.getCurrentPlayer() instanceof AI || _board.getCurrentPlayer() instanceof RemoteHuman)
-                        return;
-                    _board.getCurrentPlayer().move(indexA);
-                }
-            });
-            btn.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    if (!_board.isValid(indexA, false))
-                        return false;
-
-                    _cupButtons[indexA].onTouch(v, event);
-                    return false;
-                }
-            });
-
-            // fetch and apply a unique identifier to the Player A cup
-            int id = getResources().getIdentifier("cup1_" + (i+1), "id", packageName);
-            btn.setId(id);
-
-            //PlayerB shell cup
-            btn = new CupButton(this, _board, i + 8, CupButton.PLAYER_B, CupButton.CUP);
-            btn.addToLayout(_layoutBase, topColumnIndex--, 0);
-            _cupButtons[i+8] = btn;
-
-            final int indexB = i+8;
-            btn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (_board.getCurrentPlayer() instanceof AI || _board.getCurrentPlayer() instanceof RemoteHuman)
-                        return;
-                    _board.getCurrentPlayer().move(indexB);
-                }
-            });
-            btn.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    if (!_board.isValid(indexB, false))
-                        return false;
-
-                    _cupButtons[indexB].onTouch(v, event);
-                    return false;
-                }
-            });
-
-            // fetch and apply a unique identifier to the Player B cup
-            id = getResources().getIdentifier("cup2_" + (i+1), "id", packageName);
-            btn.setId(id);
+            //PLAYER shell cups
+            initCupButtonSmall("cup1_" + (i + 1), i, 2, bottomColumnIndex++, CupButton.PLAYER_A);
+            initCupButtonSmall("cup2_" + (i + 9), i + 8, 0, topColumnIndex--, CupButton.PLAYER_B);
         }
-        //PLAYER A store
-        CupButton btnPlayerA = new CupButton(this, _board, 7, CupButton.PLAYER_A, CupButton.STORE);
-        btnPlayerA.addToLayout(_layoutBase, 8, 1);
-        _cupButtons[7] = btnPlayerA;
 
-        //PLAYER B store
-        CupButton btnPlayerB = new CupButton(this, _board, 15, CupButton.PLAYER_B, CupButton.STORE);
-        btnPlayerB.addToLayout(_layoutBase, 0, 1);
-        _cupButtons[15] = btnPlayerB;
-
-        // set IDs to stores
-        int id = getResources().getIdentifier("cup1_store", "id", packageName);
-        btnPlayerA.setId(id);
-        id = getResources().getIdentifier("cup2_store", "id", packageName);
-        btnPlayerB.setId(id);
-
-
-        _yourMoveTextViews = new YourMoveTextView[2];
+        //PLAYER stores
+        initCupButton("cup1_store", 7, 1, 8, CupButton.PLAYER_A, CupButton.STORE);
+        initCupButton("cup2_store", 15, 1, 0, CupButton.PLAYER_B, CupButton.STORE);
 
         // PLAYER A your move label
-        _yourMoveTextViews[0] = new YourMoveTextView(this, Side.A);
-        _layoutMaster.addView(_yourMoveTextViews[0]);
+        _yourMoveBottom = new YourMoveTextView(this, true);
+        _layoutMaster.addView(_yourMoveBottom);
 
         // PLAYER B your move label
-        _yourMoveTextViews[1] = new YourMoveTextView(this, Side.B);
-        _layoutMaster.addView(_yourMoveTextViews[1]);
+        _yourMoveTop = new YourMoveTextView(this, false);
+        _layoutMaster.addView(_yourMoveTop);
 
         // Setup animation speed listener
         _layoutMaster.getRootView().setOnTouchListener(new View.OnTouchListener() {
@@ -413,7 +374,7 @@ public class GameActivity extends Activity {
                             moveRobOpponent(_board.pickUpShells(hand.currentCupIndex()), robbersHand, duration * 2);
                             processBoardMessages();
                         } else {
-                            processEndOfAnimation();
+                            processEndOfAnimation(hand.belongsToPlayer());
                         }
                     }
                 });
@@ -432,7 +393,7 @@ public class GameActivity extends Activity {
     private void moveRobOpponent(final HandOfShells activatorHand, final HandOfShells robbersHand, final int duration){
         boolean handBelongsToPlayerA = _board.isPlayerA(robbersHand.belongsToPlayer());
 
-        final CupButton playersCup = handBelongsToPlayerA ? _cupButtons[15] : _cupButtons[7];
+        final CupButton playersCup = handBelongsToPlayerA ? _cupButtons[7] : _cupButtons[15];
         CupButton activatorCup = _cupButtons[activatorHand.currentCupIndex()];
         CupButton robbedCup = _cupButtons[robbersHand.currentCupIndex()];
         robbersHand.setNextCup(playersCup.getCupIndex());
@@ -461,7 +422,7 @@ public class GameActivity extends Activity {
                         playersCup.addShells(images);
 
                         _board.nextPlayersMove();
-                        processEndOfAnimation();
+                        processEndOfAnimation(activatorHand.belongsToPlayer());
                     }
                 });
             }
@@ -469,8 +430,22 @@ public class GameActivity extends Activity {
         t.start();
     }
 
-    private void processEndOfAnimation(){
-        PlayerActionAdapter.setAnimationInProgress(false);
+    private void processEndOfAnimation(Player player){
+        if (_board.getCurrentPlayer() == null) {
+            player.setPlayerCannotPerformAction(false);
+            player.setAnimationInProgress(false);
+            if (_board.getPlayerA().isFirstMovesExhausted() && _board.getPlayerB().isFirstMovesExhausted()){
+                if (_board.isPlayerA(player))
+                    _board.setCurrentPlayerB();
+                else
+                    _board.setCurrentPlayerA();
+
+                _board.getCurrentPlayer().moveStart();
+            }
+        }
+        else
+            PlayerActionAdapter.setAnimationInProgress(false);
+
         processBoardMessages();
     }
 
@@ -527,11 +502,11 @@ public class GameActivity extends Activity {
     /**
      * Highlight all the buttons that need highlighting
      */
-    public void setupMove(Side side) {
+    public void setupMove(Player player) {
         for (int i = 0; i < _cupButtons.length; i++) {
-            _cupButtons[i].rotateTowards(side);
+            _cupButtons[i].rotateTowards(player);
 
-            if (_board.isOpponentStore(i) || _board.isCurrentPlayersStore(i))
+            if (_board.getCurrentPlayer() != null && (_board.isOpponentStore(i) || _board.isCurrentPlayersStore(i)))
                 continue;
 
             if (_board.isValid(i, false)) {
