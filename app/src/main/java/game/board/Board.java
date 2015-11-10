@@ -306,4 +306,25 @@ public class Board {
     public void setCurrentPlayerA() {
         _currentPlayer = _playerOne;
     }
+
+    /**
+     * Used to return the winning player after a match
+     */
+    public Player getWinningPlayer() {
+        if (_playerOne.getScore() > _playerTwo.getScore())
+            return _playerOne;
+
+        if  (_playerOne.getScore() < _playerTwo.getScore())
+            return _playerTwo;
+
+        return null;
+    }
+
+    /**
+     * Used to return whether both players have the same score at the end of the match
+     * @return
+     */
+    public boolean isDraw() {
+        return (_playerOne.getScore() == _playerTwo.getScore());
+    }
 }

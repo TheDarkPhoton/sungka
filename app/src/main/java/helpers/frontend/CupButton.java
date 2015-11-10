@@ -31,6 +31,8 @@ public class CupButton extends Button implements View.OnTouchListener {
     public static final int CUP = 1;
 
     public static CupMargins sizes;
+    private float _currentRotation;
+    private float _opacity;
 
     public static class CupMargins {
         public final float scale;
@@ -393,10 +395,12 @@ public class CupButton extends Button implements View.OnTouchListener {
      * @param toValue float of the alpha value (eg. 1.05)
      */
     public void changeAlpha(float toValue) {
-        Animation alphaAnimation = new AlphaAnimation(this.getAlpha(), toValue);
+        Animation alphaAnimation = new AlphaAnimation(_opacity, toValue);
         alphaAnimation.setDuration(500);
         alphaAnimation.setFillAfter(true);
         startAnimation(alphaAnimation);
+
+        _opacity = toValue;
     }
 
     /**
@@ -407,17 +411,15 @@ public class CupButton extends Button implements View.OnTouchListener {
         float fromRotation = (side != Side.A) ? 0 : 180;
         float rotation = (side == Side.A) ? 0 : 180;
 
-        System.out.println("Rotation " + fromRotation + " to " + rotation);
-
-        if (rotation == fromRotation)
+        if (rotation == _currentRotation)
             return;
 
-        float toRotation = rotation;
+        _currentRotation = rotation;
 
         float pivotX = _text.getX() + _text.getWidth() / 2;
         float pivotY = _text.getY() + _text.getHeight() / 2;
 
-        Animation rotateAnimation = new RotateAnimation(fromRotation, toRotation, pivotX, pivotY);
+        Animation rotateAnimation = new RotateAnimation(fromRotation, rotation, pivotX, pivotY);
         rotateAnimation.setDuration(500);
         rotateAnimation.setFillAfter(true);
         _text.startAnimation(rotateAnimation);
