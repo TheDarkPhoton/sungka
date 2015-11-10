@@ -377,7 +377,6 @@ public class GameActivity extends Activity {
         _layoutMaster.getRootView().setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                otherPlayerDidDisconnect(_board.getPlayerA());
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     _animationDurationFactor = 0.5f;
                 } else {
@@ -530,6 +529,17 @@ public class GameActivity extends Activity {
                     break;
                 case GAME_OVER:
                     _messageManager.gameOver(_board.isDraw(), _board.getWinningPlayer());
+
+                    // Return to main menu after 5 seconds
+                    Handler h = new Handler();
+                    h.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            finish();
+                        }
+                    }, 5000);
+
+
 
                     Log.i(TAG, "Game Over!!!");
                     for (int i = 0; i < _board.getMoves().size(); i++) {
