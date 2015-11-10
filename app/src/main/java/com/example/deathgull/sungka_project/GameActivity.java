@@ -45,6 +45,7 @@ import helpers.frontend.CupButton;
 import helpers.backend.PauseThreadWhile;
 import helpers.frontend.ShellTranslation;
 import game.player.Side;
+import helpers.frontend.YourMoveTextView;
 
 public class GameActivity extends Activity {
     private static final String TAG = "GameActivity";
@@ -186,7 +187,6 @@ public class GameActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        _game.start();
     }
 
     /**
