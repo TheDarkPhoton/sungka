@@ -31,9 +31,11 @@ public class Game {
         playerOne = new Human("Shell Master");
         playerOne.setPlayerActionListener(playerActionListener);
         
-//        playerTwo = new Human("Player B");
+       // playerTwo = new Human("Player B");
         playerTwo = new AI(100, 50);
         playerTwo.setPlayerActionListener(playerActionListener);
+
+
 
         if(isOnlineGame){
             setUpForOnlineGame();

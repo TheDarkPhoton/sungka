@@ -59,7 +59,7 @@ public class MoveInfo {
     /**
      * Calculates the duration of the move in milliseconds
      */
-    private void calculateMoveDuration(){
+    public void calculateMoveDuration(){
         durationOfMoveMilli = timeEndMoveMilli-timeStartMoveMilli;
     }
 

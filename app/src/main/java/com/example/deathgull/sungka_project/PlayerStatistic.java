@@ -8,8 +8,10 @@ public class PlayerStatistic {
     private int gamesPlayed;
     private int gamesWon;
     private int gamesLost;
+    private int gamesDrawn;
     private double averageMoveTimeInMillis;
     private double maxNumShellsCollected;
+    private double maxConsecutiveMoves;
 
     /**
      * Creates a PlayerStatistic object, that is used to hold the statistics of a Player
@@ -20,9 +22,10 @@ public class PlayerStatistic {
         gamesPlayed = 0;
         gamesLost = 0;
         gamesWon = 0;
+        gamesDrawn = 0;
         averageMoveTimeInMillis = 0;
         maxNumShellsCollected = 0;
-
+        maxConsecutiveMoves = 0;
     }
 
     /**
@@ -63,6 +66,38 @@ public class PlayerStatistic {
      */
     public double getAverageMoveTimeInMillis() {
         return averageMoveTimeInMillis;
+    }
+
+    /**
+     * Get the maximum number of consecutive moves this Player has gotten
+     * @return the maximum number of consecutive moves the Player has gotten
+     */
+    public double getMaxConsecutiveMoves() {
+        return maxConsecutiveMoves;
+    }
+
+    /**
+     * Get the number of Draws the Player has
+     * @return the number of Draws the Player has
+     */
+    public int getGamesDrawn() {
+        return gamesDrawn;
+    }
+
+    /**
+     * Set the number of Draws the Player has
+     * @param gamesDrawn the number of Draws the Player has
+     */
+    public void setGamesDrawn(int gamesDrawn) {
+        this.gamesDrawn = gamesDrawn;
+    }
+
+    /**
+     * Set the maximum number of consecutive moves this Player has gotten
+     * @param maxConsecutiveMoves the maximum number of consecutive moves the Player has gotten
+     */
+    public void setMaxConsecutiveMoves(double maxConsecutiveMoves) {
+        this.maxConsecutiveMoves = maxConsecutiveMoves;
     }
 
     /**
@@ -181,8 +216,13 @@ public class PlayerStatistic {
         gamesLost++;
     }
 
+    /**
+     * Increase the amount of games drawed by the Player by 1
+     */
+    public void increaseGamesDraw(){gamesDrawn++;}
+
     public String toString(){
-        return String.format("%s,%s,%s,%s,%s,%s\n", playerName,gamesPlayed,gamesWon,gamesLost,averageMoveTimeInMillis,maxNumShellsCollected);
+        return String.format("%s,%s,%s,%s,%s,%s,%s,%s\n", playerName,gamesPlayed,gamesWon,gamesLost,gamesDrawn,averageMoveTimeInMillis,maxNumShellsCollected,maxConsecutiveMoves);
     }
 
 

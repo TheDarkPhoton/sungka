@@ -127,6 +127,7 @@ public class Board {
 
         if (!(isCurrentPlayersStore(players_cup) && _currentPlayer.hasValidMove()) &&
                 getOpponent().hasValidMove()) {
+            _currentPlayer.resetMove();//the amount of moves the player has just done is set to 0 again
             _currentPlayer = getOpponent();
         }
         else if (!getCurrentPlayer().hasValidMove() && !getOpponent().hasValidMove()){
@@ -303,6 +304,14 @@ public class Board {
      */
     public void setCurrentPlayerA() {
         _currentPlayer = _playerOne;
+    }
+
+    /**
+     * Checks if the game is currently a draw or if the game ended in a draw
+     * @return if the game is a draw
+     */
+    public boolean isDraw(){
+        return _playerOne.getScore() == _playerTwo.getScore();
     }
 
     /**

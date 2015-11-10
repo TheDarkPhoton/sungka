@@ -53,6 +53,7 @@ import game.player.Side;
 
 public class GameActivity extends Activity {
     private static final String TAG = "GameActivity";
+    private static final String fileName = "player_statistics";
     public static final Random random = new Random();                                               //Object for random number generation
     public static Drawable[] shells;
 
@@ -121,6 +122,14 @@ public class GameActivity extends Activity {
                 new FrameLayout.LayoutParams(
                         FrameLayout.LayoutParams.MATCH_PARENT,
                         FrameLayout.LayoutParams.MATCH_PARENT));
+
+      /*  ArrayList<PlayerStatistic> stats = readStats();
+        for(PlayerStatistic playerStatistic: stats){
+            Log.v(TAG,playerStatistic.toString());
+        }
+        Log.v(TAG,"read stats");*/
+
+
         /*//To get the ip
         WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
         String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
@@ -492,9 +501,11 @@ public class GameActivity extends Activity {
                     break;
                 case PLAYER_A_GETS_ANOTHER_TURN:
                     Log.i(TAG, _board.getPlayerA().getName() + " gets another turn.");
+                    _board.getPlayerA().addMove();//they get another move
                     break;
                 case PLAYER_B_GETS_ANOTHER_TURN:
                     Log.i(TAG, _board.getPlayerB().getName() + " gets another turn.");
+                    _board.getPlayerB().addMove();//they get another move
                     break;
                 case PLAYER_A_WAS_ROBBED:
                     Log.i(TAG, _board.getPlayerA().getName() + " was robbed.");
@@ -514,20 +525,18 @@ public class GameActivity extends Activity {
                         Pair<Player, Integer> move = _board.getMoves().get(i);
                         Log.i(TAG, i + ": " + move.second + " -> " + move.first.getName());
                     }
+                    ArrayList<PlayerStatistic> playerStatistics = readStats();//read the stats
                     //store the leaderboard data for non online games
                     if(!(_board.getPlayerA() instanceof RemoteHuman)){//if the first player isnt a remote human than store data for them
-                        try {
-                            storeStats(_board.getPlayerA());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        updateList(_board.getPlayerA(),playerStatistics);
                     }
                     if(!(_board.getPlayerB() instanceof RemoteHuman)){//if the second player isnt a remote human than store data for them
-                        try {
-                            storeStats(_board.getPlayerB());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        updateList(_board.getPlayerB(),playerStatistics);
+                    }
+                    try {
+                        storeStats(playerStatistics);
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
                     break;
             }
@@ -608,55 +617,76 @@ public class GameActivity extends Activity {
      */
     private String getIp(){
         //To get the ip
-        //TODO: find another method to get the IP address
         WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
         String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
         Log.v(TAG, "ip: " + ip);
         return ip;
     }
 
-    private void storeStats(Player player) throws IOException {
-        //TODO: add move info for the players (Player class)
+
+    private void updateList(Player player,ArrayList<PlayerStatistic> playerStatistics){
         boolean updatedStats = false;
-        ArrayList<PlayerStatistic> playerStatistics= readStats();
         for(PlayerStatistic playerStatistic: playerStatistics){
             if(player.getName().equals(playerStatistic.getPlayerName())){
+                Log.v(TAG,"found the player");
                 updateStats(player,playerStatistic);
+                Log.v(TAG,playerStatistic.toString());
                 updatedStats = true;
                 break;
             }
         }
         if(!updatedStats){//if the player doesnt exist in the file, because they havent played before
-            PlayerStatistic playerStatistic = new PlayerStatistic(player.getName());//make a new PlayerStatistic object
-            playerStatistic.increaseGamesPlayed();              //that holds the data for a Player that has just finished there first game
-            if(_board.getPlayerWon() == player){
-                playerStatistic.increaseGamesWon();
-            }else{
-                playerStatistic.increaseGamesLost();
-            }
-            playerStatistic.setAverageMoveTimeInMillis(player.getAverageTurnTime());
-            playerStatistic.setMaxNumShellsCollected(player.getMaxNumberShellsCollected());
-            playerStatistics.add(playerStatistic);
+            addNewPlayerStats(player,playerStatistics);
         }
+    }
+
+    private void storeStats(ArrayList<PlayerStatistic> playerStatistics) throws IOException {
         //store the stats
-        String fileName = "player_stats";
         String data = "";
         for(PlayerStatistic playerStatistic: playerStatistics){
             data += playerStatistic.toString();
         }
         FileOutputStream fileOutputStream = openFileOutput(fileName,Context.MODE_PRIVATE);
         fileOutputStream.write(data.getBytes());
+        Log.v(TAG, "Stored the new stats");
+        Log.v(TAG, "Stats:");
+        Log.v(TAG, data);
         fileOutputStream.close();
         //replaced the old file with a new one that has the updated data
+        Log.v(TAG,"About ot read stats");
+        ArrayList<PlayerStatistic> stats = readStats();
+        for(PlayerStatistic player: stats){
+            Log.v(TAG,player.toString());
+        }
+        Log.v(TAG,"Read stats");
     }
+
+    private void addNewPlayerStats(Player player,ArrayList<PlayerStatistic> playerStatistics){
+        PlayerStatistic playerStatistic = new PlayerStatistic(player.getName());//make a new PlayerStatistic object
+        playerStatistic.increaseGamesPlayed();      //that holds the data for a Player that has just finished there first game
+        if(_board.isDraw()){
+            playerStatistic.increaseGamesDraw();
+        }else if(_board.getPlayerWon() == player){
+            playerStatistic.increaseGamesWon();
+        }else{
+            playerStatistic.increaseGamesLost();
+        }
+        playerStatistic.setAverageMoveTimeInMillis(player.getAverageTurnTime());
+        playerStatistic.setMaxNumShellsCollected(player.getMaxNumberShellsCollected());
+        playerStatistic.setMaxConsecutiveMoves(player.getMaxConsecutiveMoves());
+        playerStatistics.add(playerStatistic);
+        Log.v(TAG,"Made a player Statistic: "+playerStatistic.toString());
+    }
+
 
     private void updateStats(Player player,PlayerStatistic playerStatistic){
         playerStatistic.increaseGamesPlayed();
-        //TODO: figure out who won, check who has the most shells
-        if(_board.getPlayerWon() == player){//check if this player has won the game or not
-            playerStatistic.increaseGamesWon();//if they have, then increase the games won by the player
+        if(_board.isDraw()){
+            playerStatistic.increaseGamesDraw();
+        }else if(_board.getPlayerWon() == player){
+            playerStatistic.increaseGamesWon();
         }else{
-            playerStatistic.increaseGamesLost();//if they havent, then increase the games lost by the player
+            playerStatistic.increaseGamesLost();
         }
         playerStatistic.updateAverageMoveTimeInMillis(player.getAverageTurnTime());
         if(playerStatistic.getMaxNumShellsCollected() < player.getMaxNumberShellsCollected()){
@@ -664,37 +694,44 @@ public class GameActivity extends Activity {
         }
     }
 
-    private ArrayList<PlayerStatistic> readStats() throws ArrayIndexOutOfBoundsException {
-        String fileName = "player_stats";
+    private ArrayList<PlayerStatistic> readStats() {
         FileInputStream fileInputStream;
         ArrayList<PlayerStatistic> playerStatistics = new ArrayList<PlayerStatistic>();
-        StringBuffer stringBuffer = new StringBuffer("");
-        byte[] buffer = new byte[1024];//used to get the characters in the text
+        String textInFile = "";
+        //byte[] buffer = new byte[1024];//used to get the characters in the text
         int n;
         try {
             fileInputStream = openFileInput(fileName);
             while ((n = fileInputStream.read()) != -1) {
-                stringBuffer.append(new String(buffer, 0, n));//to read the data of the file
+                textInFile += Character.toString((char) n);
             }
-            String textInFile = stringBuffer.toString();
+            //String textInFile = stringBuffer.toString();
+            Log.v(TAG,textInFile);
             if(!textInFile.equals("")) {
                 String[] players = textInFile.split("\n");
                 for (int i = 0; i < players.length; i++) {
+                    Log.v(TAG,players[i]);
                     String[] info = players[i].split(",");
                     String playerName = info[0];
                     String gamesPlayed = info[1];
                     String gamesWon = info[2];
                     String gamesLost = info[3];
-                    String avgTimeInMillis = info[4];
-                    String maxShellCollected = info[5];
+                    String gamesDrawn = info[4];
+                    String avgTimeInMillis = info[5];
+                    String maxShellCollected = info[6];
+                    String maxConsecutiveMoves = info[7];
                     PlayerStatistic playerStatistic = new PlayerStatistic(playerName);
                     playerStatistic.setGamesPlayed(new Integer(gamesPlayed));
                     playerStatistic.setGamesWon(new Integer(gamesWon));
                     playerStatistic.setGamesLost(new Integer(gamesLost));
+                    playerStatistic.setGamesDrawn(new Integer(gamesDrawn));
                     playerStatistic.setAverageMoveTimeInMillis(new Double(avgTimeInMillis));
-                    playerStatistic.setMaxNumShellsCollected(new Integer(maxShellCollected));
+                    playerStatistic.setMaxNumShellsCollected(new Double(maxShellCollected));
+                    playerStatistic.setMaxConsecutiveMoves(new Double(maxConsecutiveMoves));
                     playerStatistics.add(playerStatistic);
+                    Log.v(TAG,playerStatistic.toString());
                 }
+                Log.v(TAG,"Read in the file");
             }
 
         } catch (FileNotFoundException e) {
@@ -702,9 +739,7 @@ public class GameActivity extends Activity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        finally {
-            return playerStatistics;
-        }
+        return playerStatistics;
     }
 
 

@@ -1,5 +1,7 @@
 package game.player;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 
 import game.board.Board;
@@ -15,6 +17,8 @@ public abstract class Player {
     protected int score;
     protected Cup _store;
     protected Cup[] _cups;
+    protected int maxConsecutiveMoves;
+    protected int moves;
 
     private Side _side;
 
@@ -35,7 +39,10 @@ public abstract class Player {
         _name = name;
         _cups = new Cup[7];
         _store = null;
+        _currentMove= null;
         _moveInfos = new ArrayList<>();
+        moves = 0;
+        maxConsecutiveMoves = 0;
     }
 
     /**
@@ -67,19 +74,30 @@ public abstract class Player {
     }
 
     public void moveStart(){
+       // Log.v("Player", "Starting current move for "+getName());
         _currentMove = new MoveInfo(System.currentTimeMillis(),getName());//starting the move info object
     }
 
     public abstract void move(int index);
 
     public void moveEnd(){
-        _currentMove.endMove(System.currentTimeMillis());
-        if(_moveInfos.size() == 0){//this is the first move
-            _currentMove.setNumOfShellsCollected(_store.getCount());
-        }else{//the amount of shells collected in this move, is the amount of shells in the store now minus the amount of shells in the store in the previous turn
-            _currentMove.setNumOfShellsCollected(_store.getCount() - _moveInfos.get(_moveInfos.size() - 1).getNumOfShellsCollected());
+       // Log.v("Player","Checking if its equal to null");
+        if(_currentMove != null) {
+           // Log.v("Player","Not equal to null");
+          //  Log.v("Player", "Ending move started for " + getName());
+            _currentMove.endMove(System.currentTimeMillis());
+            _currentMove.calculateMoveDuration();//calculate the duration of the move and store it in the object
+            Log.v("Player","Move time: "+_currentMove.getDurationOfMoveMillis());
+            Log.v("Player", "Ending move completed for " + getName());
+            if (_moveInfos.size() == 0) {//this is the first move
+                _currentMove.setNumOfShellsCollected(_store.getCount());
+            } else {//the amount of shells collected in this move, is the amount of shells in the store now minus the amount of shells in the store in the previous turn
+                _currentMove.setNumOfShellsCollected(_store.getCount() - _moveInfos.get(_moveInfos.size() - 1).getNumOfShellsCollected());
+            }
+            _moveInfos.add(_currentMove);//want to maybe get the points the user collected in that move
+        }else{
+            Log.v("Player","Equal to null");
         }
-        _moveInfos.add(_currentMove);//want to maybe get the points the user collected in that move
     }
 
 
@@ -219,8 +237,36 @@ public abstract class Player {
         double averageTurnTime = 0;
         for(MoveInfo moveInfo:_moveInfos){
             averageTurnTime+=moveInfo.getDurationOfMoveMillis();
+
         }
         averageTurnTime /= _moveInfos.size();
         return  averageTurnTime;
     }
+
+    public void addMove(){
+        moves++;
+        if(moves > maxConsecutiveMoves){
+            maxConsecutiveMoves = moves;
+        }
+    }
+
+    public void resetMove(){
+        moves = 0;
+    }
+
+    /**
+     * Get the maximum number of consecutive moves of the Player
+     * @return the maximum number of consecutive moves of the Player
+     */
+    public int getMaxConsecutiveMoves(){
+        return maxConsecutiveMoves;
+    }
+
+
+
+
 }
+
+
+
+
