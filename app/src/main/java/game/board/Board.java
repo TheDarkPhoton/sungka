@@ -147,9 +147,11 @@ public class Board {
     public void nextPlayersMove(){
         _currentPlayer.moveEnd();
 
-        _currentPlayer = getOpponent();
-
-        if (hasValidMoves())
+        if (getOpponent().hasValidMove()) {
+            _currentPlayer = getOpponent();
+            _currentPlayer.moveStart();
+        }
+        else if (hasValidMoves())
             _currentPlayer.moveStart();
     }
 

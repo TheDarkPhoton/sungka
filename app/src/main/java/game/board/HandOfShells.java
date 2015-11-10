@@ -64,10 +64,10 @@ public class HandOfShells {
         _board.getCup(_cup_index).addShells(_shells);
         _shells = 0;
 
-        if (_board.getOpponent().hasValidMove())
-            _board.nextPlayersMove();
-        else if (_board.hasValidMoves())
-            _board.getCurrentPlayer().moveStart();
+//        if (_board.getOpponent().hasValidMove())
+//            _board.nextPlayersMove();
+//        else if (_board.hasValidMoves())
+//            _board.getCurrentPlayer().moveStart();
     }
 
     /**

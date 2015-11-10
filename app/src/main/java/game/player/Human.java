@@ -28,6 +28,7 @@ public class Human extends Player {
     @Override
     public void moveStart() {
         _playerActionListener.onMoveStart(this);
+
         _cannotPerformAnAction = false;
         currentMove = new MoveInfo(System.currentTimeMillis(),getName());//starting the moveinfo object
     }
@@ -49,14 +50,15 @@ public class Human extends Player {
 
     @Override
     public void moveEnd() {
+//        currentMove.endMove(System.currentTimeMillis());
+//        if(_moveInfos.size() == 0){//this is the first move
+//            currentMove.setNumOfShellsCollected(_store.getCount());
+//        }else{//the amount of shells collected in this move, is the amount of shells in the store now minus the amount of shells in the store in the previous turn
+//            currentMove.setNumOfShellsCollected(_store.getCount() - _moveInfos.get(_moveInfos.size() - 1).getNumOfShellsCollected());
+//        }
+//        _moveInfos.add(currentMove);//want to maybe get the points the user collected in that move
+
         _playerActionListener.onMoveEnd(this);
-        currentMove.endMove(System.currentTimeMillis());
-        if(_moveInfos.size() == 0){//this is the first move
-            currentMove.setNumOfShellsCollected(_store.getCount());
-        }else{//the amount of shells collected in this move, is the amount of shells in the store now minus the amount of shells in the store in the previous turn
-            currentMove.setNumOfShellsCollected(_store.getCount() - _moveInfos.get(_moveInfos.size() - 1).getNumOfShellsCollected());
-        }
-        _moveInfos.add(currentMove);//want to maybe get the points the user collected in that move
     }
 
     public void setSungkaConnection(SungkaConnection sungkaConnection){
