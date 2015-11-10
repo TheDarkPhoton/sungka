@@ -669,7 +669,7 @@ public class GameActivity extends Activity {
         FileInputStream fileInputStream;
         ArrayList<PlayerStatistic> playerStatistics = new ArrayList<PlayerStatistic>();
         StringBuffer stringBuffer = new StringBuffer("");
-        byte[] buffer = new byte[1024];
+        byte[] buffer = new byte[1024];//used to get the characters in the text
         int n;
         try {
             fileInputStream = openFileInput(fileName);
