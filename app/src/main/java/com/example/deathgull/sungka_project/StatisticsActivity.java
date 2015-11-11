@@ -1,12 +1,13 @@
 package com.example.deathgull.sungka_project;
 
+import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-public class StatisticsActivity extends AppCompatActivity {
+public class StatisticsActivity extends Activity {
 
     private TextView _averageMoveTimeTextView;
     private TextView _highestCaptureInOneTurnText;
