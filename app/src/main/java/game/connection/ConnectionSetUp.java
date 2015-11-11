@@ -11,7 +11,7 @@ import java.io.PrintWriter;
  * Class used after a connection has been established between the devices, but before they start the game. It is used
  * to send and receive the names of the Players to display them.
  */
-public class ConnectionSetUp extends AsyncTask<String,Integer,String> {
+public class    ConnectionSetUp extends AsyncTask<String,Integer,String> {
     private String TAG = "ConnectionSetUp";
     private BufferedReader bufferedReader;
     private PrintWriter printWriter;

@@ -243,13 +243,19 @@ public abstract class Player {
         return  averageTurnTime;
     }
 
+    /**
+     * Increase the amount of moves this Player has gotten in a row, by one
+     */
     public void addMove(){
         moves++;
-        if(moves > maxConsecutiveMoves){
+        if(moves > maxConsecutiveMoves){//new maximum value for the Player in this game
             maxConsecutiveMoves = moves;
         }
     }
 
+    /**
+     * When the user has not gotten another move in a row, reset there consecutive move count to 0
+     */
     public void resetMove(){
         moves = 0;
     }
@@ -261,10 +267,7 @@ public abstract class Player {
     public int getMaxConsecutiveMoves(){
         return maxConsecutiveMoves;
     }
-
-    public void set_name(String _name) {
-        this._name = _name;
-    }
+    
 }
 
 

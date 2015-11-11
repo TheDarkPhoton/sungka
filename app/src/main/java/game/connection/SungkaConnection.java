@@ -24,7 +24,7 @@ public abstract class SungkaConnection extends AsyncTask<String,Integer,Boolean>
     protected BufferedReader bufferedReader;
     protected GameActivity gameActivity;
     private String otherName;
-    private Handler timerHandler = new Handler();
+    private Handler connectionLostHandler = new Handler();
     private Handler pingHandler = new Handler();
     protected Runnable pingOther = new Runnable() {
         @Override
@@ -32,7 +32,7 @@ public abstract class SungkaConnection extends AsyncTask<String,Integer,Boolean>
             Log.v(TAG,"sending Ping through a message");
             sendMessage(SungkaProtocol.PING);
             Log.v(TAG,"started timer");
-            timerHandler.postDelayed(connectionLost, 10000);
+            connectionLostHandler.postDelayed(connectionLost, 10000);
         }
     };
     protected Runnable connectionLost = new Runnable() {
@@ -106,7 +106,7 @@ public abstract class SungkaConnection extends AsyncTask<String,Integer,Boolean>
      */
     public void stopTimer(){
         Log.v(TAG,"Stoped the timer with the time Handler");
-        timerHandler.removeCallbacks(connectionLost);
+        connectionLostHandler.removeCallbacks(connectionLost);
     }
 
     /**
