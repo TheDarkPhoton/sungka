@@ -41,6 +41,7 @@ public class AI extends Player {
         _playerActionListener.onMoveStart(this);
         _cannotPerformAnAction = false;
 
+        // create a stack of all the moves performed by the human player since the AI's last move
         ArrayList<Pair<Player, Integer>> allMoves = _board.getMoves();
         Stack<Pair<Player, Integer>> opponentMoves = new Stack<>();
         for (int i = allMoves.size() - 1; i >= 0; --i) {
@@ -50,6 +51,7 @@ public class AI extends Player {
                 opponentMoves.push(allMoves.get(i));
         }
 
+        // bring the sim board up to date with the real board
         while (!opponentMoves.isEmpty())
             sim.doMove(opponentMoves.pop().second);
 

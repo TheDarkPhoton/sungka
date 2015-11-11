@@ -2,7 +2,6 @@ package com.example.deathgull.sungka_project;
 
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.TouchUtils;
-import android.util.Log;
 
 import helpers.frontend.CupButton;
 
@@ -11,8 +10,6 @@ import helpers.frontend.CupButton;
  */
 public class GameActivityTest extends ActivityInstrumentationTestCase2<GameActivity> {
     private GameActivity activity;
-
-    private static final String TAG = "GameActivity";
 
     public GameActivityTest() {
         super(GameActivity.class);
@@ -119,7 +116,7 @@ public class GameActivityTest extends ActivityInstrumentationTestCase2<GameActiv
      * had their shell count incremented by 1?
      */
     public void testCupMove() {
-        final CupButton cup1_4 = (CupButton) activity.findViewById(R.id.cup1_4);
+        CupButton cup1_4 = (CupButton) activity.findViewById(R.id.cup1_4);
         CupButton cup1_5 = (CupButton) activity.findViewById(R.id.cup1_5);
         CupButton cup1_6 = (CupButton) activity.findViewById(R.id.cup1_6);
         CupButton cup1_7 = (CupButton) activity.findViewById(R.id.cup1_7);
@@ -166,7 +163,6 @@ public class GameActivityTest extends ActivityInstrumentationTestCase2<GameActiv
         TouchUtils.clickView(this, cup1_7);
 
         waitForAnimations();
-//        getInstrumentation().waitForIdleSync();
 
         assertEquals("0", cup2_store.getText().toString());
         assertEquals("8", cup1_1.getText().toString());
@@ -184,18 +180,16 @@ public class GameActivityTest extends ActivityInstrumentationTestCase2<GameActiv
 
         TouchUtils.clickView(this, cup1_1);
         waitForAnimations();
-//        getInstrumentation().waitForIdleSync();
-
 
         // no move should happen
         TouchUtils.clickView(this, cup2_3);
         waitForAnimations();
-//        getInstrumentation().waitForIdleSync();
+
         assertEquals("7", cup2_3.getText().toString());
 
         TouchUtils.clickView(this, cup1_4);
         waitForAnimations();
-//        getInstrumentation().waitForIdleSync();
+
         assertEquals("0", cup1_4.getText().toString());
     }
 
@@ -237,7 +231,6 @@ public class GameActivityTest extends ActivityInstrumentationTestCase2<GameActiv
 
         TouchUtils.clickView(this, cup1_3);
         waitForAnimations();
-//        getInstrumentation().waitForIdleSync();
 
         assertEquals("0", cup2_3.getText().toString());
         assertEquals("0", cup1_5.getText().toString());
@@ -270,6 +263,117 @@ public class GameActivityTest extends ActivityInstrumentationTestCase2<GameActiv
         assertEquals("10", cup1_store.getText().toString());
     }
 
-    // TODO: players get another turn if the opponent's cups are all empty
+    /**
+     * Make sure that when all of the shell cups belonging to one player are empty, the other
+     * player can keep moving.
+     */
+    public void testCupsEmptyExtraMove() {
+        final CupButton cup1_1 = (CupButton) activity.findViewById(R.id.cup1_1);
+        final CupButton cup1_2 = (CupButton) activity.findViewById(R.id.cup1_2);
+        final CupButton cup1_3 = (CupButton) activity.findViewById(R.id.cup1_3);
+        final CupButton cup1_7 = (CupButton) activity.findViewById(R.id.cup1_7);
+        final CupButton cup1_store = (CupButton) activity.findViewById(R.id.cup1_store);
+        final CupButton cup2_1 = (CupButton) activity.findViewById(R.id.cup2_1);
+        final CupButton cup2_2 = (CupButton) activity.findViewById(R.id.cup2_2);
+        final CupButton cup2_3 = (CupButton) activity.findViewById(R.id.cup2_3);
+        final CupButton cup2_4 = (CupButton) activity.findViewById(R.id.cup2_4);
+        final CupButton cup2_5 = (CupButton) activity.findViewById(R.id.cup2_5);
+        final CupButton cup2_6 = (CupButton) activity.findViewById(R.id.cup2_6);
+        final CupButton cup2_7 = (CupButton) activity.findViewById(R.id.cup2_7);
+        final CupButton cup2_store = (CupButton) activity.findViewById(R.id.cup2_store);
+
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                cup2_1.removeAllShells();
+                cup2_2.removeAllShells();
+                cup2_3.removeAllShells();
+                cup2_4.removeAllShells();
+                cup2_5.removeAllShells();
+                cup2_6.removeAllShells();
+                cup2_7.removeAllShells();
+                cup2_store.addShellImages(activity, 20);
+                cup1_store.addShellImages(activity, 20);
+                cup1_1.removeAllShells();
+                cup1_2.removeAllShells();
+                cup1_3.removeAllShells();
+            }
+        });
+        getInstrumentation().waitForIdleSync();
+
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                cup1_1.addShellImages(activity, 6);
+                cup1_2.addShellImages(activity, 4);
+                cup1_3.addShellImages(activity, 2);
+            }
+        });
+        getInstrumentation().waitForIdleSync();
+
+        TouchUtils.clickView(this, cup1_1);
+        waitForAnimations();
+
+        TouchUtils.clickView(this, cup1_2);
+        waitForAnimations();
+
+        TouchUtils.clickView(this, cup1_3);
+        waitForAnimations();
+
+        assertEquals("0", cup1_1.getText().toString());
+        assertEquals("0", cup1_2.getText().toString());
+        assertEquals("0", cup1_3.getText().toString());
+        assertEquals("10", cup1_7.getText().toString());
+    }
+
+    /**
+     * Make sure that when a move that ends in a store (normally giving that player another turn)
+     * leaves all other shell cups empty, the turn transfers to the other player.
+     */
+    public void testCupsEmptyNoExtraMove() {
+        final CupButton cup1_1 = (CupButton) activity.findViewById(R.id.cup1_1);
+        final CupButton cup1_2 = (CupButton) activity.findViewById(R.id.cup1_2);
+        final CupButton cup1_3 = (CupButton) activity.findViewById(R.id.cup1_3);
+        final CupButton cup1_4 = (CupButton) activity.findViewById(R.id.cup1_4);
+        final CupButton cup1_5 = (CupButton) activity.findViewById(R.id.cup1_5);
+        final CupButton cup1_6 = (CupButton) activity.findViewById(R.id.cup1_6);
+        final CupButton cup1_7 = (CupButton) activity.findViewById(R.id.cup1_7);
+        final CupButton cup1_store = (CupButton) activity.findViewById(R.id.cup1_store);
+        final CupButton cup2_store = (CupButton) activity.findViewById(R.id.cup2_store);
+        CupButton cup2_1 = (CupButton) activity.findViewById(R.id.cup2_1);
+
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                cup2_store.addShellImages(activity, 20);
+                cup1_store.addShellImages(activity, 20);
+                cup1_1.removeAllShells();
+                cup1_2.removeAllShells();
+                cup1_3.removeAllShells();
+                cup1_4.removeAllShells();
+                cup1_5.removeAllShells();
+                cup1_6.removeAllShells();
+                cup1_7.removeAllShells();
+            }
+        });
+        getInstrumentation().waitForIdleSync();
+
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                cup1_7.addShellImages(activity, 1);
+            }
+        });
+        getInstrumentation().waitForIdleSync();
+
+        TouchUtils.clickView(this, cup1_7);
+        waitForAnimations();
+
+        TouchUtils.clickView(this, cup2_1);
+        waitForAnimations();
+
+        assertEquals("0", cup2_1.getText().toString());
+    }
+
     // TODO: game over
 }
