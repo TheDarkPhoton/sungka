@@ -14,17 +14,18 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="Back"/>
+            android:text="Back" />
 
         <TextView
             android:id="@+id/statistics_text"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/str_Statistics"
             android:textColor="#000"
             android:textSize="13pt"
-            android:layout_weight="8"
-            android:layout_gravity="left" />
+            android:layout_weight="1.8"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp" />
 
         <Spinner
             android:id="@+id/user_spinner"
@@ -40,7 +41,6 @@
         android:id="@+id/statistics_gridlayout"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:layout_centerHorizontal="true"
         android:background="#000"
         android:columnCount="2"
         android:orientation="horizontal"

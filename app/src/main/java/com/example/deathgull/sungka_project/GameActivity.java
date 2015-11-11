@@ -1,7 +1,9 @@
 package com.example.deathgull.sungka_project;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -24,7 +26,12 @@ import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -38,16 +45,20 @@ import game.Game;
 import game.board.HandOfShells;
 import game.board.BoardState;
 import game.player.AI;
+import game.player.Human;
 import game.player.Player;
 import game.player.PlayerActionAdapter;
 import game.player.RemoteHuman;
+import helpers.MessageManager;
 import helpers.frontend.CupButton;
 import helpers.backend.PauseThreadWhile;
+import helpers.frontend.PlayerNameTextView;
 import helpers.frontend.ShellTranslation;
 import game.player.Side;
 
 public class GameActivity extends Activity {
     private static final String TAG = "GameActivity";
+    private static final String fileName = "player_statistics";
     public static final Random random = new Random();                                               //Object for random number generation
     public static Drawable[] shells;
 
@@ -59,7 +70,9 @@ public class GameActivity extends Activity {
     private CupButton[] _cupButtons;
     private Game _game;
     private Board _board;
-    private YourMoveTextView[] _yourMoveTextViews;
+    private MessageManager _messageManager;
+    private PlayerNameTextView[] _playerTextViews;
+
     private float _animationDurationFactor = 1.0f;
 
     private static SungkaConnection usersConnection = null;
@@ -68,12 +81,17 @@ public class GameActivity extends Activity {
         @Override
         public void onMoveStart(Player player) {
             Log.i(TAG, player.getName() + " started his turn");
-            _yourMoveTextViews[player.getSide().ordinal()].show();
-            setupMove(player.getSide());
+            _messageManager.onMoveStart(player);
+
+            if (player instanceof Human) {
+                setupMove(player.getSide());
+            }
         }
 
         @Override
         public void onMove(final Player player, final int index) {
+            dehighlightAllCups();
+
             Thread t = new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -104,7 +122,6 @@ public class GameActivity extends Activity {
         @Override
         public void onMoveEnd(Player player) {
             Log.i(TAG, player.getName() + " ended his turn");
-            _yourMoveTextViews[player.getSide().ordinal()].hide();
         }
     };
 
@@ -117,6 +134,44 @@ public class GameActivity extends Activity {
                         FrameLayout.LayoutParams.MATCH_PARENT,
                         FrameLayout.LayoutParams.MATCH_PARENT));
 
+       /* ArrayList<PlayerStatistic> stats = readStats(getApplicationContext());
+        for(PlayerStatistic playerStatistic: stats){
+            Log.v(TAG,playerStatistic.toString());
+        }
+        Log.v(TAG,"read stats");*/
+
+
+        /*//To get the ip
+        WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
+        String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
+        Log.v(TAG, "ip: " + ip);*/
+        getIp();
+        //In the case of a client connecting to the server, the server needs to be set up before
+      /* SungkaClient sungkaClient = new SungkaClient("10.230.238.122",4000);
+        sungkaClient.execute();
+        try {
+            sungkaClient.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        setConnection(sungkaClient);*/
+        //setUpConnection(SungkaConnection.JOIN_CONNECTION);
+
+        //in the case of the server being set up
+        /*SungkaServer sungkaServer = new SungkaServer(4000);
+        sungkaServer.execute();
+
+        try {
+            sungkaServer.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        setConnection(sungkaServer);*/
+        //setUpConnection(SungkaConnection.HOST_CONNECTION);
 
         shells =new Drawable[]{
                 ResourcesCompat.getDrawable(getResources(), R.drawable.shell1, null),
@@ -320,23 +375,23 @@ public class GameActivity extends Activity {
         id = getResources().getIdentifier("cup2_store", "id", packageName);
         btnPlayerB.setId(id);
 
+        // Setup message manager
+        _messageManager = new MessageManager(this, _layoutMaster);
 
-        _yourMoveTextViews = new YourMoveTextView[2];
+        // Setup Player views
+        _playerTextViews = new PlayerNameTextView[2];
 
-        // PLAYER A your move label
-        _yourMoveTextViews[0] = new YourMoveTextView(this, Side.A);
-        _layoutMaster.addView(_yourMoveTextViews[0]);
-
-        // PLAYER B your move label
-        _yourMoveTextViews[1] = new YourMoveTextView(this, Side.B);
-        _layoutMaster.addView(_yourMoveTextViews[1]);
+        _playerTextViews[0] = new PlayerNameTextView(this, _board.getPlayerA());
+        _playerTextViews[1] = new PlayerNameTextView(this, _board.getPlayerB());
+        _layoutMaster.addView(_playerTextViews[0]);
+        _layoutMaster.addView(_playerTextViews[1]);
 
         // Setup animation speed listener
         _layoutMaster.getRootView().setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    _animationDurationFactor = 5f;
+                    _animationDurationFactor = 0.5f;
                 } else {
                     _animationDurationFactor = 1.0f;
                 }
@@ -378,7 +433,7 @@ public class GameActivity extends Activity {
                         if (images.size() > 0) {
                             moveShellsRec(hand, images, duration);
                         } else if (robbersHand != null) {
-                            moveRobOpponent(robbersHand, duration * 2);
+                            moveRobOpponent(_board.pickUpShells(hand.currentCupIndex()), robbersHand, duration * 2);
                             processBoardMessages();
                         } else {
                             processEndOfAnimation();
@@ -393,17 +448,22 @@ public class GameActivity extends Activity {
     /**
      * Method that handles the case where the opponents cup is robbed because shell
      * landed in the current players cup.
-     * @param robbersHand The index of the opponents cup to be robbed.
+     * @param activatorHand The hand object of the cup that initiated the rob move.
+     * @param robbersHand The hand object of the cup that was robbed.
      * @param duration Duration of the animation.
      */
-    private void moveRobOpponent(final HandOfShells robbersHand, final int duration){
+    private void moveRobOpponent(final HandOfShells activatorHand, final HandOfShells robbersHand, final int duration){
         boolean handBelongsToPlayerA = _board.isPlayerA(robbersHand.belongsToPlayer());
 
         final CupButton playersCup = handBelongsToPlayerA ? _cupButtons[15] : _cupButtons[7];
+        CupButton activatorCup = _cupButtons[activatorHand.currentCupIndex()];
         CupButton robbedCup = _cupButtons[robbersHand.currentCupIndex()];
         robbersHand.setNextCup(playersCup.getCupIndex());
+        activatorHand.setNextCup(playersCup.getCupIndex());
 
         final ArrayList<View> images = robbedCup.getShells();
+        images.addAll(activatorCup.getShells());
+
         final ArrayList<ShellTranslation> animations = new ArrayList<>();
         for (int i = 0; i < images.size(); i++) {
             animations.add(new ShellTranslation(images.get(i), playersCup, duration));
@@ -419,9 +479,11 @@ public class GameActivity extends Activity {
                 h.post(new Runnable() {
                     @Override
                     public void run() {
+                        activatorHand.dropAllShells();
                         robbersHand.dropAllShells();
                         playersCup.addShells(images);
 
+                        _board.nextPlayersMove();
                         processEndOfAnimation();
                     }
                 });
@@ -464,28 +526,58 @@ public class GameActivity extends Activity {
                     break;
                 case PLAYER_A_GETS_ANOTHER_TURN:
                     Log.i(TAG, _board.getPlayerA().getName() + " gets another turn.");
+                    _board.getPlayerA().addMove();//they get another move
+                    _messageManager.playerGetsAnotherTurn(_board.getPlayerA());
                     break;
                 case PLAYER_B_GETS_ANOTHER_TURN:
                     Log.i(TAG, _board.getPlayerB().getName() + " gets another turn.");
+                    _board.getPlayerB().addMove();//they get another move
+                    _messageManager.playerGetsAnotherTurn(_board.getPlayerB());
                     break;
                 case PLAYER_A_WAS_ROBBED:
                     Log.i(TAG, _board.getPlayerA().getName() + " was robbed.");
+                    _messageManager.playerGotRobbed(_board.getPlayerA());
                     break;
                 case PLAYER_B_WAS_ROBBED:
                     Log.i(TAG, _board.getPlayerB().getName() + " was robbed.");
+                    _messageManager.playerGotRobbed(_board.getPlayerB());
                     break;
                 case PLAYER_A_WAS_ROBBED_OF_HIS_FINAL_MOVE:
+                    _messageManager.playerGotRobbedOfHisFinalMove(_board.getPlayerA());
                     Log.i(TAG, _board.getPlayerA().getName() + " was robbed of his final move... " + _board.getPlayerB().getName() + " gets another turn.");
                     break;
                 case PLAYER_B_WAS_ROBBED_OF_HIS_FINAL_MOVE:
+                    _messageManager.playerGotRobbedOfHisFinalMove(_board.getPlayerB());
                     Log.i(TAG, _board.getPlayerB().getName() + " was robbed of his final move... " + _board.getPlayerA().getName() + " gets another turn.");
                     break;
                 case GAME_OVER:
+                    _messageManager.gameOver(_board.isDraw(), _board.getWinningPlayer());
                     Log.i(TAG, "Game Over!!!");
                     for (int i = 0; i < _board.getMoves().size(); i++) {
                         Pair<Player, Integer> move = _board.getMoves().get(i);
                         Log.i(TAG, i + ": " + move.second + " -> " + move.first.getName());
                     }
+                    ArrayList<PlayerStatistic> playerStatistics = readStats(getApplicationContext());//read the stats
+                    //store the leaderboard data for non online games
+                    if(!(_board.getPlayerA() instanceof RemoteHuman)){//if the first player isnt a remote human than store data for them
+                        updateList(_board.getPlayerA(),playerStatistics);
+                    }
+                    if(!(_board.getPlayerB() instanceof RemoteHuman)){//if the second player isnt a remote human than store data for them
+                        updateList(_board.getPlayerB(),playerStatistics);
+                    }
+                    try {
+                        storeStats(playerStatistics);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    // Return to main menu after 5 seconds
+                    Handler h = new Handler();
+                    h.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            finish();
+                        }
+                    }, 5000);
                     break;
             }
         }
@@ -508,6 +600,16 @@ public class GameActivity extends Activity {
             } else {
                 _cupButtons[i].dehighlight();
             }
+        }
+    }
+
+    public void dehighlightAllCups() {
+        for (int i = 0; i < _cupButtons.length; i++) {
+            if (_board.isOpponentStore(i) || _board.isCurrentPlayersStore(i))
+                continue;
+
+            _cupButtons[i].dehighlight();
+
         }
     }
 
@@ -565,10 +667,177 @@ public class GameActivity extends Activity {
      */
     private String getIp(){
         //To get the ip
-        //TODO: find another method to get the IP address
         WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
         String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
         Log.v(TAG, "ip: " + ip);
         return ip;
     }
+
+    /**
+     * Displays a message saying other person disconnected and brings them to the main menu.
+     */
+    private void otherPlayerDidDisconnect(Player player) {
+        DialogInterface.OnClickListener goToMainMenuListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Go to main menu
+                finish();
+            }
+        };
+
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(_context);
+        alertBuilder
+                .setTitle(R.string.str_playerDisconnectedTitle)
+                .setMessage(R.string.str_playerDisconnected)
+                .setPositiveButton("OK", goToMainMenuListener);
+
+        AlertDialog alertDialog = alertBuilder.create();
+        alertDialog.show();
+    }
+
+
+    /**
+     * Update the list of PlayerStatistic objects by updating data for the Player object provided, or add a new
+     * PlayerStatistic object for that Player, if there was no data for them before
+     * @param player the Player object that we are updating the data for
+     * @param playerStatistics the list of PlayerStatistic object that we are updating data on
+     */
+    private void updateList(Player player,ArrayList<PlayerStatistic> playerStatistics){
+        boolean updatedStats = false;
+        for(PlayerStatistic playerStatistic: playerStatistics){
+            if(player.getName().equals(playerStatistic.getPlayerName())){
+                Log.v(TAG,"found the player");
+                updateStats(player,playerStatistic);
+                Log.v(TAG,playerStatistic.toString());
+                updatedStats = true;
+                break;
+            }
+        }
+        if(!updatedStats){//if the player doesnt exist in the file, because they havent played before
+            addNewPlayerStats(player,playerStatistics);
+        }
+    }
+
+    /**
+     * Store the list of PlayerStatistic objects in the data file "player_statistics"
+     * @param playerStatistics the list of PlayerStatistic objects we are storing
+     * @throws IOException if there is an error when opening the file output or writing to the file
+     */
+    private void storeStats(ArrayList<PlayerStatistic> playerStatistics) throws IOException {
+        //store the stats
+        String data = "";
+        for(PlayerStatistic playerStatistic: playerStatistics){
+            data += playerStatistic.toString();
+        }
+        FileOutputStream fileOutputStream = openFileOutput(fileName,Context.MODE_PRIVATE);
+        fileOutputStream.write(data.getBytes());
+        Log.v(TAG, "Stored the new stats");
+        Log.v(TAG, "Stats:");
+        Log.v(TAG, data);
+        fileOutputStream.close();
+        //replaced the old file with a new one that has the updated data
+        Log.v(TAG,"About ot read stats");
+        ArrayList<PlayerStatistic> stats = readStats(getApplicationContext());
+        for(PlayerStatistic player: stats){
+            Log.v(TAG,player.toString());
+        }
+        Log.v(TAG,"Read stats");
+    }
+
+    /**
+     * Add a new Player to the list of PlayerStatistics, if they are not in the list
+     * @param player the Player for which we are storing data for
+     * @param playerStatistics the list of PlayerStatistic objects, that we need to add the new PlayerStatistic object too
+     */
+    private void addNewPlayerStats(Player player,ArrayList<PlayerStatistic> playerStatistics){
+        PlayerStatistic playerStatistic = new PlayerStatistic(player.getName());//make a new PlayerStatistic object
+        playerStatistic.increaseGamesPlayed();      //that holds the data for a Player that has just finished there first game
+        if(_board.isDraw()){
+            playerStatistic.increaseGamesDraw();
+        }else if(_board.getPlayerWon() == player){
+            playerStatistic.increaseGamesWon();
+        }else{
+            playerStatistic.increaseGamesLost();
+        }
+        playerStatistic.setAverageMoveTimeInMillis(player.getAverageTurnTime());
+        playerStatistic.setMaxNumShellsCollected(player.getMaxNumberShellsCollected());
+        playerStatistic.setMaxConsecutiveMoves(player.getMaxConsecutiveMoves());
+        playerStatistics.add(playerStatistic);
+        Log.v(TAG,"Made a player Statistic: "+playerStatistic.toString());
+    }
+
+    /**
+     * Updata the statistics in the PlayerStatistic object of a Player
+     * @param player the Player for which we are updating there data for
+     * @param playerStatistic the PlayerStatistic which we are updating data for
+     */
+    private void updateStats(Player player,PlayerStatistic playerStatistic){
+        playerStatistic.increaseGamesPlayed();
+        if(_board.isDraw()){
+            playerStatistic.increaseGamesDraw();
+        }else if(_board.getPlayerWon() == player){
+            playerStatistic.increaseGamesWon();
+        }else{
+            playerStatistic.increaseGamesLost();
+        }
+        playerStatistic.updateAverageMoveTimeInMillis(player.getAverageTurnTime());
+        if(playerStatistic.getMaxNumShellsCollected() < player.getMaxNumberShellsCollected()){
+            playerStatistic.setMaxNumShellsCollected(player.getMaxNumberShellsCollected());
+        }
+    }
+
+    /**
+     * Read the stats stored in the data file "player_statistics"
+     * @param context the context the application is currently in (to open the file input)
+     * @return an ArrayList of PlayerStatistic objects (can be empty if there is no data)
+     */
+    public static ArrayList<PlayerStatistic> readStats(Context context) {
+        FileInputStream fileInputStream;
+        ArrayList<PlayerStatistic> playerStatistics = new ArrayList<PlayerStatistic>();
+        String textInFile = "";
+        int n;
+        try {
+            fileInputStream = context.openFileInput(fileName);
+            while ((n = fileInputStream.read()) != -1) {
+                textInFile += Character.toString((char) n);
+            }
+            Log.v(TAG,textInFile);
+            if(!textInFile.equals("")) {
+                String[] players = textInFile.split("\n");
+                for (int i = 0; i < players.length; i++) {
+                    Log.v(TAG,players[i]);
+                    String[] info = players[i].split(",");//to get the individual data of a PlayerStatistic
+                    String playerName = info[0];
+                    String gamesPlayed = info[1];
+                    String gamesWon = info[2];
+                    String gamesLost = info[3];
+                    String gamesDrawn = info[4];
+                    String avgTimeInMillis = info[5];
+                    String maxShellCollected = info[6];
+                    String maxConsecutiveMoves = info[7];
+                    PlayerStatistic playerStatistic = new PlayerStatistic(playerName);//make a PlayerStatistic object with the
+                    playerStatistic.setGamesPlayed(new Integer(gamesPlayed));   //data we just obtained
+                    playerStatistic.setGamesWon(new Integer(gamesWon));
+                    playerStatistic.setGamesLost(new Integer(gamesLost));
+                    playerStatistic.setGamesDrawn(new Integer(gamesDrawn));
+                    playerStatistic.setAverageMoveTimeInMillis(new Double(avgTimeInMillis));
+                    playerStatistic.setMaxNumShellsCollected(new Double(maxShellCollected));
+                    playerStatistic.setMaxConsecutiveMoves(new Double(maxConsecutiveMoves));
+                    playerStatistics.add(playerStatistic);
+                    Log.v(TAG,playerStatistic.toString());
+                }
+                Log.v(TAG,"Read in the file");
+            }
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return playerStatistics;
+    }
+
+
+
+
 }

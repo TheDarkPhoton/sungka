@@ -13,8 +13,7 @@ public class Human extends Player {
 
     private SungkaConnection sungkaConnection; //only this extension of player has a sungka connection
     private Boolean isOnline;
-    private MoveInfo currentMove;
-
+    //private MoveInfo currentMove;
     /**
      * Initializes the PLAYER Object, along with initializing the values of the PLAYER's store and their respective
      * shell cups
@@ -23,14 +22,17 @@ public class Human extends Player {
     public Human(String name) {
         super(name);
         isOnline = false;
-        currentMove = null;
+        //currentMove = null;
     }
 
     @Override
     public void moveStart() {
+        super.moveStart();
+        Log.v("Human", "Starting current move for " + getName());
+        Log.v("Human","Start at time "+System.currentTimeMillis());
         _playerActionListener.onMoveStart(this);
+
         _cannotPerformAnAction = false;
-        currentMove = new MoveInfo(System.currentTimeMillis(),getName());//starting the moveinfo object
     }
 
     @Override
@@ -50,14 +52,11 @@ public class Human extends Player {
 
     @Override
     public void moveEnd() {
+        super.moveEnd();
+        Log.v("Human", "Ending move started for " + getName());
+        Log.v("Human","Ends time: "+System.currentTimeMillis());
+//        Log.v("Human","Move time: "+_currentMove.getDurationOfMoveMillis());
         _playerActionListener.onMoveEnd(this);
-        currentMove.endMove(System.currentTimeMillis());
-        if(_moveInfos.size() == 0){//this is the first move
-            currentMove.setNumOfShellsCollected(_store.getCount());
-        }else{//the amount of shells collected in this move, is the amount of shells in the store now minus the amount of shells in the store in the previous turn
-            currentMove.setNumOfShellsCollected(_store.getCount() - _moveInfos.get(_moveInfos.size() - 1).getNumOfShellsCollected());
-        }
-        _moveInfos.add(currentMove);//want to maybe get the points the user collected in that move
     }
 
     /**

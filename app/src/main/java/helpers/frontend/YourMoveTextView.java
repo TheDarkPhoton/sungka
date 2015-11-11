@@ -1,4 +1,4 @@
-package com.example.deathgull.sungka_project;
+package helpers.frontend;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -6,6 +6,8 @@ import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+
+import com.example.deathgull.sungka_project.R;
 
 import game.player.Side;
 

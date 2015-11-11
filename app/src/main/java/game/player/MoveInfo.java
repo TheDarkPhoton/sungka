@@ -59,7 +59,7 @@ public class MoveInfo {
     /**
      * Calculates the duration of the move in milliseconds
      */
-    private void calculateMoveDuration(){
+    public void calculateMoveDuration(){
         durationOfMoveMilli = timeEndMoveMilli-timeStartMoveMilli;
     }
 
@@ -94,5 +94,13 @@ public class MoveInfo {
      */
     public String toString(){
         return String.format("Shells Collected: %d, Duration:(%s)",numOfShellsCollected,getDurationOfMove());
+    }
+
+    /**
+     * Get the duration of Players move in milliseconds
+     * @return the duration of the Players move in milliseconds
+     */
+    public double getDurationOfMoveMillis(){
+        return durationOfMoveMilli;
     }
 }

@@ -1,4 +1,5 @@
 <resources>
+
     <string name="app_name">Sungka</string>
 
     <string name="action_settings">Settings</string>
@@ -10,4 +11,18 @@
     <string name="str_HighestCaptureInOneTurn">Highest Capture in One Turn</string>
     <string name="str_AverageScorePerGame">Average Score per Game</string>
     <string name="str_HighestNumberOfConsecutiveTurns">Highest Number of Consecutive Turns</string>
+    <string name="str_YouWon">YOU WON</string>
+    <string name="str_YouLost">YOU LOST</string>
+    <string name="str_ItsADraw">ITS A DRAW</string>
+    <string name="str_AnotherTurn">YOU GET ANOTHER TURN</string>
+    <string name="str_YouWereRobbed">YOU WERE ROBBED</string>
+    <string name="str_YouRobbedOtherPlayer">YOU ROBBED THE OTHER PLAYER</string>
+    <string name="str_YouWereRobbedOfFinalMove">YOU WERE ROBBED OF YOUR FINAL MOVE</string>
+    <string name="str_YouRobbedOtherPlayersFinalMove">YOU ROBBED OTHER PLAYER\'S FINAL MOVE</string>
+    <string name="strSingleplayer">Singleplayer</string>
+    <string name="strMultiplayer">Multiplayer</string>
+    <string name="strLeaderboard">Leaderboard</string>
+    <string name="strOptions">Options</string>
+    <string name="str_playerDisconnectedTitle">Player Disconnected</string>
+    <string name="str_playerDisconnected">It seems the other player left (rage quit).</string>
 </resources>

@@ -32,7 +32,7 @@ public class Game {
         playerOne.setPlayerActionListener(playerActionListener);
         
         playerTwo = new Human("Player B");
-//        playerTwo = new AI(100, 50);
+//        playerTwo = new AI(100, 100);
         playerTwo.setPlayerActionListener(playerActionListener);
 
         if(isOnlineGame){

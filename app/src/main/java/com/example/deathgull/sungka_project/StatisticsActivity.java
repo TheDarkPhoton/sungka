@@ -6,6 +6,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 public class StatisticsActivity extends AppCompatActivity {
 
     private TextView _averageMoveTimeTextView;
@@ -37,6 +39,10 @@ public class StatisticsActivity extends AppCompatActivity {
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this, R.layout.spinner_layout, _exampleArrayOfPlayersPleaseIntegrateWithPlayerModelInTheFuture);
         spinnerAdapter.setDropDownViewResource(R.layout.spinner_layout);
         _playerSpinner.setAdapter(spinnerAdapter);
+    }
+
+    public ArrayList<PlayerStatistic> getStatistics(){
+        return GameActivity.readStats(getApplicationContext());
     }
 
 }
