@@ -16,8 +16,7 @@ public class SungkaReceiver implements Runnable{
     private Runnable timer = new Runnable() {
         @Override
         public void run() {
-            //connection is lost
-            Log.v("SungkaReceiver","No data received from the other device in 90s");
+            //ping to the other player
         }
     };
     private Handler handler;
@@ -43,6 +42,7 @@ public class SungkaReceiver implements Runnable{
     public void run() {
         String fromOtherDevice;
         handler.postDelayed(timer,90000);//wait 90 seconds, if its not stopped then the connection is lost
+        //check that buffered reader isnt null
         try {
             while((fromOtherDevice = bufferedReader.readLine())!=null) {//text received from the other device
                 handler.removeCallbacks(timer);//no need to end the connection

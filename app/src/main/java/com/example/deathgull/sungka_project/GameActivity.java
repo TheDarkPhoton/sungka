@@ -171,7 +171,7 @@ public class GameActivity extends Activity {
             e.printStackTrace();
         }
         setConnection(sungkaServer);*/
-        //setUpConnection(SungkaConnection.HOST_CONNECTION);
+        setUpConnection(SungkaConnection.HOST_CONNECTION);
 
         shells =new Drawable[]{
                 ResourcesCompat.getDrawable(getResources(), R.drawable.shell1, null),
@@ -546,6 +546,9 @@ public class GameActivity extends Activity {
                 case GAME_OVER:
                     _messageManager.gameOver(_board.isDraw(), _board.getWinningPlayer());
                     Log.i(TAG, "Game Over!!!");
+                    if(usersConnection != null){
+                        usersConnection.stopPings();
+                    }
                     for (int i = 0; i < _board.getMoves().size(); i++) {
                         Pair<Player, Integer> move = _board.getMoves().get(i);
                         Log.i(TAG, i + ": " + move.second + " -> " + move.first.getName());
@@ -563,6 +566,7 @@ public class GameActivity extends Activity {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+
                     // Return to main menu after 5 seconds
                     Handler h = new Handler();
                     h.postDelayed(new Runnable() {
@@ -641,7 +645,7 @@ public class GameActivity extends Activity {
             setConnection(sungkaServer);
         }else if(connectionType.equals(SungkaConnection.JOIN_CONNECTION)){//uses SungkaClient, joins the game
             // In the case of a client connecting to the server, the server needs to be set up before
-            SungkaClient sungkaClient = new SungkaClient("10.230.211.57",4000);//server ip and port need to be inserted by the user
+            SungkaClient sungkaClient = new SungkaClient("10.230.155.205",4000);//server ip and port need to be inserted by the user
             sungkaClient.execute();                 //this is a test one
             try {
                 sungkaClient.get();//wait for the connection to be established; returns true if it is set up, else false
@@ -669,7 +673,7 @@ public class GameActivity extends Activity {
     /**
      * Displays a message saying other person disconnected and brings them to the main menu.
      */
-    private void otherPlayerDidDisconnect(Player player) {
+    public void otherPlayerDidDisconnect() {
         DialogInterface.OnClickListener goToMainMenuListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

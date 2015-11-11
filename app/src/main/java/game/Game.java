@@ -26,7 +26,7 @@ public class Game {
     public Game(PlayerActionListener playerActionListener,GameActivity gameActivity) {
         this.playerActionListener = playerActionListener;
         this.gameActivity = gameActivity;
-        isOnlineGame = false;
+        isOnlineGame = true;
         // for now, assume human players
         playerOne = new Human("Shell Master");
         playerOne.setPlayerActionListener(playerActionListener);
@@ -52,7 +52,7 @@ public class Game {
         board = new Board(playerOne, playerTwo);
 
         //need to decide which player starts first in a online game
-       // board.swapCurrentPlayer();
+        //board.swapCurrentPlayer();
     }
 
     /**
