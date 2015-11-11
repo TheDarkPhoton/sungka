@@ -175,7 +175,7 @@ public class GameActivity extends Activity {
         setConnection(sungkaServer);*/
         //setUpConnection(SungkaConnection.HOST_CONNECTION);
         //setUpHostConnection();
-        setUpJoinConnection("10.230.155.205");
+        //setUpJoinConnection("10.230.155.205");
         shells =new Drawable[]{
                 ResourcesCompat.getDrawable(getResources(), R.drawable.shell1, null),
                 ResourcesCompat.getDrawable(getResources(), R.drawable.shell2, null),
@@ -551,6 +551,7 @@ public class GameActivity extends Activity {
                     Log.i(TAG, "Game Over!!!");
                     if(usersConnection != null){
                         usersConnection.stopPings();
+                        usersConnection.stopPings();
                     }
                     for (int i = 0; i < _board.getMoves().size(); i++) {
                         Pair<Player, Integer> move = _board.getMoves().get(i);
@@ -571,6 +572,7 @@ public class GameActivity extends Activity {
                     }
 
                     // Return to main menu after 5 seconds
+                    Log.v(TAG,"Finish the game");
                     Handler h = new Handler();
                     h.postDelayed(new Runnable() {
                         @Override

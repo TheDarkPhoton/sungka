@@ -123,5 +123,6 @@ public abstract class SungkaConnection extends AsyncTask<String,Integer,Boolean>
     public void stopPings(){
         Log.v(TAG,"Stopped pings");
         pingHandler.removeCallbacks(pingOther);
+
     }
 }
