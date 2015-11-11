@@ -16,7 +16,8 @@
             android:name=".MenuActivity"
             android:label="@string/app_name"
             android:screenOrientation="landscape"
-            android:theme="@android:style/Theme.DeviceDefault.Light.NoActionBar.Fullscreen" >
+            android:theme="@android:style/Theme.DeviceDefault.Light.NoActionBar.Fullscreen"
+            android:windowSoftInputMode="stateHidden" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
