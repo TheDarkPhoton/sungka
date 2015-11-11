@@ -13,13 +13,7 @@ import java.io.IOException;
 public class SungkaReceiver implements Runnable{
     private BufferedReader bufferedReader;
     private SungkaProtocol sungkaProtocol;
-    private Runnable timer = new Runnable() {
-        @Override
-        public void run() {
-            //ping to the other player
-        }
-    };
-    private Handler handler;
+
 
     /**
      * Constructor that provides the necessary variables to be able to obtain the data sent between the devices and perform operations
@@ -30,10 +24,7 @@ public class SungkaReceiver implements Runnable{
     public SungkaReceiver(BufferedReader bufferedReader,SungkaProtocol sungkaProtocol){
         this.bufferedReader = bufferedReader;
         this.sungkaProtocol = sungkaProtocol;
-        handler = new Handler();
     }
-
-//TODO: could cause a problem when you are not deciding anything and the timer runs out
 
     /**
      * Called so that it begins to read in data sent from the other device
@@ -41,16 +32,13 @@ public class SungkaReceiver implements Runnable{
     @Override
     public void run() {
         String fromOtherDevice;
-        handler.postDelayed(timer,90000);//wait 90 seconds, if its not stopped then the connection is lost
         //check that buffered reader isnt null
         try {
             while((fromOtherDevice = bufferedReader.readLine())!=null) {//text received from the other device
-                handler.removeCallbacks(timer);//no need to end the connection
                 if (sungkaProtocol != null) {
                     Log.v("SungkaReceiver",fromOtherDevice);
                     sungkaProtocol.updateGame(fromOtherDevice);
                 }
-                handler.postDelayed(timer,90000);//start the timer again
             }
         } catch (IOException e) {
             e.printStackTrace();

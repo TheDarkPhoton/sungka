@@ -26,7 +26,7 @@ public class Game {
     public Game(PlayerActionListener playerActionListener,GameActivity gameActivity) {
         this.playerActionListener = playerActionListener;
         this.gameActivity = gameActivity;
-        isOnlineGame = true;
+        isOnlineGame = false;
         // for now, assume human players
         playerOne = new Human("Shell Master");
         playerOne.setPlayerActionListener(playerActionListener);
@@ -66,8 +66,10 @@ public class Game {
         human.setPlayerActionListener(playerActionListener);
         human.setSungkaConnection(sungkaConnection);
 
-        RemoteHuman remoteHuman = new RemoteHuman("Remote Human");
+
+        RemoteHuman remoteHuman = new RemoteHuman(sungkaConnection.getOtherName());
         remoteHuman.setPlayerActionListener(playerActionListener);
+
 
         playerOne = human;
         playerTwo = remoteHuman;

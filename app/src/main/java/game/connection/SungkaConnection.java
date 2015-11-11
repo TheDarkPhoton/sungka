@@ -8,6 +8,7 @@ import com.example.deathgull.sungka_project.GameActivity;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
+import java.util.concurrent.ExecutionException;
 
 import game.player.RemoteHuman;
 
@@ -16,14 +17,13 @@ import game.player.RemoteHuman;
  * operations that need to be done depending if the User is a host or if they join the game.
  */
 public abstract class SungkaConnection extends AsyncTask<String,Integer,Boolean> {
-    public static final String HOST_CONNECTION = "HOSTCONNECTION";
-    public static final String JOIN_CONNECTION = "JOINCONNECTION";
     private String TAG = "SungkaConnection";
     protected PrintWriter printWriter;
     protected SungkaProtocol sungkaProtocol;
     protected Thread communicationThread;
     protected BufferedReader bufferedReader;
     protected GameActivity gameActivity;
+    private String otherName;
     private Handler timerHandler = new Handler();
     private Handler pingHandler = new Handler();
     protected Runnable pingOther = new Runnable() {
@@ -32,7 +32,7 @@ public abstract class SungkaConnection extends AsyncTask<String,Integer,Boolean>
             Log.v(TAG,"sending Ping through a message");
             sendMessage(SungkaProtocol.PING);
             Log.v(TAG,"started timer");
-            timerHandler.postDelayed(connectionLost,10000);
+            timerHandler.postDelayed(connectionLost, 10000);
         }
     };
     protected Runnable connectionLost = new Runnable() {
@@ -79,16 +79,47 @@ public abstract class SungkaConnection extends AsyncTask<String,Integer,Boolean>
         communicationThread.start();
     }
 
+    /**
+     * Set up the connection to send and receive the names of each of the Players
+     * @param name the name of the current Player
+     * @return the name of the other Player on their device
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
+    public String connectToSendNames(String name) throws ExecutionException, InterruptedException {
+        ConnectionSetUp connectionSetUp =new ConnectionSetUp(bufferedReader,printWriter,name);
+        connectionSetUp.execute();
+        otherName = connectionSetUp.get();
+        return otherName;
+    }
+
+    /**
+     * Get the name of the other Player
+     * @return
+     */
+    public String getOtherName(){
+        return otherName;
+    }
+
+    /**
+     * Stop timing for a response of a Ping
+     */
     public void stopTimer(){
         Log.v(TAG,"Stoped the timer with the time Handler");
         timerHandler.removeCallbacks(connectionLost);
     }
 
+    /**
+     * Send a ping to the other device in 50ms
+     */
     public void ping(){
         Log.v(TAG,"About to send a ping in 50ms");
         pingHandler.postDelayed(pingOther, 50);
     }
 
+    /**
+     * Stop sending Pings to the other device
+     */
     public void stopPings(){
         Log.v(TAG,"Stopped pings");
         pingHandler.removeCallbacks(pingOther);

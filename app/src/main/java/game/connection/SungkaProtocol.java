@@ -14,7 +14,6 @@ public class SungkaProtocol {
     private RemoteHuman remoteHuman;
     private String TAG = "SungkaProtocol";
     public static final String PLAYERMOVE = "MOVE:";
-    public static final String PLAYEREND = "END";
     public static final String PING = "PING";
     public static final String PINGBACK = "PINGBACK";
     private GameActivity gameActivity;
@@ -36,7 +35,6 @@ public class SungkaProtocol {
      * @param message the information that we will use to update the board
      */
     public void updateGame(String message){
-        //TODO: update the board appropriately to the message received
         if(message.equals(PING)){
             //ping back
             Log.v(TAG,"Got a Ping");
@@ -61,8 +59,6 @@ public class SungkaProtocol {
                     remoteHuman.move(indexMove);//perform the other players move on this device
                 }
             });
-
-        }else if(message.equals(PLAYEREND)){//end the game
 
         }
     }

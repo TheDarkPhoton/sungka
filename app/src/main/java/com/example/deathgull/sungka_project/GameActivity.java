@@ -73,6 +73,8 @@ public class GameActivity extends Activity {
     private MessageManager _messageManager;
     private PlayerNameTextView[] _playerTextViews;
 
+
+
     private float _animationDurationFactor = 1.0f;
 
     private static SungkaConnection usersConnection = null;
@@ -171,8 +173,9 @@ public class GameActivity extends Activity {
             e.printStackTrace();
         }
         setConnection(sungkaServer);*/
-        setUpConnection(SungkaConnection.HOST_CONNECTION);
-
+        //setUpConnection(SungkaConnection.HOST_CONNECTION);
+        //setUpHostConnection();
+        setUpJoinConnection("10.230.155.205");
         shells =new Drawable[]{
                 ResourcesCompat.getDrawable(getResources(), R.drawable.shell1, null),
                 ResourcesCompat.getDrawable(getResources(), R.drawable.shell2, null),
@@ -628,41 +631,62 @@ public class GameActivity extends Activity {
     }
 
     /**
-     * To set up the connection
-     * @param connectionType the type of connection we want to create, a Server (Host) connection or a Client (Join) connection
+     * Set up the host connection
      */
-    private void setUpConnection(String connectionType){
-        if(connectionType.equals(SungkaConnection.HOST_CONNECTION)){//uses SungkaServer, sets up the game
-            SungkaServer sungkaServer = new SungkaServer(4000);
-            sungkaServer.execute();
-            try {
-                sungkaServer.get();//wait for the connection to be established; returns true if it is set up,else false
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
-            setConnection(sungkaServer);
-        }else if(connectionType.equals(SungkaConnection.JOIN_CONNECTION)){//uses SungkaClient, joins the game
-            // In the case of a client connecting to the server, the server needs to be set up before
-            SungkaClient sungkaClient = new SungkaClient("10.230.155.205",4000);//server ip and port need to be inserted by the user
-            sungkaClient.execute();                 //this is a test one
-            try {
-                sungkaClient.get();//wait for the connection to be established; returns true if it is set up, else false
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
-            setConnection(sungkaClient);
+    public static void setUpHostConnection(){
+        SungkaServer sungkaServer = new SungkaServer(4000);
+        sungkaServer.execute();
+        try {
+            sungkaServer.get();//wait for the connection to be established; returns true if it is set up,else false
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        setConnection(sungkaServer);
+        try {
+            String otherName =sungkaServer.connectToSendNames("Oliver Host");//the name of the current player
+            Log.v(TAG,"Other name: "+otherName);
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
+
+    /**
+     * Set up a connection where you join a host
+     * @param ip the ip to which you connect to
+     */
+    public static void setUpJoinConnection(String ip){
+        // In the case of a client connecting to the server, the server needs to be set up before
+        SungkaClient sungkaClient = new SungkaClient(ip,4000);//server ip and port need to be inserted by the user
+        sungkaClient.execute();                 //this is a test one
+        try {
+            sungkaClient.get();//wait for the connection to be established; returns true if it is set up, else false
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        setConnection(sungkaClient);
+        String otherName = null;
+        try {
+            otherName = sungkaClient.connectToSendNames("Oliver Join");//the name of the current player
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        Log.v(TAG,"Other Name: "+otherName);
+    }
+
 
     /**
      * Get the IP of the current device
      * @return the IPv4 of the device
      */
-    private String getIp(){
+    public String getIp(){
         //To get the ip
         WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
         String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());

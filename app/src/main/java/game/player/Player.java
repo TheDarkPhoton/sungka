@@ -262,9 +262,9 @@ public abstract class Player {
         return maxConsecutiveMoves;
     }
 
-
-
-
+    public void set_name(String _name) {
+        this._name = _name;
+    }
 }
 
 
