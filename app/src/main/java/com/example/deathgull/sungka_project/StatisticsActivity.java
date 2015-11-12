@@ -25,15 +25,13 @@ import java.util.SortedMap;
 import game.player.Player;
 import helpers.frontend.StatisticsCellView;
 import helpers.frontend.StatisticsColumnView;
+import helpers.frontend.StatisticsLeaderboardView;
+import helpers.frontend.StatisticsOnPlayerClickListener;
 import helpers.frontend.StatisticsRowView;
 
 public class StatisticsActivity extends Activity {
 
     private ScrollView _contentLayout;
-    private TextView _averageMoveTimeTextView;
-    private TextView _highestCaptureInOneTurnText;
-    private TextView _averageScorePerGameText;
-    private TextView _highestNumberOfConsecutiveTurns;
     private Spinner _playerSpinner;
     private int previousSpinnerIndex;
     TextView[] labelTextViews = new TextView[9];
@@ -56,8 +54,8 @@ public class StatisticsActivity extends Activity {
         Collections.sort(_playerStatistics);
 
         setupSpinner();
-//        setupScoreView();
         previousSpinnerIndex = 0;
+        setupLeaderboard();
     }
 
     /**
@@ -133,12 +131,7 @@ public class StatisticsActivity extends Activity {
      * Setup the score view
      */
     private void setupScoreView() {
-        Log.i("StatisticsActivity", "setupScoreView");
-
-        // Just in case
         _contentLayout.removeAllViews();
-
-        _contentLayout.setBackgroundColor(Color.BLACK);
 
         LinearLayout rowLayout = new StatisticsRowView(this);
         _contentLayout.addView(rowLayout);
@@ -156,10 +149,6 @@ public class StatisticsActivity extends Activity {
                 valueTextViews[i * 3 + j] = elementLayout.getValueTextViews();
             }
         }
-
-
-
-
     }
 
     /**
@@ -167,8 +156,24 @@ public class StatisticsActivity extends Activity {
      */
     private void setupLeaderboard() {
         // TODO
+        _contentLayout.removeAllViews();
+
+        StatisticsLeaderboardView leaderboardView = new StatisticsLeaderboardView(this, _playerStatistics);
+        leaderboardView.setOnPlayerClickListener(new StatisticsOnPlayerClickListener() {
+            @Override
+            public void didTapOnPlayer(int index) {
+                _playerSpinner.setSelection(index + 1, true);
+            }
+        });
+        
+        _contentLayout.addView(leaderboardView);
     }
 
+    /**
+     * Calculates the ranking of a player
+     * @param index of the player
+     * @return the ranking of the player compared to other
+     */
     private Number calculateRankingForIndex(int index) {
         return index + 1;
 
@@ -176,9 +181,8 @@ public class StatisticsActivity extends Activity {
 
 
     /**
-     * Populate data with a user's statistics.
+     * Gets data with a user's statistics.
      */
-
     public ArrayList<PlayerStatistic> getStatistics(){
         return GameActivity.readStats(getApplicationContext());
     }

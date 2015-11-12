@@ -35,5 +35,6 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/content_layout"></ScrollView>
+        android:id="@+id/content_layout"
+        android:background="#000000"></ScrollView>
 </LinearLayout>
