@@ -597,6 +597,9 @@ public class GameActivity extends Activity {
 
     /**
      * Set up the host connection
+     * @param menuActivity the activity that calls this method, to use in the onPreExecute method in the AsyncTask, when establishing
+     *                     the connection.
+     * @return the name of the other user.
      */
     public static String setUpHostConnection(MenuActivity menuActivity){
         SungkaServer sungkaServer = new SungkaServer(4000,menuActivity);
@@ -623,9 +626,10 @@ public class GameActivity extends Activity {
 
     /**
      * Set up a connection where you join a host
-     * @param ip the ip to which you connect to
+     * @param ip the ip to which you connect to.
+     * @return the name of the other Player you are connecting to
      */
-    public static void setUpJoinConnection(String ip){
+    public static String setUpJoinConnection(String ip){
         // In the case of a client connecting to the server, the server needs to be set up before
         SungkaClient sungkaClient = new SungkaClient(ip,4000);//server ip and port need to be inserted by the user
         sungkaClient.execute();                 //this is a test one
@@ -637,7 +641,7 @@ public class GameActivity extends Activity {
             e.printStackTrace();
         }
         setConnection(sungkaClient);
-        String otherName = null;
+        String otherName = "";
         try {
             otherName = sungkaClient.connectToSendNames("Oliver Join");//the name of the current player
         } catch (ExecutionException e) {
@@ -646,6 +650,7 @@ public class GameActivity extends Activity {
             e.printStackTrace();
         }
         Log.v(TAG,"Other Name: "+otherName);
+        return otherName;
     }
 
 

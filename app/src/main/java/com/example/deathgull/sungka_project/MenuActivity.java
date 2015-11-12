@@ -222,7 +222,7 @@ public class MenuActivity extends Activity {
                 _prevIndex = 4;
                 updateView();
 
-                GameActivity.setUpJoinConnection(_ipAddressToJoin.getText().toString());
+                String otherUserName =GameActivity.setUpJoinConnection(_ipAddressToJoin.getText().toString());
 
             }
 
