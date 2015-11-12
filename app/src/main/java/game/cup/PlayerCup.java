@@ -25,14 +25,6 @@ public class PlayerCup extends Cup {
     }
 
     /**
-     * Add captured shells to the total
-     * @param numShells the number of captured shells
-     */
-    public void addCapturedShells(int numShells) {
-        _shells += numShells;
-    }
-
-    /**
      * Checks if current cup is not the player cup.
      * @return false if this cup is a PlayerCup.
      */

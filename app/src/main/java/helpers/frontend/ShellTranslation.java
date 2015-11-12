@@ -15,7 +15,7 @@ public class ShellTranslation implements Animation.AnimationListener {
     private int _duration;
     TranslateAnimation _anim;
 
-    public ShellTranslation(View view, CupButton cup, int duration){
+    public ShellTranslation(View view, CupButton cup, int duration) {
         _view = view;
         _coords = cup.randomPositionInCup(view);
         _relativeCoords = new float[]{
@@ -30,10 +30,6 @@ public class ShellTranslation implements Animation.AnimationListener {
         _anim.setDuration(_duration);
         _anim.setAnimationListener(this);
         _view.startAnimation(_anim);
-    }
-
-    public boolean hasEnded(){
-        return _anim.hasEnded();
     }
 
     @Override

@@ -28,8 +28,8 @@ public class Human extends Player {
     @Override
     public void moveStart() {
         super.moveStart();
-        Log.v("Human", "Starting current move for " + getName());
-        Log.v("Human","Start at time "+System.currentTimeMillis());
+//        Log.v("Human", "Starting current move for " + getName());
+//        Log.v("Human","Start at time "+System.currentTimeMillis());
         _playerActionListener.onMoveStart(this);
 
         _cannotPerformAnAction = false;

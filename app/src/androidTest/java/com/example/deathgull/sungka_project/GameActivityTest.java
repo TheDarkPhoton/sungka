@@ -232,9 +232,9 @@ public class GameActivityTest extends ActivityInstrumentationTestCase2<GameActiv
         TouchUtils.clickView(this, cup1_3);
         waitForAnimations();
 
-        assertEquals("0", cup2_3.getText().toString());
-        assertEquals("0", cup1_5.getText().toString());
         assertEquals("8", cup1_store.getText().toString());
+        assertEquals("0", cup1_5.getText().toString());
+        assertEquals("0", cup2_3.getText().toString());
     }
 
     /**

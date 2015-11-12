@@ -7,6 +7,7 @@ import com.example.deathgull.sungka_project.R;
 
 import game.player.Player;
 import game.player.Side;
+import helpers.frontend.YourMoveTextView;
 
 /**
  * Created by martinkubat on 07/11/15.

@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import game.player.Human;
 import game.player.Player;
 import game.cup.Cup;
 
@@ -20,8 +21,10 @@ public class BoardTest {
 
     @Before
     public void setup() {
-        playerA = mock(Player.class);
-        playerB = mock(Player.class);
+//        playerA = mock(Player.class);
+//        playerB = mock(Player.class);
+        playerA = mock(Human.class);
+        playerB = mock(Human.class);
         board = new Board(playerA, playerB);
         board.setCurrentPlayerA();
     }
@@ -91,6 +94,7 @@ public class BoardTest {
      */
     @Test
     public void testNextPlayersMove() {
+        when(playerB.hasValidMove()).thenReturn(true);
         board.nextPlayersMove();
 
         assertEquals(playerB, board.getCurrentPlayer());
