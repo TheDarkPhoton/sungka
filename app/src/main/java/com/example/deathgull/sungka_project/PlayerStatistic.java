@@ -3,15 +3,15 @@ package com.example.deathgull.sungka_project;
 /**
  * This class represents the statistics collected for a unique Player.
  */
-public class PlayerStatistic {
+public class PlayerStatistic implements Comparable<PlayerStatistic> {
     private String playerName;
     private int gamesPlayed;
     private int gamesWon;
     private int gamesLost;
     private int gamesDrawn;
     private double averageMoveTimeInMillis;
-    private double maxNumShellsCollected;
-    private double maxConsecutiveMoves;
+    private int maxNumShellsCollected;
+    private int maxConsecutiveMoves;
 
     /**
      * Creates a PlayerStatistic object, that is used to hold the statistics of a Player
@@ -72,7 +72,7 @@ public class PlayerStatistic {
      * Get the maximum number of consecutive moves this Player has gotten
      * @return the maximum number of consecutive moves the Player has gotten
      */
-    public double getMaxConsecutiveMoves() {
+    public int getMaxConsecutiveMoves() {
         return maxConsecutiveMoves;
     }
 
@@ -96,7 +96,7 @@ public class PlayerStatistic {
      * Set the maximum number of consecutive moves this Player has gotten
      * @param maxConsecutiveMoves the maximum number of consecutive moves the Player has gotten
      */
-    public void setMaxConsecutiveMoves(double maxConsecutiveMoves) {
+    public void setMaxConsecutiveMoves(int maxConsecutiveMoves) {
         this.maxConsecutiveMoves = maxConsecutiveMoves;
     }
 
@@ -104,7 +104,7 @@ public class PlayerStatistic {
      * Get the maximum number of shells the Player has collected in all their games
      * @return the maximum number of shells the Player has ever gotten
      */
-    public double getMaxNumShellsCollected() {
+    public int getMaxNumShellsCollected() {
         return maxNumShellsCollected;
     }
 
@@ -144,7 +144,7 @@ public class PlayerStatistic {
      * Set the maximum number of shells collected by the Player
      * @param maxNumShellsCollected the maximum number of shells the Player has collected
      */
-    public void setMaxNumShellsCollected(double maxNumShellsCollected) {
+    public void setMaxNumShellsCollected(int maxNumShellsCollected) {
         this.maxNumShellsCollected = maxNumShellsCollected;
     }
 
@@ -187,6 +187,14 @@ public class PlayerStatistic {
     }
 
     /**
+     * Calculates the win/loss ratio
+     * @return a percentage of the games won
+     */
+    public int getWinLossRatioPercentage() {
+        return (int) (((double) gamesWon / (double) gamesPlayed) * 100);
+    }
+
+    /**
      * Update the average time a Player takes to make a move, by including the average time they took to make a move
      * in a Game
      * @param gameAverageMoveTime the average time the Player took to make a move in a Game they just played
@@ -226,4 +234,12 @@ public class PlayerStatistic {
     }
 
 
+    @Override
+    public int compareTo(PlayerStatistic another) {
+        if (another.getWinLossRatioPercentage() > this.getWinLossRatioPercentage())
+            return 1;
+        if (another.getWinLossRatioPercentage() < this.getWinLossRatioPercentage())
+            return -1;
+        return 0;
+    }
 }
