@@ -742,6 +742,35 @@ public class GameActivity extends Activity {
     }
 
     /**
+     * Creates fake data and stores them on the device
+     * Call only once per device!
+     */
+    private void createDummyData() {
+        String[] names = {"John Snow", "Ned Stark", "Jamie Lannister", "Robbert Baratheon", "Tyrion Lannister"};
+
+        ArrayList<PlayerStatistic> playerStatistics = new ArrayList<>();
+
+
+        for (int i = 0; i < names.length; i++) {
+            PlayerStatistic playerStatistic = new PlayerStatistic(names[i]);
+            playerStatistic.setGamesPlayed(random.nextInt(50));
+            playerStatistic.setGamesDrawn(random.nextInt(50));
+            playerStatistic.setGamesWon(random.nextInt(50));
+            playerStatistic.setGamesLost(random.nextInt(50));
+            playerStatistic.setAverageMoveTimeInMillis(random.nextDouble() * 50000);
+            playerStatistic.setMaxConsecutiveMoves(random.nextInt(50));
+            playerStatistic.setMaxNumShellsCollected(random.nextInt(50));
+            playerStatistics.add(playerStatistic);
+        }
+
+        try {
+            storeStats(playerStatistics);
+        } catch (Exception e) {
+            Log.e(TAG, e.toString());
+        }
+    }
+
+    /**
      * Store the list of PlayerStatistic objects in the data file "player_statistics"
      * @param playerStatistics the list of PlayerStatistic objects we are storing
      * @throws IOException if there is an error when opening the file output or writing to the file
@@ -844,8 +873,8 @@ public class GameActivity extends Activity {
                     playerStatistic.setGamesLost(new Integer(gamesLost));
                     playerStatistic.setGamesDrawn(new Integer(gamesDrawn));
                     playerStatistic.setAverageMoveTimeInMillis(new Double(avgTimeInMillis));
-                    playerStatistic.setMaxNumShellsCollected(new Double(maxShellCollected));
-                    playerStatistic.setMaxConsecutiveMoves(new Double(maxConsecutiveMoves));
+                    playerStatistic.setMaxNumShellsCollected(new Integer(maxShellCollected));
+                    playerStatistic.setMaxConsecutiveMoves(new Integer(maxConsecutiveMoves));
                     playerStatistics.add(playerStatistic);
                     Log.v(TAG,playerStatistic.toString());
                 }
