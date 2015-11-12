@@ -7,6 +7,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
@@ -14,6 +15,8 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,6 +54,12 @@ public class StatisticsActivity extends Activity {
 
         // Get data
         _playerStatistics = getStatistics();
+
+        if (_playerStatistics.isEmpty()) {
+            setupEmptyScreen();
+            return;
+        }
+
         Collections.sort(_playerStatistics);
 
         setupSpinner();
@@ -64,7 +73,7 @@ public class StatisticsActivity extends Activity {
     public void setupSpinner() {
         // Create an array of player names
         String[] playerNames = new String[_playerStatistics.size() + 1];
-        playerNames[0] = "All Players";
+        playerNames[0] = "Leaderboard";
 
         for (int i = 0; i < _playerStatistics.size(); i++) {
             playerNames[i + 1] = _playerStatistics.get(i).getPlayerName();
@@ -155,7 +164,6 @@ public class StatisticsActivity extends Activity {
      * Setup the leaderboard
      */
     private void setupLeaderboard() {
-        // TODO
         _contentLayout.removeAllViews();
 
         StatisticsLeaderboardView leaderboardView = new StatisticsLeaderboardView(this, _playerStatistics);
@@ -167,6 +175,30 @@ public class StatisticsActivity extends Activity {
         });
         
         _contentLayout.addView(leaderboardView);
+    }
+
+    /**
+     * Sets up empty screen
+     */
+    private void setupEmptyScreen() {
+        TextView emptyMessageTextView = new TextView(this);
+        emptyMessageTextView.setText(R.string.str_no_stats_data);
+        emptyMessageTextView.setTextSize(TypedValue.COMPLEX_UNIT_PT, 10);
+        emptyMessageTextView.setGravity(Gravity.CENTER);
+        emptyMessageTextView.setTextColor(Color.WHITE);
+        emptyMessageTextView.setLayoutParams(new TableLayout.LayoutParams(
+                TableLayout.LayoutParams.WRAP_CONTENT,
+                TableLayout.LayoutParams.WRAP_CONTENT
+        ));
+        int p = 30;
+        emptyMessageTextView.setPadding(p,p,p,p);
+
+        _contentLayout.setFillViewport(true);
+
+        _playerSpinner.setAlpha(0.0f);
+
+        _contentLayout.addView(emptyMessageTextView);
+
     }
 
     /**

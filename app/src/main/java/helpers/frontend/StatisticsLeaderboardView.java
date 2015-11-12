@@ -42,7 +42,10 @@ public class StatisticsLeaderboardView extends LinearLayout {
             TextView textView = new TextView(context);
             textView.setText(playerStatistic.getPlayerName());
             textView.setTextColor(Color.WHITE);
-            textView.setBackgroundColor(Color.argb(255 / (ranking + 1), 255, 255, 255));
+
+            int greenColor = Color.argb((int) 255 / (ranking + 1), 80, 227, 194);
+
+            textView.setBackgroundColor(greenColor);
             textView.setWidth(100);
 
 

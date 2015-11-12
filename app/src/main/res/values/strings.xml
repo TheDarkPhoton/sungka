@@ -39,4 +39,5 @@
     <string name="msgPlayer1Name">Please enter player 1 name!</string>
     <string name="msgPlayer2Name">Please enter player 2 name!</string>
     <string name="msgIPAddress">Please enter an IP address!</string>
+    <string name="str_no_stats_data">There are no statistics data. Try playing more games!</string>
 </resources>
