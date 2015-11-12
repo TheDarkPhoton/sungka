@@ -2,6 +2,8 @@ package game.connection;
 
 import android.util.Log;
 
+import com.example.deathgull.sungka_project.MenuActivity;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -21,6 +23,7 @@ public class SungkaServer extends SungkaConnection {
     private int portNumber;
     private ServerSocket serverSocket;
     private Socket clientSocket;
+    private MenuActivity menuActivity;
 
 
     /**
@@ -37,10 +40,10 @@ public class SungkaServer extends SungkaConnection {
      * The constructor used to provide the necessary information to set up the ServerSocket
      * @param portNumber the port that the ServerSocket will bind to
      */
-    public SungkaServer(int portNumber){
+    public SungkaServer(int portNumber,MenuActivity menuActivity){
         this.portNumber = portNumber;
         sungkaProtocol = null;
-
+        this.menuActivity = menuActivity;
     }
     /**
      * Sets up the ServerSocket and waits for a Socket to connect to it, as well as setting up a PrintWriter to send information to
@@ -81,7 +84,7 @@ public class SungkaServer extends SungkaConnection {
         //TODO:could remove that dialog since the connection has been established
         super.onPostExecute(result);
        // listenForClientHandler.postDelayed(listenForClient, 50);//start the listenForClient runnable thread in 50 ms
-
+        menuActivity.connectionHasEstablished();
     }
 
 

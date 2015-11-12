@@ -136,44 +136,7 @@ public class GameActivity extends Activity {
                         FrameLayout.LayoutParams.MATCH_PARENT,
                         FrameLayout.LayoutParams.MATCH_PARENT));
 
-       /* ArrayList<PlayerStatistic> stats = readStats(getApplicationContext());
-        for(PlayerStatistic playerStatistic: stats){
-            Log.v(TAG,playerStatistic.toString());
-        }
-        Log.v(TAG,"read stats");*/
 
-
-        /*//To get the ip
-        WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
-        String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
-        Log.v(TAG, "ip: " + ip);*/
-        getIp();
-        //In the case of a client connecting to the server, the server needs to be set up before
-      /* SungkaClient sungkaClient = new SungkaClient("10.230.238.122",4000);
-        sungkaClient.execute();
-        try {
-            sungkaClient.get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-        setConnection(sungkaClient);*/
-        //setUpConnection(SungkaConnection.JOIN_CONNECTION);
-
-        //in the case of the server being set up
-        /*SungkaServer sungkaServer = new SungkaServer(4000);
-        sungkaServer.execute();
-
-        try {
-            sungkaServer.get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-        setConnection(sungkaServer);*/
-        //setUpConnection(SungkaConnection.HOST_CONNECTION);
         //setUpHostConnection();
         //setUpJoinConnection("10.230.155.205");
         shells =new Drawable[]{
@@ -635,8 +598,8 @@ public class GameActivity extends Activity {
     /**
      * Set up the host connection
      */
-    public static void setUpHostConnection(){
-        SungkaServer sungkaServer = new SungkaServer(4000);
+    public static String setUpHostConnection(MenuActivity menuActivity){
+        SungkaServer sungkaServer = new SungkaServer(4000,menuActivity);
         sungkaServer.execute();
         try {
             sungkaServer.get();//wait for the connection to be established; returns true if it is set up,else false
@@ -646,14 +609,16 @@ public class GameActivity extends Activity {
             e.printStackTrace();
         }
         setConnection(sungkaServer);
+        String otherName = "";
         try {
-            String otherName =sungkaServer.connectToSendNames("Oliver Host");//the name of the current player
+            otherName = sungkaServer.connectToSendNames("Oliver Host");//the name of the current player
             Log.v(TAG,"Other name: "+otherName);
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        return otherName;
     }
 
     /**
@@ -684,17 +649,7 @@ public class GameActivity extends Activity {
     }
 
 
-    /**
-     * Get the IP of the current device
-     * @return the IPv4 of the device
-     */
-    public String getIp(){
-        //To get the ip
-        WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
-        String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
-        Log.v(TAG, "ip: " + ip);
-        return ip;
-    }
+
 
     /**
      * Displays a message saying other person disconnected and brings them to the main menu.

@@ -5,8 +5,11 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.text.format.Formatter;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,6 +27,7 @@ import org.w3c.dom.Text;
 import helpers.frontend.CupButton;
 
 public class MenuActivity extends Activity {
+    private static final String TAG = "MenuActivity";
 
     //Main menu elements
     private RelativeLayout _mainMenu;
@@ -205,7 +209,10 @@ public class MenuActivity extends Activity {
 
                 //handle mutliplayer hosting methods.
                 //use _ipAddress to show user ip address
+                _ipAddress.setText(getIp());
                 //use _waiting to show when waiting, and update when connection established
+                String otherUserName = GameActivity.setUpHostConnection(MenuActivity.this);
+                //could maybe have a timeout if no connection is established
             }
         });
 
@@ -214,7 +221,11 @@ public class MenuActivity extends Activity {
                 _index = 6;
                 _prevIndex = 4;
                 updateView();
+
+                GameActivity.setUpJoinConnection(_ipAddressToJoin.getText().toString());
+
             }
+
         });
 
         _previous.setOnClickListener(new View.OnClickListener() {
@@ -267,12 +278,15 @@ public class MenuActivity extends Activity {
         });
 
         _btnAiPlay.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                if(_player1Name.getText().toString().equals("...") || _player1Name.getText().toString().equals("")) {
+            @Override
+            public void onClick(View v) {
+                if (_player1Name.getText().toString().equals("...") || _player1Name.getText().toString().equals("")) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(MenuActivity.this).setMessage(R.string.msg_PlayerName);
                     AlertDialog dialog = builder.show();
                     TextView msg = (TextView) dialog.findViewById(android.R.id.message);
-                    msg.setGravity(Gravity.CENTER); msg.setTextColor(Color.BLACK); msg.setTextSize(25);
+                    msg.setGravity(Gravity.CENTER);
+                    msg.setTextColor(Color.BLACK);
+                    msg.setTextSize(25);
                 } else {
                     //do ai play method
                     //use _player1Name as player's name
@@ -388,5 +402,21 @@ public class MenuActivity extends Activity {
                 _layoutJoin.setVisibility(View.VISIBLE);
                 break;
         }
+    }
+
+    public void connectionHasEstablished(){
+        _waiting.setText("Connection Established");
+    }
+
+    /**
+     * Get the IP of the current device
+     * @return the IPv4 of the device
+     */
+    public String getIp(){
+        //To get the ip
+        WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
+        String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
+        Log.v(TAG, "ip: " + ip);
+        return ip;
     }
 }
