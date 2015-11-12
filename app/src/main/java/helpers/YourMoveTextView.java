@@ -24,6 +24,7 @@ public class YourMoveTextView extends TextView {
     private boolean _temporaryMessageDisplayed = false;
     Handler h = new Handler();
     private boolean _isCurrentTurn = true;
+    private boolean _isPermanentMessageShown = false;
 
     /**
      * Constructor
@@ -71,7 +72,9 @@ public class YourMoveTextView extends TextView {
         h.postDelayed(new Runnable() {
             @Override
             public void run() {
-                revertToDefault();
+                if (!_isPermanentMessageShown) {
+                    revertToDefault();
+                }
 
                 _temporaryMessageDisplayed = false;
 

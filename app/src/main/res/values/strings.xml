@@ -19,6 +19,9 @@
     <string name="str_YouRobbedOtherPlayersFinalMove">YOU ROBBED OTHER PLAYER\'S FINAL MOVE</string>
     <string name="strPlay">Play</string>
     <string name="strLeaderboard">Leaderboard</string>
+    <string name="strOptions">Options</string>
+    <string name="str_playerDisconnectedTitle">Player Disconnected</string>
+    <string name="str_playerDisconnected">It seems the other player left (rage quit).</string>
     <string name="strPlayer">Player</string>
     <string name="strNameHolder">...</string>
     <string name="strVS">VS</string>

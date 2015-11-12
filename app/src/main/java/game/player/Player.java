@@ -1,5 +1,7 @@
 package game.player;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 
 import game.board.Board;
@@ -15,10 +17,13 @@ public abstract class Player {
     protected int score;
     protected Cup _store;
     protected Cup[] _cups;
+    protected int maxConsecutiveMoves;
+    protected int moves;
 
     private Side _side;
 
-    protected ArrayList<MoveInfo> _moveInfos;                                                //arraylist to store the users moves in a game
+    protected ArrayList<MoveInfo> _moveInfos;//arraylist to store the users moves in a game
+    protected MoveInfo _currentMove;
     protected PlayerActionListener _playerActionListener = new PlayerActionAdapter();
 
     protected boolean _cannotPerformAnAction = true;
@@ -34,7 +39,10 @@ public abstract class Player {
         _name = name;
         _cups = new Cup[7];
         _store = null;
+        _currentMove= null;
         _moveInfos = new ArrayList<>();
+        moves = 0;
+        maxConsecutiveMoves = 0;
     }
 
     /**
@@ -65,9 +73,34 @@ public abstract class Player {
         _cannotPerformAnAction = yes;
     }
 
-    public abstract void moveStart();
+    public void moveStart(){
+       // Log.v("Player", "Starting current move for "+getName());
+        _currentMove = new MoveInfo(System.currentTimeMillis(),getName());//starting the move info object
+    }
+
     public abstract void move(int index);
-    public abstract void moveEnd();
+
+    public void moveEnd(){
+       // Log.v("Player","Checking if its equal to null");
+        if(_currentMove != null) {
+           // Log.v("Player","Not equal to null");
+          //  Log.v("Player", "Ending move started for " + getName());
+            _currentMove.endMove(System.currentTimeMillis());
+            _currentMove.calculateMoveDuration();//calculate the duration of the move and store it in the object
+            Log.v("Player","Move time: "+_currentMove.getDurationOfMoveMillis());
+            Log.v("Player", "Ending move completed for " + getName());
+            if (_moveInfos.size() == 0) {//this is the first move
+                _currentMove.setNumOfShellsCollected(_store.getCount());
+            } else {//the amount of shells collected in this move, is the amount of shells in the store now minus the amount of shells in the store in the previous turn
+                _currentMove.setNumOfShellsCollected(_store.getCount() - _moveInfos.get(_moveInfos.size() - 1).getNumOfShellsCollected());
+            }
+            _moveInfos.add(_currentMove);//want to maybe get the points the user collected in that move
+        }else{
+            Log.v("Player","Equal to null");
+        }
+    }
+
+
 
     /**
      * Determines if the cup provided belongs to this player.
@@ -170,6 +203,10 @@ public abstract class Player {
         return _moveInfos;
     }
 
+    /**
+     * Get the side the Player is on
+     * @return the side the Player is on
+     */
     public Side getSide() {
         return _side;
     }
@@ -177,4 +214,62 @@ public abstract class Player {
     public void setSide(Side _side) {
         this._side = _side;
     }
+
+    /**
+     * Get the maximum number of Shells this Player has collected in this Game
+     * @return the maximum number of Shells the Player has collected in this Game
+     */
+    public int getMaxNumberShellsCollected(){
+        int maxNumberShells = 0;
+        for(MoveInfo moveInfo : _moveInfos){
+            if(maxNumberShells < moveInfo.getNumOfShellsCollected()){
+                maxNumberShells = moveInfo.getNumOfShellsCollected();
+            }
+        }
+        return maxNumberShells;
+    }
+
+    /**
+     * Get the average turn (or move) time for this Player in this Game
+     * @return the average turn time for this Player in the this Game
+     */
+    public double getAverageTurnTime(){
+        double averageTurnTime = 0;
+        for(MoveInfo moveInfo:_moveInfos){
+            averageTurnTime+=moveInfo.getDurationOfMoveMillis();
+
+        }
+        averageTurnTime /= _moveInfos.size();
+        return  averageTurnTime;
+    }
+
+    /**
+     * Increase the amount of moves this Player has gotten in a row, by one
+     */
+    public void addMove(){
+        moves++;
+        if(moves > maxConsecutiveMoves){//new maximum value for the Player in this game
+            maxConsecutiveMoves = moves;
+        }
+    }
+
+    /**
+     * When the user has not gotten another move in a row, reset there consecutive move count to 0
+     */
+    public void resetMove(){
+        moves = 0;
+    }
+
+    /**
+     * Get the maximum number of consecutive moves of the Player
+     * @return the maximum number of consecutive moves of the Player
+     */
+    public int getMaxConsecutiveMoves(){
+        return maxConsecutiveMoves;
+    }
+    
 }
+
+
+
+

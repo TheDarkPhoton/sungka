@@ -12,17 +12,21 @@ import game.player.RemoteHuman;
  */
 public class SungkaProtocol {
     private RemoteHuman remoteHuman;
+    private String TAG = "SungkaProtocol";
     public static final String PLAYERMOVE = "MOVE:";
-    public static final String PLAYEREND = "END";
+    public static final String PING = "PING";
+    public static final String PINGBACK = "PINGBACK";
     private GameActivity gameActivity;
+    private SungkaConnection sungkaConnection;
 
     /**
      *Constructor to provide the Board object that we will use to reflect the changes the other user did on their device
      * @param remoteHuman the other Player in the game
      */
-    public SungkaProtocol(RemoteHuman remoteHuman,GameActivity gameActivity){
+    public SungkaProtocol(RemoteHuman remoteHuman,GameActivity gameActivity,SungkaConnection sungkaConnection){
         this.remoteHuman = remoteHuman;
         this.gameActivity = gameActivity;
+        this.sungkaConnection = sungkaConnection;
     }
 
     /**
@@ -31,8 +35,21 @@ public class SungkaProtocol {
      * @param message the information that we will use to update the board
      */
     public void updateGame(String message){
-        //TODO: update the board appropriately to the message received
-        if(message.contains(PLAYERMOVE)){
+        if(message.equals(PING)){
+            //ping back
+            Log.v(TAG,"Got a Ping");
+            Log.v(TAG,"Sending a Ping back");
+            sungkaConnection.sendMessage(PINGBACK);
+        }else if(message.equals(PINGBACK)){
+            //remove the timer
+            Log.v(TAG,"Got a ping back");
+            Log.v(TAG,"Stop the timer");
+            sungkaConnection.stopTimer();
+            //ping again
+            Log.v(TAG,"Ping again");
+            sungkaConnection.ping();
+        }
+        else if(message.contains(PLAYERMOVE)){
             Log.v("SungkaProtocol", message);
             final int indexMove = new Integer(message.split(PLAYERMOVE)[1])+8;
             Log.v("SungkaProtocol","Index: "+indexMove);
@@ -42,8 +59,6 @@ public class SungkaProtocol {
                     remoteHuman.move(indexMove);//perform the other players move on this device
                 }
             });
-
-        }else if(message.equals(PLAYEREND)){//end the game
 
         }
     }

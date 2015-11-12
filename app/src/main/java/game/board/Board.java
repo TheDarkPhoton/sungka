@@ -127,6 +127,7 @@ public class Board {
 
         if (!(isCurrentPlayersStore(players_cup) && _currentPlayer.hasValidMove()) &&
                 getOpponent().hasValidMove()) {
+            _currentPlayer.resetMove();//the amount of moves the player has just done is set to 0 again
             _currentPlayer = getOpponent();
         }
         else if (!getCurrentPlayer().hasValidMove() && !getOpponent().hasValidMove()){
@@ -308,6 +309,25 @@ public class Board {
     }
 
     /**
+     * Checks if the game is currently a draw or if the game ended in a draw
+     * @return if the game is a draw
+     */
+    public boolean isDraw(){
+        return _playerOne.getScore() == _playerTwo.getScore();
+    }
+
+    /**
+     * Get the Player that is currently winning or the one that has just won the Game
+     * @return the Player that is winning or has just won
+     */
+    public Player getPlayerWon(){
+        if(_playerOne.getScore() > _playerTwo.getScore()){
+            return _playerOne;
+        }
+        return _playerTwo;
+    }
+
+    /**
      * Used to return the winning player after a match
      */
     public Player getWinningPlayer() {
@@ -319,12 +339,5 @@ public class Board {
 
         return null;
     }
-
-    /**
-     * Used to return whether both players have the same score at the end of the match
-     * @return
-     */
-    public boolean isDraw() {
-        return (_playerOne.getScore() == _playerTwo.getScore());
-    }
+    
 }

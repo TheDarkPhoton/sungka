@@ -35,6 +35,8 @@ public class Game {
         playerTwo = new AI(100, 100);
         playerTwo.setPlayerActionListener(playerActionListener);
 
+
+
         if(isOnlineGame){
             setUpForOnlineGame();
         }
@@ -50,7 +52,7 @@ public class Game {
         board = new Board(playerOne, playerTwo);
 
         //need to decide which player starts first in a online game
-       // board.swapCurrentPlayer();
+        //board.swapCurrentPlayer();
     }
 
     /**
@@ -64,8 +66,10 @@ public class Game {
         human.setPlayerActionListener(playerActionListener);
         human.setSungkaConnection(sungkaConnection);
 
-        RemoteHuman remoteHuman = new RemoteHuman("Remote Human");
+
+        RemoteHuman remoteHuman = new RemoteHuman(sungkaConnection.getOtherName());
         remoteHuman.setPlayerActionListener(playerActionListener);
+
 
         playerOne = human;
         playerTwo = remoteHuman;
