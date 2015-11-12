@@ -38,25 +38,31 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:padding="10dp"
-                android:layout_marginLeft="10dp">
+                android:layout_marginLeft="0dp">
 
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <Button
+                    android:layout_width="175dp"
+                    android:layout_height="40dp"
                     android:id="@+id/btnPlay"
-                    android:background="@drawable/btnplay"
+                    android:background="@drawable/roundedbuttonblack"
                     android:layout_margin="2dp"
-                    android:contentDescription="@string/strPlay"
-                    android:layout_gravity="center" />
+                    android:layout_gravity="center"
+                    android:text="@string/str_Play"
+                    android:textColor="#ffffff"
+                    android:textSize="20sp"
+                    android:textAllCaps="false" />
 
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <Button
+                    android:layout_width="175dp"
+                    android:layout_height="40dp"
                     android:id="@+id/btnLeaderboard"
-                    android:background="@drawable/btnleaderboard"
+                    android:background="@drawable/roundedbuttonblack"
                     android:layout_margin="2dp"
-                    android:contentDescription="@string/strLeaderboard"
-                    android:layout_gravity="center" />
+                    android:layout_gravity="center"
+                    android:text="@string/str_Leaderboard"
+                    android:textColor="#ffffff"
+                    android:textSize="20sp"
+                    android:textAllCaps="false" />
 
             </LinearLayout>
         </LinearLayout>
@@ -98,7 +104,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/strPlayer"
+                    android:text="@string/str_Player"
                     android:id="@+id/txtPlayer"
                     android:textColor="#000000"
                     android:textSize="30sp"
@@ -115,7 +121,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/strName"
+                        android:text="@string/str_Name"
                         android:id="@+id/txtPlayerN"
                         android:textColor="#ffffff"
                         android:textSize="25sp" />
@@ -123,7 +129,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/strNameHolder"
+                        android:text="@string/str_NameHolder"
                         android:id="@+id/txtPlayerName"
                         android:textColor="#000000"
                         android:textSize="25sp"
@@ -146,24 +152,25 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/strVS"
+                    android:text="@string/str_VS"
                     android:id="@+id/txtVS"
                     android:textColor="#000000"
-                    android:textSize="50sp"
+                    android:textSize="40dp"
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:layout_centerVertical="true"
-                    android:layout_centerHorizontal="true" />
+                    android:layout_centerHorizontal="true"
+                    android:paddingTop="30dp" />
 
                 <Button
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="30dp"
-                    android:text="@string/strPrevious"
+                    android:text="@string/str_Back"
                     android:id="@+id/btnPrevious"
                     android:textColor="#ffffff"
                     android:textSize="15sp"
-                    android:background="#000000"
+                    android:background="@drawable/roundedbuttonblack"
                     android:textAllCaps="false"
                     android:layout_alignParentBottom="true"
                     android:layout_alignParentRight="true"
@@ -190,7 +197,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/strSelect"
+                        android:text="@string/str_Select"
                         android:id="@+id/txtOpposition"
                         android:textColor="#000000"
                         android:textSize="30sp"
@@ -207,10 +214,10 @@
                         <Button
                             android:layout_width="150dp"
                             android:layout_height="50dp"
-                            android:text="@string/strPlayer"
+                            android:text="@string/str_Player"
                             android:id="@+id/btnPlayer"
                             android:textColor="#000000"
-                            android:background="#ffffff"
+                            android:background="@drawable/roundedbuttonwhite"
                             android:layout_gravity="center"
                             android:textSize="30sp"
                             android:layout_margin="5dp"
@@ -220,10 +227,10 @@
                         <Button
                             android:layout_width="150dp"
                             android:layout_height="50dp"
-                            android:text="@string/strAi"
+                            android:text="@string/str_Ai"
                             android:id="@+id/btnAi"
                             android:textColor="#000000"
-                            android:background="#ffffff"
+                            android:background="@drawable/roundedbuttonwhite"
                             android:layout_gravity="center"
                             android:textSize="30sp"
                             android:layout_margin="5dp"
@@ -233,10 +240,10 @@
                         <Button
                             android:layout_width="150dp"
                             android:layout_height="50dp"
-                            android:text="@string/strRemote"
+                            android:text="@string/str_Remote"
                             android:id="@+id/btnRemote"
                             android:textColor="#000000"
-                            android:background="#ffffff"
+                            android:background="@drawable/roundedbuttonwhite"
                             android:layout_gravity="center"
                             android:textSize="30sp"
                             android:layout_margin="5dp"
@@ -255,7 +262,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/strPlayer"
+                        android:text="@string/str_Player"
                         android:id="@+id/txtPlayer2"
                         android:textColor="#000000"
                         android:textSize="30sp"
@@ -280,7 +287,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/strName"
+                                android:text="@string/str_Name"
                                 android:id="@+id/txtPlayerN2"
                                 android:textColor="#ffffff"
                                 android:textSize="25sp" />
@@ -288,7 +295,7 @@
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="@string/strNameHolder"
+                                android:text="@string/str_NameHolder"
                                 android:id="@+id/txtPlayerName2"
                                 android:textColor="#000000"
                                 android:textSize="25sp"
@@ -304,10 +311,10 @@
                         <Button
                             android:layout_width="150dp"
                             android:layout_height="50dp"
-                            android:text="@string/strPlay"
+                            android:text="@string/str_Play"
                             android:id="@+id/btnPlayerPlay"
                             android:textColor="#000000"
-                            android:background="#ffffff"
+                            android:background="@drawable/roundedbuttonwhite"
                             android:textSize="30sp"
                             android:textAllCaps="false"
                             android:gravity="center"
@@ -330,7 +337,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/strAiDiff"
+                        android:text="@string/str_AiDiff"
                         android:id="@+id/txtAiDiff"
                         android:textColor="#000000"
                         android:textSize="30sp"
@@ -373,10 +380,10 @@
                         <Button
                             android:layout_width="150dp"
                             android:layout_height="50dp"
-                            android:text="@string/strPlay"
+                            android:text="@string/str_Play"
                             android:id="@+id/btnAiPlay"
                             android:textColor="#000000"
-                            android:background="#ffffff"
+                            android:background="@drawable/roundedbuttonwhite"
                             android:textSize="30sp"
                             android:textAllCaps="false"
                             android:gravity="center"
@@ -399,7 +406,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/strRemote"
+                        android:text="@string/str_Remote"
                         android:id="@+id/txtRemote"
                         android:textColor="#000000"
                         android:textSize="30sp"
@@ -416,10 +423,10 @@
                         <Button
                             android:layout_width="150dp"
                             android:layout_height="50dp"
-                            android:text="@string/strHost"
+                            android:text="@string/str_Host"
                             android:id="@+id/btnHost"
                             android:textColor="#000000"
-                            android:background="#ffffff"
+                            android:background="@drawable/roundedbuttonwhite"
                             android:layout_gravity="center"
                             android:textSize="30sp"
                             android:layout_margin="5dp"
@@ -429,10 +436,10 @@
                         <Button
                             android:layout_width="150dp"
                             android:layout_height="50dp"
-                            android:text="@string/strJoin"
+                            android:text="@string/str_Join"
                             android:id="@+id/btnJoin"
                             android:textColor="#000000"
-                            android:background="#ffffff"
+                            android:background="@drawable/roundedbuttonwhite"
                             android:layout_gravity="center"
                             android:textSize="30sp"
                             android:layout_margin="5dp"
@@ -452,7 +459,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/strHost"
+                        android:text="@string/str_Host"
                         android:id="@+id/txtHost"
                         android:textColor="#000000"
                         android:textSize="30sp"
@@ -469,7 +476,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/strIP"
+                            android:text="@string/str_IP"
                             android:id="@+id/txtIPAddress"
                             android:textColor="#ffffff"
                             android:textSize="25sp"
@@ -478,7 +485,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/strWaiting"
+                            android:text="@string/str_Waiting"
                             android:id="@+id/txtWaiting"
                             android:textColor="#ffffff"
                             android:textSize="20sp"
@@ -498,7 +505,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/strJoin"
+                        android:text="@string/str_Join"
                         android:id="@+id/txtJoin"
                         android:textColor="#000000"
                         android:textSize="30sp"
@@ -522,7 +529,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/strIP"
+                                android:text="@string/str_IP"
                                 android:id="@+id/textView"
                                 android:textColor="#ffffff"
                                 android:textSize="25sp" />
@@ -530,7 +537,7 @@
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="@string/strNameHolder"
+                                android:text="@string/str_NameHolder"
                                 android:id="@+id/txtIpEntry"
                                 android:textColor="#000000"
                                 android:textSize="25sp"
@@ -546,10 +553,10 @@
                         <Button
                             android:layout_width="150dp"
                             android:layout_height="50dp"
-                            android:text="@string/strJoin"
+                            android:text="@string/str_Join"
                             android:id="@+id/btnRemoteJoin"
                             android:textColor="#000000"
-                            android:background="#ffffff"
+                            android:background="@drawable/roundedbuttonwhite"
                             android:layout_gravity="center"
                             android:textSize="30sp"
                             android:textAllCaps="false"

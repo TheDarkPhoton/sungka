@@ -2,32 +2,39 @@ package com.example.deathgull.sungka_project;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.DialogFragment;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
+import helpers.frontend.CupButton;
+
 public class MenuActivity extends Activity {
 
     //Main menu elements
     private RelativeLayout _mainMenu;
-    private ImageButton _play, _leaderboard;
+    private Button _play, _leaderboard;
 
     //Sub menu elements
     private RelativeLayout _alpha;
     private RelativeLayout _subMenu;
+    private LinearLayout _subHolder;
     private Button _previous;
-    private TextView _player1Name;
+    private TextView _player1Name, _VS;
     private LinearLayout _layoutBase, _layoutPlayer, _layoutAi, _layoutRemote, _layoutHost, _layoutJoin;
 
     //Base elements
@@ -61,6 +68,7 @@ public class MenuActivity extends Activity {
         setContentView(R.layout.activity_menu);
 
         getElements();
+        scale();
         initialise();
     }
 
@@ -86,15 +94,20 @@ public class MenuActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * retrieves all the menu elements for use
+     */
     private void getElements() {
         _mainMenu = (RelativeLayout) findViewById(R.id.mainMenu);
-        _play = (ImageButton) findViewById(R.id.btnPlay);
-        _leaderboard = (ImageButton) findViewById(R.id.btnLeaderboard);
+        _play = (Button) findViewById(R.id.btnPlay);
+        _leaderboard = (Button) findViewById(R.id.btnLeaderboard);
 
-        _subMenu = (RelativeLayout) findViewById(R.id.playSub);
         _alpha = (RelativeLayout) findViewById(R.id.alphaLayer);
+        _subMenu = (RelativeLayout) findViewById(R.id.playSub);
+        _subHolder = (LinearLayout) findViewById(R.id.subMenu);
         _previous = (Button) findViewById(R.id.btnPrevious);
         _player1Name = (TextView) findViewById(R.id.txtPlayerName);
+        _VS = (TextView) findViewById(R.id.txtVS);
 
         _layoutBase = (LinearLayout) findViewById(R.id.layoutBase);
         _layoutPlayer = (LinearLayout) findViewById(R.id.layoutPlayer);
@@ -124,6 +137,23 @@ public class MenuActivity extends Activity {
         _btnJoinIpAddress = (Button) findViewById(R.id.btnRemoteJoin);
     }
 
+    /**
+     * scale elements to better fit smaller screens
+     */
+    private void scale() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        WindowManager wm = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
+        wm.getDefaultDisplay().getMetrics(displayMetrics);
+        int _width = displayMetrics.widthPixels;
+
+        if(_width - 300 < 550) {
+            _VS.setTextSize(20);
+        }
+    }
+
+    /**
+     * sets up all listeners for menu button presses
+     */
     private void initialise() {
         _index = 0;
         _prevIndex = 0;
@@ -172,6 +202,10 @@ public class MenuActivity extends Activity {
                 _index = 5;
                 _prevIndex = 4;
                 updateView();
+
+                //handle mutliplayer hosting methods.
+                //use _ipAddress to show user ip address
+                //use _waiting to show when waiting, and update when connection established
             }
         });
 
@@ -215,11 +249,18 @@ public class MenuActivity extends Activity {
             @Override
             public void onClick(View v) {
                 if(_player1Name.getText().toString().equals("...") || _player1Name.getText().toString().equals("")) {
-                    new AlertDialog.Builder(MenuActivity.this).setMessage(R.string.msgPlayer1Name).show();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MenuActivity.this).setMessage(R.string.msg_Player1Name);
+                    AlertDialog dialog = builder.show();
+                    TextView msg = (TextView) dialog.findViewById(android.R.id.message);
+                    msg.setGravity(Gravity.CENTER); msg.setTextColor(Color.BLACK); msg.setTextSize(25);
                 } else if(_player2Name.getText().toString().equals("...") || _player2Name.getText().toString().equals("")) {
-                    new AlertDialog.Builder(MenuActivity.this).setMessage(R.string.msgPlayer2Name).show();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MenuActivity.this).setMessage(R.string.msg_Player2Name);
+                    AlertDialog dialog = builder.show();
+                    TextView msg = (TextView) dialog.findViewById(android.R.id.message);
+                    msg.setGravity(Gravity.CENTER); msg.setTextColor(Color.BLACK); msg.setTextSize(25);
                 } else {
                     //do 2 player play method
+                    //use _player1Name as player 1's name, and _player2Name as player 2's name
                     System.out.println("2 player play");
                 }
             }
@@ -228,9 +269,14 @@ public class MenuActivity extends Activity {
         _btnAiPlay.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                 if(_player1Name.getText().toString().equals("...") || _player1Name.getText().toString().equals("")) {
-                    new AlertDialog.Builder(MenuActivity.this).setMessage(R.string.msgPlayerName).show();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MenuActivity.this).setMessage(R.string.msg_PlayerName);
+                    AlertDialog dialog = builder.show();
+                    TextView msg = (TextView) dialog.findViewById(android.R.id.message);
+                    msg.setGravity(Gravity.CENTER); msg.setTextColor(Color.BLACK); msg.setTextSize(25);
                 } else {
                     //do ai play method
+                    //use _player1Name as player's name
+                    //use _difficulty as ai difficulty
                     int _difficulty = _aiDiff.getProgress() + 50;
                     System.out.println("ai play, difficulty: " + _difficulty);
                 }
@@ -240,19 +286,29 @@ public class MenuActivity extends Activity {
         _btnJoinIpAddress.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                 if(_player1Name.getText().toString().equals("...") || _player1Name.getText().toString().equals("")) {
-                    new AlertDialog.Builder(MenuActivity.this).setMessage(R.string.msgPlayerName).show();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MenuActivity.this).setMessage(R.string.msg_PlayerName);
+                    AlertDialog dialog = builder.show();
+                    TextView msg = (TextView) dialog.findViewById(android.R.id.message);
+                    msg.setGravity(Gravity.CENTER); msg.setTextColor(Color.BLACK); msg.setTextSize(25);
                 } else if(_ipAddressToJoin.getText().toString().equals("...") || _ipAddressToJoin.getText().toString().equals("")) {
-                    new AlertDialog.Builder(MenuActivity.this).setMessage(R.string.msgIPAddress).show();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MenuActivity.this).setMessage(R.string.msg_IPAddress);
+                    AlertDialog dialog = builder.show();
+                    TextView msg = (TextView) dialog.findViewById(android.R.id.message);
+                    msg.setGravity(Gravity.CENTER); msg.setTextColor(Color.BLACK); msg.setTextSize(25);
                 } else {
                     //do remote play method
+                    //use _player1Name as player 1's name
+                    //use ipAddresToJoin as the IP address to try to connect to
                     System.out.println("remote play (join)");
                 }
             }
         });
     }
 
+    /**
+     * updates the menu to show and hide elements
+     */
     private void updateView() {
-        System.out.println(_index + ", prev: " + _prevIndex);
         switch(_index) {
             case 0:
                 _mainMenu.setVisibility(View.VISIBLE);
