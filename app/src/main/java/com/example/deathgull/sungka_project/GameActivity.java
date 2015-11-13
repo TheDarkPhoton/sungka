@@ -151,16 +151,21 @@ public class GameActivity extends Activity {
         boolean isOnlineGame = false;
         String firstPlayer = "First Player";
         String secondPlayer = "Second Player";
+        Log.v(TAG,"Getting the bundle");
         Bundle bundle = getIntent().getExtras();
         if(bundle != null){
+            Log.v(TAG,"Got the bundle");
             if(bundle.getBoolean("isOnline")){
+                Log.v(TAG,"Its an online game");
                 isOnlineGame = bundle.getBoolean("isOnline");
                 usersConnection.setActivity(this);
             }
             if(bundle.getString("firstPlayer") != null ){
+                Log.v(TAG,"Got the first name ");
                 firstPlayer = bundle.getString("firstPlayer");
             }
             if(bundle.getString("secondPlayer") != null ){
+                Log.v(TAG,"Got the second name ");
                 firstPlayer = bundle.getString("secondPlayer");
             }
         }
@@ -617,58 +622,60 @@ public class GameActivity extends Activity {
      * Set up the host connection
      * @param menuActivity the activity that calls this method, to use in the onPreExecute method in the AsyncTask, when establishing
      *                     the connection.
-     * @return the name of the other user.
+     * @param playerName the name of the current Player trying to connect to the other Player
      */
-    public static String setUpHostConnection(MenuActivity menuActivity){
-        SungkaServer sungkaServer = new SungkaServer(4000,menuActivity);
+    public static void setUpHostConnection(MenuActivity menuActivity,String playerName){
+        SungkaServer sungkaServer = new SungkaServer(4000,menuActivity,playerName);
         sungkaServer.execute();
-        try {
+        /*try {
             sungkaServer.get();//wait for the connection to be established; returns true if it is set up,else false
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
-        }
-        setConnection(sungkaServer);
-        String otherName = "";
+        }*/
+       // setConnection(sungkaServer);
+        /*String otherName = "";
         try {
-            otherName = sungkaServer.connectToSendNames("Oliver Host");//the name of the current player
+            otherName = sungkaServer.connectToSendNames(playerName);//the name of the current player
             Log.v(TAG,"Other name: "+otherName);
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return otherName;
+        return otherName;*/
     }
 
     /**
      * Set up a connection where you join a host
+     * @param menuActivity the activity that calls this method, to use in the onPreExecute method in the AsyncTask, when establishing
+     *                     the connection.
      * @param ip the ip to which you connect to.
-     * @return the name of the other Player you are connecting to
+     * @param playerName the name of the current Player trying to connect to the other Player
      */
-    public static String setUpJoinConnection(String ip){
+    public static void setUpJoinConnection(MenuActivity menuActivity,String ip,String playerName){
         // In the case of a client connecting to the server, the server needs to be set up before
-        SungkaClient sungkaClient = new SungkaClient(ip,4000);//server ip and port need to be inserted by the user
+        SungkaClient sungkaClient = new SungkaClient(ip,4000,playerName,menuActivity);//server ip and port need to be inserted by the user
         sungkaClient.execute();                 //this is a test one
-        try {
+       /*try {
             sungkaClient.get();//wait for the connection to be established; returns true if it is set up, else false
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-        setConnection(sungkaClient);
+        /*setConnection(sungkaClient);
         String otherName = "";
         try {
-            otherName = sungkaClient.connectToSendNames("Oliver Join");//the name of the current player
+            otherName = sungkaClient.connectToSendNames(playerName);//the name of the current player
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         Log.v(TAG,"Other Name: "+otherName);
-        return otherName;
+        return otherName;*/
     }
 
 

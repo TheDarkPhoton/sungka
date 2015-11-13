@@ -212,13 +212,21 @@ public class MenuActivity extends Activity {
                 //use _ipAddress to show user ip address
                 _ipAddress.setText(getIp());
                 //to pass to the game activity that it will be a online game
-                bundle.putBoolean("isOnline",true);
+                bundle.putBoolean("isOnline", true);
+                String firstPlayerName = _player1Name.getText().toString();
+                Log.v(TAG,"Setting up Host Connection");
+                GameActivity.setUpHostConnection(MenuActivity.this,firstPlayerName);
+                bundle.putString("firstName", firstPlayerName);
                 //use _waiting to show when waiting, and update when connection established
-                String otherUserName = GameActivity.setUpHostConnection(MenuActivity.this);
+               /* String otherUserName = GameActivity.setUpHostConnection(MenuActivity.this,firstPlayerName);
                 //could maybe have a timeout if no connection is established
                 //passing the names of the players to the main activity
-                bundle.putString("firstName",_player1Name.getText().toString());
+
                 bundle.putString("secondName",otherUserName);
+                //send them to the GameActivity
+                Intent intent = new Intent(MenuActivity.this,GameActivity.class);
+                intent.putExtras(bundle);
+                startActivity(intent);*/
             }
         });
 
@@ -228,12 +236,7 @@ public class MenuActivity extends Activity {
                 _prevIndex = 4;
                 updateView();
 
-                //to pass to the game activity that it will be a online game
-                bundle.putBoolean("isOnline",true);
-                String otherUserName =GameActivity.setUpJoinConnection(_ipAddressToJoin.getText().toString());
-                //to pass the names of the users to the game activity
-                bundle.putString("firstName",_player1Name.getText().toString());
-                bundle.putString("secondName",otherUserName);
+
             }
 
         });
@@ -324,6 +327,12 @@ public class MenuActivity extends Activity {
                     //do remote play method
                     //use _player1Name as player 1's name
                     //use ipAddresToJoin as the IP address to try to connect to
+                    //to pass to the game activity that it will be a online game
+                    bundle.putBoolean("isOnline",true);
+                    String firstPlayerName = _player1Name.getText().toString();
+                    GameActivity.setUpJoinConnection(MenuActivity.this,_ipAddressToJoin.getText().toString(),firstPlayerName);
+                    //to pass the names of the users to the game activity
+                    bundle.putString("firstName",firstPlayerName);
                     System.out.println("remote play (join)");
                 }
             }
@@ -429,5 +438,17 @@ public class MenuActivity extends Activity {
         String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
         Log.v(TAG, "ip: " + ip);
         return ip;
+    }
+
+    public void setSecondPlayerName(String secondPlayerName){
+        Log.v(TAG,"Got the second player name "+secondPlayerName);
+        bundle.putString("secondName",secondPlayerName);
+    }
+
+    public void startGameActivity(){
+        Log.v(TAG,"Starting the GameActivity");
+        Intent intent = new Intent(MenuActivity.this,GameActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 }

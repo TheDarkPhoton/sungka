@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.example.deathgull.sungka_project.GameActivity;
+import com.example.deathgull.sungka_project.MenuActivity;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
@@ -43,6 +44,8 @@ public abstract class SungkaConnection extends AsyncTask<String,Integer,Boolean>
             gameActivity.otherPlayerDidDisconnect();
         }
     };
+    protected MenuActivity menuActivity;
+    protected String playerName;
 
     /**
      * Send a message to the other device
@@ -95,7 +98,7 @@ public abstract class SungkaConnection extends AsyncTask<String,Integer,Boolean>
 
     /**
      * Get the name of the other Player
-     * @return
+     * @return get the name of the other player
      */
     public String getOtherName(){
         return otherName;
@@ -125,4 +128,6 @@ public abstract class SungkaConnection extends AsyncTask<String,Integer,Boolean>
         pingHandler.removeCallbacks(pingOther);
 
     }
+
+
 }
