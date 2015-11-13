@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -57,6 +58,10 @@ import helpers.frontend.ShellTranslation;
 import game.player.Side;
 
 public class GameActivity extends Activity {
+    public static final String PLAYER_ONE = "playerOneName";
+    public static final String PLAYER_TWO = "playerTwoName";
+    public static final String AI_DIFF = "ai_difficulty";
+
     private static final String TAG = "GameActivity";
     private static final String fileName = "player_statistics";
     public static final Random random = new Random();                                               //Object for random number generation
@@ -130,6 +135,12 @@ public class GameActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Intent intent = getIntent();
+        String player1Name = intent.getStringExtra(PLAYER_ONE);
+        String player2Name = intent.getStringExtra(PLAYER_TWO);
+        int aiDifficulty = intent.getIntExtra(AI_DIFF, 0);
+
         setContentView(
                 _layoutMaster = new FrameLayout(this),
                 new FrameLayout.LayoutParams(
@@ -183,8 +194,11 @@ public class GameActivity extends Activity {
                 ResourcesCompat.getDrawable(getResources(), R.drawable.shell4, null),
         };
 
-        
-        _game = new Game(_playerActionListener,this);
+        if (aiDifficulty == 0) {
+            _game = new Game(player1Name, player2Name, _playerActionListener, this);
+        } else {
+            _game = new Game(player1Name, player2Name, aiDifficulty, _playerActionListener,this);
+        }
         _board = _game.getBoard();
 
         hideNav();                                                  //Hide navigation bar and system bar
@@ -868,13 +882,13 @@ public class GameActivity extends Activity {
                     String maxShellCollected = info[6];
                     String maxConsecutiveMoves = info[7];
                     PlayerStatistic playerStatistic = new PlayerStatistic(playerName);//make a PlayerStatistic object with the
-                    playerStatistic.setGamesPlayed(new Integer(gamesPlayed));   //data we just obtained
-                    playerStatistic.setGamesWon(new Integer(gamesWon));
-                    playerStatistic.setGamesLost(new Integer(gamesLost));
-                    playerStatistic.setGamesDrawn(new Integer(gamesDrawn));
-                    playerStatistic.setAverageMoveTimeInMillis(new Double(avgTimeInMillis));
-                    playerStatistic.setMaxNumShellsCollected(new Integer(maxShellCollected));
-                    playerStatistic.setMaxConsecutiveMoves(new Integer(maxConsecutiveMoves));
+                    playerStatistic.setGamesPlayed(Integer.valueOf(gamesPlayed));   //data we just obtained
+                    playerStatistic.setGamesWon(Integer.valueOf(gamesWon));
+                    playerStatistic.setGamesLost(Integer.valueOf(gamesLost));
+                    playerStatistic.setGamesDrawn(Integer.valueOf(gamesDrawn));
+                    playerStatistic.setAverageMoveTimeInMillis(Double.valueOf(avgTimeInMillis));
+                    playerStatistic.setMaxNumShellsCollected(Integer.valueOf(maxShellCollected));
+                    playerStatistic.setMaxConsecutiveMoves(Integer.valueOf(maxConsecutiveMoves));
                     playerStatistics.add(playerStatistic);
                     Log.v(TAG,playerStatistic.toString());
                 }

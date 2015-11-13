@@ -23,19 +23,16 @@ public class Game {
     private Board board;
     private Boolean isOnlineGame;
 
-    public Game(PlayerActionListener playerActionListener,GameActivity gameActivity) {
+    public Game(String p1Name, String p2Name, PlayerActionListener playerActionListener, GameActivity gameActivity) {
         this.playerActionListener = playerActionListener;
         this.gameActivity = gameActivity;
         isOnlineGame = false;
-        // for now, assume human players
-        playerOne = new Human("Shell Master");
+
+        playerOne = new Human(p1Name);
         playerOne.setPlayerActionListener(playerActionListener);
         
-//        playerTwo = new Human("Player B");
-        playerTwo = new AI(100, 100);
+        playerTwo = new Human(p2Name);
         playerTwo.setPlayerActionListener(playerActionListener);
-
-
 
         if(isOnlineGame){
             setUpForOnlineGame();
@@ -53,6 +50,21 @@ public class Game {
 
         //need to decide which player starts first in a online game
         //board.swapCurrentPlayer();
+    }
+
+    public Game(String p1Name, String p2Name, int aiDifficulty,
+                PlayerActionListener playerActionListener, GameActivity gameActivity) {
+
+        this.playerActionListener = playerActionListener;
+        this.gameActivity = gameActivity;
+
+        playerOne = new Human(p1Name);
+        playerOne.setPlayerActionListener(playerActionListener);
+
+        playerTwo = new AI(100, aiDifficulty, p2Name);
+        playerTwo.setPlayerActionListener(playerActionListener);
+
+        board = new Board(playerOne, playerTwo);
     }
 
     /**

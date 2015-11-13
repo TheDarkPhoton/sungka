@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,6 +25,7 @@ import org.w3c.dom.Text;
 import helpers.frontend.CupButton;
 
 public class MenuActivity extends Activity {
+    private static final String TAG = "MenuActivity";
 
     //Main menu elements
     private RelativeLayout _mainMenu;
@@ -175,6 +177,7 @@ public class MenuActivity extends Activity {
 
         _btnPlayer.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
+                Log.d(TAG, "_btnPlayer");
                 _index = 2;
                 _prevIndex = 1;
                 updateView();
@@ -183,6 +186,7 @@ public class MenuActivity extends Activity {
 
         _btnAi.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
+                Log.d(TAG, "_btnAi");
                 _index = 3;
                 _prevIndex = 1;
                 updateView();
@@ -191,6 +195,7 @@ public class MenuActivity extends Activity {
 
         _btnRemote.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
+                Log.d(TAG, "_btnRemote");
                 _index = 4;
                 _prevIndex = 1;
                 updateView();
@@ -248,12 +253,15 @@ public class MenuActivity extends Activity {
         _btnPlayerPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(_player1Name.getText().toString().equals("...") || _player1Name.getText().toString().equals("")) {
+                String player1Name = _player1Name.getText().toString();
+                String player2Name = _player2Name.getText().toString();
+
+                if(player1Name.equals("...") || player1Name.equals("")) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(MenuActivity.this).setMessage(R.string.msg_Player1Name);
                     AlertDialog dialog = builder.show();
                     TextView msg = (TextView) dialog.findViewById(android.R.id.message);
                     msg.setGravity(Gravity.CENTER); msg.setTextColor(Color.BLACK); msg.setTextSize(25);
-                } else if(_player2Name.getText().toString().equals("...") || _player2Name.getText().toString().equals("")) {
+                } else if(player2Name.equals("...") || player2Name.equals("")) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(MenuActivity.this).setMessage(R.string.msg_Player2Name);
                     AlertDialog dialog = builder.show();
                     TextView msg = (TextView) dialog.findViewById(android.R.id.message);
@@ -261,14 +269,21 @@ public class MenuActivity extends Activity {
                 } else {
                     //do 2 player play method
                     //use _player1Name as player 1's name, and _player2Name as player 2's name
+                    Intent intent = new Intent(v.getContext(), GameActivity.class);
+                    intent.putExtra(GameActivity.PLAYER_ONE, player1Name);
+                    intent.putExtra(GameActivity.PLAYER_TWO, player2Name);
                     System.out.println("2 player play");
+
+                    startActivity(intent);
                 }
             }
         });
 
         _btnAiPlay.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
-                if(_player1Name.getText().toString().equals("...") || _player1Name.getText().toString().equals("")) {
+                String player1Name = _player1Name.getText().toString();
+                String aiName = "AI Player";
+                if(player1Name.equals("...") || player1Name.equals("")) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(MenuActivity.this).setMessage(R.string.msg_PlayerName);
                     AlertDialog dialog = builder.show();
                     TextView msg = (TextView) dialog.findViewById(android.R.id.message);
@@ -279,6 +294,12 @@ public class MenuActivity extends Activity {
                     //use _difficulty as ai difficulty
                     int _difficulty = _aiDiff.getProgress() + 50;
                     System.out.println("ai play, difficulty: " + _difficulty);
+
+                    Intent intent = new Intent(v.getContext(), GameActivity.class);
+                    intent.putExtra(GameActivity.PLAYER_ONE, player1Name);
+                    intent.putExtra(GameActivity.PLAYER_TWO, aiName);
+                    intent.putExtra(GameActivity.AI_DIFF, _difficulty);
+                    startActivity(intent);
                 }
             }
         });

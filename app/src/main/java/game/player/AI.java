@@ -20,8 +20,8 @@ public class AI extends Player {
     private float _accuracy;
     private float _difficulty;
 
-    public AI(int accuracyInPercents, int difficultyInPercents){
-        super("AI");
+    public AI(int accuracyInPercents, int difficultyInPercents, String name) {
+        super(name);
 
         _accuracy = (accuracyInPercents > 100 || accuracyInPercents < 0) ? 1 : (float)accuracyInPercents / 100f;
         _difficulty = (difficultyInPercents > 100 || difficultyInPercents < 50) ? 0.5f : 1f - ((float)difficultyInPercents / 100f);
