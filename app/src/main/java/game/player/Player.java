@@ -78,7 +78,6 @@ public abstract class Player {
     }
 
     public void moveStart(){
-       // Log.v("Player", "Starting current move for "+getName());
         _currentMove = new MoveInfo(System.currentTimeMillis(),getName());//starting the move info object
     }
 
@@ -87,12 +86,8 @@ public abstract class Player {
     public void moveEnd(){
        // Log.v("Player","Checking if its equal to null");
         if(_currentMove != null) {
-           // Log.v("Player","Not equal to null");
-          //  Log.v("Player", "Ending move started for " + getName());
             _currentMove.endMove(System.currentTimeMillis());
             _currentMove.calculateMoveDuration();//calculate the duration of the move and store it in the object
-            Log.v("Player","Move time: "+_currentMove.getDurationOfMoveMillis());
-            Log.v("Player", "Ending move completed for " + getName());
             if (_moveInfos.size() == 0) {//this is the first move
                 _currentMove.setNumOfShellsCollected(_store.getCount());
             } else {//the amount of shells collected in this move, is the amount of shells in the store now minus the amount of shells in the store in the previous turn

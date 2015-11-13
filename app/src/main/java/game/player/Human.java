@@ -28,8 +28,6 @@ public class Human extends Player {
     @Override
     public void moveStart() {
         super.moveStart();
-        Log.v("Human", "Starting current move for " + getName());
-        Log.v("Human","Start at time "+System.currentTimeMillis());
         _playerActionListener.onMoveStart(this);
 
         _cannotPerformAnAction = false;
@@ -47,7 +45,6 @@ public class Human extends Player {
 
         //send to remote player//need to decide if the player is a host or not
         if(isOnline) {
-            Log.v("Human",SungkaProtocol.PLAYERMOVE+Integer.toString(index));
             sungkaConnection.sendMessage(SungkaProtocol.PLAYERMOVE+Integer.toString(index));
         }
         _playerActionListener.onMove(this, index);
@@ -56,9 +53,6 @@ public class Human extends Player {
     @Override
     public void moveEnd() {
         super.moveEnd();
-        Log.v("Human", "Ending move started for " + getName());
-        Log.v("Human","Ends time: "+System.currentTimeMillis());
-//        Log.v("Human","Move time: "+_currentMove.getDurationOfMoveMillis());
         _playerActionListener.onMoveEnd(this);
     }
 
