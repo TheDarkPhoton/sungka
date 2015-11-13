@@ -29,8 +29,8 @@ public class Game {
         playerOne = new Human("Shell Master");
         playerOne.setPlayerActionListener(playerActionListener);
         
-        playerTwo = new Human("Player B");
-//        playerTwo = new AI(100, 100);
+//        playerTwo = new Human("Player B");
+        playerTwo = new AI(100, 100);
         playerTwo.setPlayerActionListener(playerActionListener);
 
         if(playerTwo instanceof RemoteHuman){

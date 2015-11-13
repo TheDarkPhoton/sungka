@@ -246,8 +246,6 @@ public class GameActivity extends Activity {
         _layoutMaster.addView(_layoutBase);
 
         _layoutMaster.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            boolean once = false;
-
             @Override
             public void onGlobalLayout() {
                 _layoutBase.setY((_layoutMaster.getHeight() / 2) - (_layoutBase.getHeight() / 2));
@@ -257,13 +255,6 @@ public class GameActivity extends Activity {
                 }
 
                 startCounter();
-//                Handler h = new Handler(_context.getMainLooper());
-//                h.post(new Runnable() {
-//                    @Override
-//                    public void run() {
-//
-//                    }
-//                });
 
                 _layoutMaster.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             }
@@ -478,6 +469,9 @@ public class GameActivity extends Activity {
 
                 _board.getCurrentPlayer().moveStart();
             }
+
+            if (!player.isFirstMovesExhausted())
+                player.moveStart();
         }
         else
             PlayerActionAdapter.setAnimationInProgress(false);
