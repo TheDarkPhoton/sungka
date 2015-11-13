@@ -27,7 +27,6 @@ public class Game {
         this.gameActivity = gameActivity;
         // for now, assume human players
         playerOne = new Human("Shell Master");
-        isOnlineGame = false;
 
         playerOne = new Human(p1Name);
         playerOne.setPlayerActionListener(playerActionListener);

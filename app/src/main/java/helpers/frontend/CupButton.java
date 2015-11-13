@@ -407,12 +407,6 @@ public class CupButton extends Button implements View.OnTouchListener {
      * Rotate the text view to face a side.
      * @param player Player that has the current move.
      */
-//    public void rotateTowards(Player player) {
-//        Board board = player.getBoard();
-//        float fromRotation = board.isPlayerA(player) ? 0 : 180;
-//        float rotation = board.isPlayerA(player) ? 0 : 180;
-//
-//        if (rotation == fromRotation)
     public void rotateTowards(Player player) {
         Board board = player.getBoard();
         float fromRotation = board.isPlayerA(player) ? 0 : 180;

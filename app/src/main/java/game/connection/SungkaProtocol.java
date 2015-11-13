@@ -59,9 +59,6 @@ public class SungkaProtocol {
                     remoteHuman.move(indexMove);//perform the other players move on this device
                 }
             });
-
-        }else if(message.equals(PLAYEREND)){//end the game
-
         }
     }
 }

@@ -7,10 +7,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.example.deathgull.sungka_project.R;
-
 import game.player.Player;
-import game.player.Side;
 
 /**
  * Created by martinkubat on 10/11/15.
@@ -31,19 +28,6 @@ public class PlayerNameTextView extends TextView {
         setText(player.getName());
         setTextSize(20.0f);
         setPadding(20, 20, 20, 20);
-
-        switch (_player.getSide()) {
-            case A:
-                _layoutParams.gravity = Gravity.BOTTOM;
-                setTextColor(Color.WHITE);
-                setGravity(Gravity.RIGHT);
-                break;
-            case B:
-                _layoutParams.gravity = Gravity.TOP;
-                setTextColor(Color.BLACK);
-                setGravity(Gravity.LEFT);
-                break;
-        }
     }
 
 }

@@ -49,13 +49,12 @@ import game.player.Human;
 import game.player.Player;
 import game.player.PlayerActionAdapter;
 import game.player.RemoteHuman;
-import helpers.MessageManager;
+import helpers.frontend.MessageManager;
 import helpers.backend.PauseThreadFor;
 import helpers.frontend.CupButton;
 import helpers.backend.PauseThreadWhile;
 import helpers.frontend.PlayerNameTextView;
 import helpers.frontend.ShellTranslation;
-import helpers.frontend.YourMoveTextView;
 
 public class GameActivity extends Activity {
     public static final String PLAYER_ONE = "playerOneName";
@@ -74,14 +73,10 @@ public class GameActivity extends Activity {
     private GridLayout _layoutBase;                                                                 //Base layout
 
     private CupButton[] _cupButtons;
+    private Game _game;
     private Board _board;
-    private YourMoveTextView _yourMoveTop;
-    private YourMoveTextView _yourMoveBottom;
 
     private MessageManager _messageManager;
-    private PlayerNameTextView[] _playerTextViews;
-
-
 
     private float _animationDurationFactor = 1.0f;
 
@@ -92,11 +87,6 @@ public class GameActivity extends Activity {
         public void onMoveStart(Player player) {
             Log.i(TAG, player.getName() + " started his turn");
             _messageManager.onMoveStart(player);
-            
-            if (_board.isPlayerA(player))
-                _yourMoveBottom.show();
-            else
-                _yourMoveTop.show();
             
             if (player instanceof Human) {
                 setupMove(player);
@@ -144,11 +134,6 @@ public class GameActivity extends Activity {
         @Override
         public void onMoveEnd(Player player) {
             Log.i(TAG, player.getName() + " ended his turn");
-
-            if (_board.isPlayerA(player))
-                _yourMoveBottom.hide();
-            else
-                _yourMoveTop.hide();
         }
     };
 
@@ -175,9 +160,6 @@ public class GameActivity extends Activity {
                 ResourcesCompat.getDrawable(getResources(), R.drawable.shell3, null),
                 ResourcesCompat.getDrawable(getResources(), R.drawable.shell4, null),
         };
-        
-        Game game = new Game(_playerActionListener,this);
-        _board = game.getBoard();
 
         if (aiDifficulty == 0) {
             _game = new Game(player1Name, player2Name, _playerActionListener, this);
@@ -381,13 +363,7 @@ public class GameActivity extends Activity {
         initCupButton("cup1_store", 7, 1, 8, CupButton.PLAYER_A, CupButton.STORE);
         initCupButton("cup2_store", 15, 1, 0, CupButton.PLAYER_B, CupButton.STORE);
 
-        // PLAYER A your move label
-        _yourMoveBottom = new YourMoveTextView(this, true);
-        _layoutMaster.addView(_yourMoveBottom);
-
-        // PLAYER B your move label
-        _yourMoveTop = new YourMoveTextView(this, false);
-        _layoutMaster.addView(_yourMoveTop);
+        _messageManager = new MessageManager(this, _layoutMaster);
 
         // Setup animation speed listener
         _layoutMaster.getRootView().setOnTouchListener(new View.OnTouchListener() {
@@ -623,11 +599,10 @@ public class GameActivity extends Activity {
 
     public void dehighlightAllCups() {
         for (int i = 0; i < _cupButtons.length; i++) {
-            if (_board.isOpponentStore(i) || _board.isCurrentPlayersStore(i))
+            if (_board.getCurrentPlayer() != null && (_board.isOpponentStore(i) || _board.isCurrentPlayersStore(i)))
                 continue;
 
             _cupButtons[i].dehighlight();
-
         }
     }
 

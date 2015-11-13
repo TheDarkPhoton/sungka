@@ -12,12 +12,13 @@ import helpers.frontend.StatisticsRowView;
  * Created by martinkubat on 07/11/15.
  */
 public class MessageManager {
-    private StatisticsRowView.YourMoveTextView[] _textViews = new StatisticsRowView.YourMoveTextView[2];
+//    private StatisticsRowView.YourMoveTextView[] _textViews = new StatisticsRowView.YourMoveTextView[2];
     private StatisticsRowView.YourMoveTextView _top;
     private StatisticsRowView.YourMoveTextView _bottom;
 
     private FrameLayout _parent;
-    private int _currentSideIndex;
+//    private int _currentSideIndex;
+    private Player _currentPlayer;
 
     /**
      * Constructor
@@ -27,10 +28,8 @@ public class MessageManager {
     public MessageManager(Context context, FrameLayout parent) {
         _parent = parent;
 
-        for (int i = 0; i < 2; i++) {
-            _textViews[i] = new StatisticsRowView.YourMoveTextView(context, Side.values()[i]);
-            _parent.addView(_textViews[i]);
-        }
+        _top = new StatisticsRowView.YourMoveTextView(context);
+        _bottom = new StatisticsRowView.YourMoveTextView(context);
 
         _parent = parent;
 
@@ -41,16 +40,20 @@ public class MessageManager {
      * @param player that is currently playing
      */
     public void onMoveStart(Player player) {
-        if (_currentSideIndex == player.getSide().ordinal())
+        if (_currentPlayer == player)
             return;
 
-        _currentSideIndex = player.getSide().ordinal();
+        _currentPlayer = player;
 
-        _textViews[_currentSideIndex].setText(R.string.str_YourTurn);
-        _textViews[_currentSideIndex].setIsCurrentTurn(true);
-
-        _textViews[1 - _currentSideIndex].setIsCurrentTurn(false);
-
+        if (player.getBoard().isPlayerA(player)) {
+            _bottom.setText(R.string.str_YourTurn);
+            _bottom.setIsCurrentTurn(true);
+            _top.setIsCurrentTurn(false);
+        } else {
+            _top.setText(R.string.str_YourTurn);
+            _top.setIsCurrentTurn(true);
+            _bottom.setIsCurrentTurn(false);
+        }
     }
 
     /**
@@ -59,20 +62,19 @@ public class MessageManager {
      * @param winningPlayer the winning player
      */
     public void gameOver(boolean isDraw, Player winningPlayer) {
-
         if (isDraw) {
-            _textViews[0].displayPermanentMessage(R.string.str_ItsADraw);
-            _textViews[1].displayPermanentMessage(R.string.str_ItsADraw);
+            _bottom.displayPermanentMessage(R.string.str_ItsADraw);
+            _top.displayPermanentMessage(R.string.str_ItsADraw);
         } else {
-            int winningPlayerSideIndex = winningPlayer.getSide().ordinal();
-            int losingPlayerSideIndex = 1 - winningPlayerSideIndex;
 
-            _textViews[winningPlayerSideIndex].displayPermanentMessage(R.string.str_YouWon);
-            _textViews[losingPlayerSideIndex].displayPermanentMessage(R.string.str_YouLost);
-
+            if (winningPlayer.getBoard().isPlayerA(winningPlayer)){
+                _bottom.displayPermanentMessage(R.string.str_YouWon);
+                _top.displayPermanentMessage(R.string.str_YouLost);
+            } else {
+                _top.displayPermanentMessage(R.string.str_YouWon);
+                _bottom.displayPermanentMessage(R.string.str_YouLost);
+            }
         }
-
-
     }
 
     /**
@@ -80,8 +82,10 @@ public class MessageManager {
      * @param player that gets another turn
      */
     public void playerGetsAnotherTurn(Player player) {
-        _textViews[player.getSide().ordinal()].displayTemporaryMessage(R.string.str_AnotherTurn);
-
+        if (player.getBoard().isPlayerA(player))
+            _bottom.displayTemporaryMessage(R.string.str_AnotherTurn);
+        else
+            _top.displayTemporaryMessage(R.string.str_AnotherTurn);
     }
 
     /**
@@ -89,8 +93,14 @@ public class MessageManager {
      * @param player that got robbed
      */
     public void playerGotRobbed(Player player) {
-        _textViews[player.getSide().ordinal()].displayTemporaryMessage(R.string.str_YouWereRobbed);
-        _textViews[1 - player.getSide().ordinal()].displayTemporaryMessage(R.string.str_YouRobbedOtherPlayer);
+        if (player.getBoard().isPlayerA(player)){
+            _bottom.displayTemporaryMessage(R.string.str_YouWereRobbed);
+            _top.displayTemporaryMessage(R.string.str_YouRobbedOtherPlayer);
+        }
+        else {
+            _top.displayTemporaryMessage(R.string.str_YouWereRobbed);
+            _bottom.displayTemporaryMessage(R.string.str_YouRobbedOtherPlayer);
+        }
     }
 
     /**
@@ -98,7 +108,10 @@ public class MessageManager {
      * @param player that got robbed of his final move
      */
     public void playerGotRobbedOfHisFinalMove(Player player) {
-        _textViews[player.getSide().ordinal()].displayTemporaryMessage(R.string.str_YouWereRobbed);
+        if (player.getBoard().isPlayerA(player))
+            _top.displayTemporaryMessage(R.string.str_AnotherTurn);
+        else
+            _bottom.displayTemporaryMessage(R.string.str_AnotherTurn);
     }
 
 }
