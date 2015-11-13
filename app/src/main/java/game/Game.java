@@ -40,7 +40,7 @@ public class Game {
         board = new Board(playerOne, playerTwo);
 
         //need to decide which player starts first in a online game
-        //board.swapCurrentPlayer();
+        board.swapCurrentPlayer();
     }
 
     /**

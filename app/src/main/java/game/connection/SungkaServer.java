@@ -106,4 +106,8 @@ public class SungkaServer extends SungkaConnection {
     }
 
 
+    @Override
+    public void closeConnection() throws IOException {
+        serverSocket.close();
+    }
 }

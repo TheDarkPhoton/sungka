@@ -8,6 +8,7 @@ import com.example.deathgull.sungka_project.GameActivity;
 import com.example.deathgull.sungka_project.MenuActivity;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.concurrent.ExecutionException;
 
@@ -128,6 +129,12 @@ public abstract class SungkaConnection extends AsyncTask<String,Integer,Boolean>
         pingHandler.removeCallbacks(pingOther);
 
     }
+
+    /**
+     * Close the connection of the socket being used
+     * @throws IOException
+     */
+    public abstract void closeConnection() throws IOException;
 
 
 }

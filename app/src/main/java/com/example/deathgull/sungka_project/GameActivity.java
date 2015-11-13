@@ -846,6 +846,16 @@ public class GameActivity extends Activity {
     }
 
 
+    public void onDestroy(){
+        super.onDestroy();
+        if(usersConnection != null){
+            try {
+                usersConnection.closeConnection();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
 
 }
