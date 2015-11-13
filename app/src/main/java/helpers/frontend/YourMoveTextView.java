@@ -1,6 +1,7 @@
 package helpers.frontend;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Handler;
 import android.support.annotation.StringRes;
 import android.view.Gravity;
@@ -10,21 +11,28 @@ import android.widget.TextView;
 
 import com.example.deathgull.sungka_project.R;
 
+import game.player.Player;
+
 public class YourMoveTextView extends TextView {
     private FrameLayout.LayoutParams _layoutParams;
     private boolean _temporaryMessageDisplayed = false;
     Handler h = new Handler();
     private boolean _isCurrentTurn = true;
     private boolean _isPermanentMessageShown = false;
+    private Player _player;
+
 
     /**
      * Constructor
      * @param context of the parent activity
      */
-    public YourMoveTextView(Context context) {
+    public YourMoveTextView(Context context, boolean isTop) {
         super(context);
 
-        _layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        _layoutParams = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
         this.setLayoutParams(_layoutParams);
 
         revertToDefault();
@@ -32,6 +40,15 @@ public class YourMoveTextView extends TextView {
 
         this.setTextSize(getResources().getDimensionPixelSize(R.dimen.your_turn_text_size));
         this.setHeight(130);
+
+        if (isTop) {
+            _layoutParams.gravity = Gravity.TOP;
+            setTextColor(Color.BLACK);
+            setRotation(180);
+        } else {
+            _layoutParams.gravity = Gravity.BOTTOM;
+            setTextColor(Color.WHITE);
+        }
     }
 
 
