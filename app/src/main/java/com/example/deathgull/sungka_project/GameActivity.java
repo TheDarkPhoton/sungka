@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -397,6 +398,12 @@ public class GameActivity extends Activity {
             animations.get(i).startAnimation();
         }
 
+        if (index == 7 || index == 15) {
+            playSound(R.raw.cash);
+        } else {
+            playSound(R.raw.gunfire);
+        }
+
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -442,6 +449,8 @@ public class GameActivity extends Activity {
 
         final ArrayList<View> images = robbedCup.getShells();
         images.addAll(activatorCup.getShells());
+
+        playSound(R.raw.cash);
 
         final ArrayList<ShellTranslation> animations = new ArrayList<>();
         for (int i = 0; i < images.size(); i++) {
@@ -779,7 +788,7 @@ public class GameActivity extends Activity {
         Log.v(TAG, data);
         fileOutputStream.close();
         //replaced the old file with a new one that has the updated data
-        Log.v(TAG,"About ot read stats");
+        Log.v(TAG, "About ot read stats");
         ArrayList<PlayerStatistic> stats = readStats(getApplicationContext());
         for(PlayerStatistic player: stats){
             Log.v(TAG,player.toString());
@@ -806,7 +815,7 @@ public class GameActivity extends Activity {
         playerStatistic.setMaxNumShellsCollected(player.getMaxNumberShellsCollected());
         playerStatistic.setMaxConsecutiveMoves(player.getMaxConsecutiveMoves());
         playerStatistics.add(playerStatistic);
-        Log.v(TAG,"Made a player Statistic: "+playerStatistic.toString());
+        Log.v(TAG, "Made a player Statistic: " + playerStatistic.toString());
     }
 
     /**
@@ -878,6 +887,19 @@ public class GameActivity extends Activity {
             e.printStackTrace();
         }
         return playerStatistics;
+    }
+
+
+    private void playSound(int soundId) {
+        MediaPlayer mp = MediaPlayer.create(this, soundId);
+
+        switch (soundId) {
+            case R.raw.gunfire:
+                mp.setVolume(0.3f, 0.3f);
+                break;
+        }
+
+        mp.start();
     }
 
 
