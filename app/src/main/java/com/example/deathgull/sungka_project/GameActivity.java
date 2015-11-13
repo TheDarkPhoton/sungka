@@ -54,7 +54,6 @@ import helpers.frontend.MessageManager;
 import helpers.backend.PauseThreadFor;
 import helpers.frontend.CupButton;
 import helpers.backend.PauseThreadWhile;
-import helpers.frontend.PlayerNameTextView;
 import helpers.frontend.ShellTranslation;
 
 public class GameActivity extends Activity {
@@ -89,14 +88,14 @@ public class GameActivity extends Activity {
             Log.i(TAG, player.getName() + " started his turn");
             _messageManager.onMoveStart(player);
             
-            if (player instanceof Human) {
+            if (player instanceof Human && _board.getCurrentPlayer() != null) {
                 setupMove(player);
             }
         }
 
         @Override
         public void onMove(final Player player, final int index) {
-            Log.i(TAG, player.getName() + " performed an action on cup["+index+"]");
+            if (_board.getCurrentPlayer() != null)
                 dehighlightAllCups();
 
             Thread t = new Thread(new Runnable() {
@@ -106,6 +105,8 @@ public class GameActivity extends Activity {
                         new PauseThreadWhile<>(player, "isAnimationInProgress");
                     else
                         new PauseThreadWhile<>(PlayerActionAdapter.class, "isAnimationInProgress");
+
+                    Log.i(TAG, player.getName() + " performed an action on cup["+index+"]");
 
                     Handler h = new Handler(_context.getMainLooper());
                     h.post(new Runnable() {

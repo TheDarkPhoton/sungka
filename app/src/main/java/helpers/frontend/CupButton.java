@@ -2,6 +2,7 @@ package helpers.frontend;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -32,7 +33,7 @@ public class CupButton extends Button implements View.OnTouchListener {
 
     public static CupMargins sizes;
     private float _currentRotation;
-    private float _opacity;
+    private float _opacity = 1.0f;
 
     public static class CupMargins {
         public final float scale;
@@ -399,6 +400,9 @@ public class CupButton extends Button implements View.OnTouchListener {
         alphaAnimation.setDuration(500);
         alphaAnimation.setFillAfter(true);
         startAnimation(alphaAnimation);
+
+
+        Log.i("Cup Button", toValue + " toAlpha");
 
         _opacity = toValue;
     }
