@@ -250,13 +250,14 @@ public class MenuActivity extends Activity {
             }
         });
 
+        // starts a human vs human game
         _btnPlayerPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String player1Name = _player1Name.getText().toString();
                 String player2Name = _player2Name.getText().toString();
 
-                if(player1Name.equals("...") || player1Name.equals("")) {
+                if (player1Name.equals("...") || player1Name.equals("")) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(MenuActivity.this).setMessage(R.string.msg_Player1Name);
                     AlertDialog dialog = builder.show();
                     TextView msg = (TextView) dialog.findViewById(android.R.id.message);
@@ -279,11 +280,14 @@ public class MenuActivity extends Activity {
             }
         });
 
+        // starts a human vs AI game
         _btnAiPlay.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
+                int difficulty = _aiDiff.getProgress() + 50;
                 String player1Name = _player1Name.getText().toString();
-                String aiName = "AI Player";
-                if(player1Name.equals("...") || player1Name.equals("")) {
+                String player2Name = getAiName(difficulty);
+
+                if (player1Name.equals("...") || player1Name.equals("")) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(MenuActivity.this).setMessage(R.string.msg_PlayerName);
                     AlertDialog dialog = builder.show();
                     TextView msg = (TextView) dialog.findViewById(android.R.id.message);
@@ -292,13 +296,12 @@ public class MenuActivity extends Activity {
                     //do ai play method
                     //use _player1Name as player's name
                     //use _difficulty as ai difficulty
-                    int _difficulty = _aiDiff.getProgress() + 50;
-                    System.out.println("ai play, difficulty: " + _difficulty);
+                    System.out.println("ai play, difficulty: " + difficulty);
 
                     Intent intent = new Intent(v.getContext(), GameActivity.class);
                     intent.putExtra(GameActivity.PLAYER_ONE, player1Name);
-                    intent.putExtra(GameActivity.PLAYER_TWO, aiName);
-                    intent.putExtra(GameActivity.AI_DIFF, _difficulty);
+                    intent.putExtra(GameActivity.PLAYER_TWO, player2Name);
+                    intent.putExtra(GameActivity.AI_DIFF, difficulty);
                     startActivity(intent);
                 }
             }
@@ -306,7 +309,7 @@ public class MenuActivity extends Activity {
 
         _btnJoinIpAddress.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
-                if(_player1Name.getText().toString().equals("...") || _player1Name.getText().toString().equals("")) {
+                if (_player1Name.getText().toString().equals("...") || _player1Name.getText().toString().equals("")) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(MenuActivity.this).setMessage(R.string.msg_PlayerName);
                     AlertDialog dialog = builder.show();
                     TextView msg = (TextView) dialog.findViewById(android.R.id.message);
@@ -408,6 +411,18 @@ public class MenuActivity extends Activity {
                 _layoutHost.setVisibility(View.GONE);
                 _layoutJoin.setVisibility(View.VISIBLE);
                 break;
+        }
+    }
+
+    private String getAiName(int difficulty) {
+        String[] aiNames = getResources().getStringArray(R.array.ai_names);
+
+        if (difficulty < 70) {
+            return aiNames[0];
+        } else if (difficulty < 90) {
+            return  aiNames[1];
+        } else {
+            return aiNames[2];
         }
     }
 }
