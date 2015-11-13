@@ -737,7 +737,7 @@ public class GameActivity extends Activity {
         for(PlayerStatistic playerStatistic: playerStatistics){
             data += playerStatistic.toString();
         }
-        FileOutputStream fileOutputStream = openFileOutput(fileName,Context.MODE_PRIVATE);
+        FileOutputStream fileOutputStream = openFileOutput(fileName, Context.MODE_PRIVATE);
         fileOutputStream.write(data.getBytes());
         Log.v(TAG, "Stored the new stats");
         Log.v(TAG, "Stats:");
@@ -829,8 +829,8 @@ public class GameActivity extends Activity {
                     playerStatistic.setGamesLost(new Integer(gamesLost));
                     playerStatistic.setGamesDrawn(new Integer(gamesDrawn));
                     playerStatistic.setAverageMoveTimeInMillis(new Double(avgTimeInMillis));
-                    playerStatistic.setMaxNumShellsCollected(new Double(maxShellCollected));
-                    playerStatistic.setMaxConsecutiveMoves(new Double(maxConsecutiveMoves));
+                    playerStatistic.setMaxNumShellsCollected(new Integer(maxShellCollected));
+                    playerStatistic.setMaxConsecutiveMoves(new Integer(maxConsecutiveMoves));
                     playerStatistics.add(playerStatistic);
                     Log.v(TAG,playerStatistic.toString());
                 }

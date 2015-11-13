@@ -10,8 +10,8 @@ public class PlayerStatistic {
     private int gamesLost;
     private int gamesDrawn;
     private double averageMoveTimeInMillis;
-    private double maxNumShellsCollected;
-    private double maxConsecutiveMoves;
+    private int maxNumShellsCollected;
+    private int maxConsecutiveMoves;
 
     /**
      * Creates a PlayerStatistic object, that is used to hold the statistics of a Player
@@ -72,7 +72,7 @@ public class PlayerStatistic {
      * Get the maximum number of consecutive moves this Player has gotten
      * @return the maximum number of consecutive moves the Player has gotten
      */
-    public double getMaxConsecutiveMoves() {
+    public int getMaxConsecutiveMoves() {
         return maxConsecutiveMoves;
     }
 
@@ -96,7 +96,7 @@ public class PlayerStatistic {
      * Set the maximum number of consecutive moves this Player has gotten
      * @param maxConsecutiveMoves the maximum number of consecutive moves the Player has gotten
      */
-    public void setMaxConsecutiveMoves(double maxConsecutiveMoves) {
+    public void setMaxConsecutiveMoves(int maxConsecutiveMoves) {
         this.maxConsecutiveMoves = maxConsecutiveMoves;
     }
 
@@ -104,7 +104,7 @@ public class PlayerStatistic {
      * Get the maximum number of shells the Player has collected in all their games
      * @return the maximum number of shells the Player has ever gotten
      */
-    public double getMaxNumShellsCollected() {
+    public int getMaxNumShellsCollected() {
         return maxNumShellsCollected;
     }
 
@@ -144,7 +144,7 @@ public class PlayerStatistic {
      * Set the maximum number of shells collected by the Player
      * @param maxNumShellsCollected the maximum number of shells the Player has collected
      */
-    public void setMaxNumShellsCollected(double maxNumShellsCollected) {
+    public void setMaxNumShellsCollected(int maxNumShellsCollected) {
         this.maxNumShellsCollected = maxNumShellsCollected;
     }
 
