@@ -28,7 +28,7 @@ import helpers.frontend.CupButton;
 
 public class MenuActivity extends Activity {
     private static final String TAG = "MenuActivity";
-
+    private Bundle bundle;
     //Main menu elements
     private RelativeLayout _mainMenu;
     private Button _play, _leaderboard;
@@ -70,6 +70,7 @@ public class MenuActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
+        bundle = new Bundle();
 
         getElements();
         scale();
@@ -210,9 +211,14 @@ public class MenuActivity extends Activity {
                 //handle mutliplayer hosting methods.
                 //use _ipAddress to show user ip address
                 _ipAddress.setText(getIp());
+                //to pass to the game activity that it will be a online game
+                bundle.putBoolean("isOnline",true);
                 //use _waiting to show when waiting, and update when connection established
                 String otherUserName = GameActivity.setUpHostConnection(MenuActivity.this);
                 //could maybe have a timeout if no connection is established
+                //passing the names of the players to the main activity
+                bundle.putString("firstName",_player1Name.getText().toString());
+                bundle.putString("secondName",otherUserName);
             }
         });
 
@@ -222,8 +228,12 @@ public class MenuActivity extends Activity {
                 _prevIndex = 4;
                 updateView();
 
+                //to pass to the game activity that it will be a online game
+                bundle.putBoolean("isOnline",true);
                 String otherUserName =GameActivity.setUpJoinConnection(_ipAddressToJoin.getText().toString());
-
+                //to pass the names of the users to the game activity
+                bundle.putString("firstName",_player1Name.getText().toString());
+                bundle.putString("secondName",otherUserName);
             }
 
         });
@@ -232,6 +242,7 @@ public class MenuActivity extends Activity {
             @Override public void onClick(View v) {
                 _index = _prevIndex;
                 updateView();
+                //should probably set the bundle back to a new one, to delete the previous added info to avoid conflicts in the main activity
                 if(_index == 1) {
                     _prevIndex = 0;
                 }

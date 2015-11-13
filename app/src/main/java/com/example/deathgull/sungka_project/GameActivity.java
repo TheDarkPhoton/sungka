@@ -137,6 +137,8 @@ public class GameActivity extends Activity {
                         FrameLayout.LayoutParams.MATCH_PARENT));
 
 
+
+
         //setUpHostConnection();
         //setUpJoinConnection("10.230.155.205");
         shells =new Drawable[]{
@@ -146,8 +148,24 @@ public class GameActivity extends Activity {
                 ResourcesCompat.getDrawable(getResources(), R.drawable.shell4, null),
         };
 
-        
-        _game = new Game(_playerActionListener,this);
+        boolean isOnlineGame = false;
+        String firstPlayer = "First Player";
+        String secondPlayer = "Second Player";
+        Bundle bundle = getIntent().getExtras();
+        if(bundle != null){
+            if(bundle.getBoolean("isOnline")){
+                isOnlineGame = bundle.getBoolean("isOnline");
+                usersConnection.setActivity(this);
+            }
+            if(bundle.getString("firstPlayer") != null ){
+                firstPlayer = bundle.getString("firstPlayer");
+            }
+            if(bundle.getString("secondPlayer") != null ){
+                firstPlayer = bundle.getString("secondPlayer");
+            }
+        }
+
+        _game = new Game(_playerActionListener,isOnlineGame,firstPlayer,secondPlayer);
         _board = _game.getBoard();
 
         hideNav();                                                  //Hide navigation bar and system bar

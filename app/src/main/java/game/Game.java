@@ -19,40 +19,52 @@ public class Game {
     private Player playerOne;
     private Player playerTwo;
     private PlayerActionListener playerActionListener;
-    private GameActivity gameActivity;
     private Board board;
-    private Boolean isOnlineGame;
+    private String firstPlayer;
+    private String secondPlayer;
 
-    public Game(PlayerActionListener playerActionListener,GameActivity gameActivity) {
+    public Game(PlayerActionListener playerActionListener,boolean isOnlineGame, String firstName, String secondName) {
         this.playerActionListener = playerActionListener;
-        this.gameActivity = gameActivity;
-        isOnlineGame = false;
-        // for now, assume human players
-        playerOne = new Human("Shell Master");
-        playerOne.setPlayerActionListener(playerActionListener);
-        
-//        playerTwo = new Human("Player B");
-        playerTwo = new AI(100, 100);
-        playerTwo.setPlayerActionListener(playerActionListener);
+        this.firstPlayer = firstName;
+        this.secondPlayer = secondName;
 
+        //need to decide which one to use
+        setUpAIGame();
 
+        setUpPlayerPlayerGame();
 
         if(isOnlineGame){
             setUpForOnlineGame();
         }
 
-        /*//for the remote player
-        RemoteHuman remoteHuman = new RemoteHuman("Remote Human");
-        remoteHuman.setPlayerActionListener(playerActionListener);
-        GameActivity.getUsersConnection().setActivity(gameActivity);//need this so that the moves can be carried on the ui thread
-        GameActivity.getUsersConnection().setSungkaProtocol(remoteHuman);
-
-        GameActivity.getUsersConnection().beginListening();*/
-
         board = new Board(playerOne, playerTwo);
 
         //need to decide which player starts first in a online game
         //board.swapCurrentPlayer();
+    }
+
+    /**
+     * Called when the game is a Player vs Player game on the current device. Sets up the different types of Players
+     * for that game
+     */
+    private void setUpPlayerPlayerGame(){
+        playerOne = new Human(firstPlayer);
+        playerOne.setPlayerActionListener(playerActionListener);
+
+        playerTwo = new Human(secondPlayer);
+        playerTwo.setPlayerActionListener(playerActionListener);
+    }
+
+    /**
+     * Called when the game is an Player vs AI game. Sets up the different types of Players for that game
+     */
+    private void setUpAIGame(){
+        playerOne = new Human(firstPlayer);
+        playerOne.setPlayerActionListener(playerActionListener);
+
+
+        playerTwo = new AI(100, 100);
+        playerTwo.setPlayerActionListener(playerActionListener);
     }
 
     /**
@@ -62,19 +74,18 @@ public class Game {
         SungkaConnection sungkaConnection = GameActivity.getUsersConnection();
 
 
-        Human human = new Human("Player On Device");
+        Human human = new Human(firstPlayer);
         human.setPlayerActionListener(playerActionListener);
         human.setSungkaConnection(sungkaConnection);
 
 
-        RemoteHuman remoteHuman = new RemoteHuman(sungkaConnection.getOtherName());
+        RemoteHuman remoteHuman = new RemoteHuman(secondPlayer);
         remoteHuman.setPlayerActionListener(playerActionListener);
 
 
         playerOne = human;
         playerTwo = remoteHuman;
 
-        sungkaConnection.setActivity(gameActivity);
         sungkaConnection.setSungkaProtocol(remoteHuman);
         sungkaConnection.beginListening();
 
