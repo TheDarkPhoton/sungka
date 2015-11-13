@@ -23,7 +23,7 @@
     <string name="str_playerDisconnectedTitle">Player Disconnected</string>
     <string name="str_playerDisconnected">It seems the other player left (rage quit).</string>
     <string name="str_Player">Player</string>
-    <string name="str_NameHolder">...</string>
+    <string name="str_NameHolder">&#8230;</string>
     <string name="str_VS">VS</string>
     <string name="str_Ai">AI</string>
     <string name="str_Remote">Remote</string>
