@@ -5,7 +5,9 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.text.format.Formatter;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -26,7 +28,8 @@ import helpers.frontend.CupButton;
 
 public class MenuActivity extends Activity {
     private static final String TAG = "MenuActivity";
-
+    private Bundle bundle;
+    
     //Main menu elements
     private RelativeLayout _mainMenu;
     private Button _play, _leaderboard;
@@ -68,6 +71,7 @@ public class MenuActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
+        bundle = new Bundle();
 
         getElements();
         scale();
@@ -210,7 +214,23 @@ public class MenuActivity extends Activity {
 
                 //handle mutliplayer hosting methods.
                 //use _ipAddress to show user ip address
+                _ipAddress.setText(getIp());
+                //to pass to the game activity that it will be a online game
+                bundle.putBoolean("isOnline", true);
+                String firstPlayerName = _player1Name.getText().toString();
+                Log.v(TAG,"Setting up Host Connection");
+                GameActivity.setUpHostConnection(MenuActivity.this,firstPlayerName);
+                bundle.putString("firstName", firstPlayerName);
                 //use _waiting to show when waiting, and update when connection established
+               /* String otherUserName = GameActivity.setUpHostConnection(MenuActivity.this,firstPlayerName);
+                //could maybe have a timeout if no connection is established
+                //passing the names of the players to the main activity
+
+                bundle.putString("secondName",otherUserName);
+                //send them to the GameActivity
+                Intent intent = new Intent(MenuActivity.this,GameActivity.class);
+                intent.putExtras(bundle);
+                startActivity(intent);*/
             }
         });
 
@@ -323,6 +343,12 @@ public class MenuActivity extends Activity {
                     //do remote play method
                     //use _player1Name as player 1's name
                     //use ipAddresToJoin as the IP address to try to connect to
+                    //to pass to the game activity that it will be a online game
+                    bundle.putBoolean("isOnline",true);
+                    String firstPlayerName = _player1Name.getText().toString();
+                    GameActivity.setUpJoinConnection(MenuActivity.this,_ipAddressToJoin.getText().toString(),firstPlayerName);
+                    //to pass the names of the users to the game activity
+                    bundle.putString("firstName",firstPlayerName);
                     System.out.println("remote play (join)");
                 }
             }
@@ -424,5 +450,33 @@ public class MenuActivity extends Activity {
         } else {
             return aiNames[2];
         }
+    }
+
+    public void connectionHasEstablished(){
+        _waiting.setText("Connection Established");
+    }
+
+    /**
+     * Get the IP of the current device
+     * @return the IPv4 of the device
+     */
+    public String getIp(){
+        //To get the ip
+        WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
+        String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
+        Log.v(TAG, "ip: " + ip);
+        return ip;
+    }
+
+    public void setSecondPlayerName(String secondPlayerName){
+        Log.v(TAG,"Got the second player name "+secondPlayerName);
+        bundle.putString("secondName",secondPlayerName);
+    }
+
+    public void startGameActivity(){
+        Log.v(TAG,"Starting the GameActivity");
+        Intent intent = new Intent(MenuActivity.this,GameActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 }

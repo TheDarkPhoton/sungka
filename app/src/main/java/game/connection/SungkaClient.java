@@ -2,6 +2,9 @@ package game.connection;
 
 import android.util.Log;
 
+import com.example.deathgull.sungka_project.GameActivity;
+import com.example.deathgull.sungka_project.MenuActivity;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -20,32 +23,37 @@ public class SungkaClient extends SungkaConnection{
     //TODO: will probably need a Board object to have access to the board, to perform the changes of the other user
     //TODO:should have static string values that indicate what the other user did eg: perform a move,has left or wants to end the game
     //TODO: make a class that deals with the messages being sent in a separate thread of the main one
-    private String hostName;
+    private String TAG = "SungkaClient";
+    private String hostIp;
     private int portNumber;
     private Socket clientSocket;
 
 
+
     /**
      * The constructor to provide the necessary information about the Server
-     * @param hostName the IP address of the server, it is the IPv4 address if both users are connected to the same network
+     * @param hostIp the IP address of the server, it is the IPv4 address if both users are connected to the same network
      * @param portNumber the port of the server which we want to connect to
      * @param remoteHuman the other Player in the game
      */
-    public SungkaClient(String hostName, int portNumber,RemoteHuman remoteHuman){
-        this.hostName = hostName;
+    public SungkaClient(String hostIp, int portNumber,RemoteHuman remoteHuman){
+        this.hostIp = hostIp;
         this.portNumber = portNumber;
         //sungkaProtocol = new SungkaProtocol(remoteHuman);
     }
 
     /**
      * The constructor to provide the necessary information about the Server
-     * @param hostName the IP address of the server, it is the IPv4 address if both users are connected to the same network
+     * @param hostIp the IP address of the server, it is the IPv4 address if both users are connected to the same network
      * @param portNumber the port of the server which we want to connect to
+     * @param playerName the name of the Player on the current device
      */
-    public SungkaClient(String hostName, int portNumber){
-        this.hostName = hostName;
+    public SungkaClient(String hostIp, int portNumber,String playerName,MenuActivity menuActivity){
+        this.hostIp = hostIp;
         this.portNumber = portNumber;
         sungkaProtocol = null;
+        this.playerName = playerName;
+        this.menuActivity = menuActivity;
     }
 
 
@@ -55,7 +63,7 @@ public class SungkaClient extends SungkaConnection{
      */
     private void connectClient() throws IOException {
         Log.v("SungkaClient","Establishing connection");
-        clientSocket = new Socket(hostName,portNumber);
+        clientSocket = new Socket(hostIp,portNumber);
         Log.v("SungkaClient","Connected");
         printWriter = new PrintWriter(clientSocket.getOutputStream(),true);
         bufferedReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -94,9 +102,22 @@ public class SungkaClient extends SungkaConnection{
 
 
     protected void onPostExecute(Boolean result){
-        //TODO:could remove that dialog since the connection has been established
         super.onPostExecute(result);
-        //listenForServerHandler.postDelayed(listenForServer, 50);//start the listenForServer runnable thread in 50 ms
+        Log.v(TAG,"Connection Established");
+       /* if(result == false){
+            //didnt connect
+        }else {*/
+        // listenForClientHandler.postDelayed(listenForClient, 50);//start the listenForClient runnable thread in 50 ms
+        GameActivity.setConnection(this);
+        menuActivity.connectionHasEstablished();
+        try {
+            menuActivity.setSecondPlayerName(connectToSendNames(playerName));
+            menuActivity.startGameActivity();
+        } catch (Exception e) {
+            //wasnt able to connect
+            e.printStackTrace();
+        }
+        // }
     }
 
 

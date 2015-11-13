@@ -7,7 +7,6 @@ import game.connection.SungkaConnection;
 import game.player.AI;
 import game.player.Human;
 import game.player.Player;
-import game.player.PlayerActionAdapter;
 import game.player.PlayerActionListener;
 import game.player.RemoteHuman;
 
@@ -19,41 +18,55 @@ public class Game {
     private Player playerOne;
     private Player playerTwo;
     private PlayerActionListener playerActionListener;
-    private GameActivity gameActivity;
     private Board board;
+    private String firstPlayer;
+    private String secondPlayer;
 
-    public Game(String p1Name, String p2Name, PlayerActionListener playerActionListener, GameActivity gameActivity) {
+
+    public Game(PlayerActionListener playerActionListener,boolean isOnlineGame, String firstName, String secondName, int aiDiff) {
         this.playerActionListener = playerActionListener;
-        this.gameActivity = gameActivity;
-        // for now, assume human players
-        playerOne = new Human("Shell Master");
+        this.firstPlayer = firstName;
+        this.secondPlayer = secondName;
 
-        playerOne = new Human(p1Name);
-        playerOne.setPlayerActionListener(playerActionListener);
-        
-        playerTwo = new Human(p2Name);
-        playerTwo.setPlayerActionListener(playerActionListener);
-
-        if(playerTwo instanceof RemoteHuman){
+        //need to decide which one to use
+        if(isOnlineGame){
             setUpForOnlineGame();
+        }else if(aiDiff >= 50){
+            setUpAIGame(aiDiff);
+        }else{
+            setUpPlayerPlayerGame();
         }
 
+
         board = new Board(playerOne, playerTwo);
+
+        //need to decide which player starts first in a online game
+        //board.swapCurrentPlayer();
     }
 
-    public Game(String p1Name, String p2Name, int aiDifficulty,
-                PlayerActionListener playerActionListener, GameActivity gameActivity) {
-
-        this.playerActionListener = playerActionListener;
-        this.gameActivity = gameActivity;
-
-        playerOne = new Human(p1Name);
+    /**
+     * Called when the game is a Player vs Player game on the current device. Sets up the different types of Players
+     * for that game
+     */
+    private void setUpPlayerPlayerGame(){
+        playerOne = new Human(firstPlayer);
         playerOne.setPlayerActionListener(playerActionListener);
 
-        playerTwo = new AI(100, aiDifficulty, p2Name);
+        playerTwo = new Human(secondPlayer);
         playerTwo.setPlayerActionListener(playerActionListener);
+    }
 
-        board = new Board(playerOne, playerTwo);
+    /**
+     * Called when the game is an Player vs AI game. Sets up the different types of Players for that game
+     * @param aiDiff the AI difficulty
+     */
+    private void setUpAIGame(int aiDiff){
+        playerOne = new Human(firstPlayer);
+        playerOne.setPlayerActionListener(playerActionListener);
+
+
+        playerTwo = new AI(100, aiDiff,secondPlayer);
+        playerTwo.setPlayerActionListener(playerActionListener);
     }
 
     /**
@@ -63,19 +76,18 @@ public class Game {
         SungkaConnection sungkaConnection = GameActivity.getUsersConnection();
 
 
-        Human human = new Human("Player On Device");
+        Human human = new Human(firstPlayer);
         human.setPlayerActionListener(playerActionListener);
         human.setSungkaConnection(sungkaConnection);
 
 
-        RemoteHuman remoteHuman = new RemoteHuman(sungkaConnection.getOtherName());
+        RemoteHuman remoteHuman = new RemoteHuman(secondPlayer);
         remoteHuman.setPlayerActionListener(playerActionListener);
 
 
         playerOne = human;
         playerTwo = remoteHuman;
 
-        sungkaConnection.setActivity(gameActivity);
         sungkaConnection.setSungkaProtocol(remoteHuman);
         sungkaConnection.beginListening();
 

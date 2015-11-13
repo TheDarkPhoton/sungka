@@ -59,13 +59,13 @@ import helpers.frontend.ShellTranslation;
 public class GameActivity extends Activity {
     public static final String PLAYER_ONE = "playerOneName";
     public static final String PLAYER_TWO = "playerTwoName";
+    public static final String IS_ONLINE = "is_online_game";
     public static final String AI_DIFF = "ai_difficulty";
 
     private static final String TAG = "GameActivity";
     private static final String fileName = "player_statistics";
     public static final Random random = new Random();                                               //Object for random number generation
     public static Drawable[] shells;
-    private static SungkaConnection usersConnection = null;
 
     private final Context _context = this;
 
@@ -77,6 +77,8 @@ public class GameActivity extends Activity {
     private Board _board;
 
     private MessageManager _messageManager;
+
+    private static SungkaConnection usersConnection = null;
 
     private float _animationDurationFactor = 1.0f;
 
@@ -143,18 +145,12 @@ public class GameActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Intent intent = getIntent();
-        String player1Name = intent.getStringExtra(PLAYER_ONE);
-        String player2Name = intent.getStringExtra(PLAYER_TWO);
-        int aiDifficulty = intent.getIntExtra(AI_DIFF, 0);
-
         setContentView(
                 _layoutMaster = new FrameLayout(this),
                 new FrameLayout.LayoutParams(
                         FrameLayout.LayoutParams.MATCH_PARENT,
                         FrameLayout.LayoutParams.MATCH_PARENT));
 
-        getIp();
 
         shells =new Drawable[]{
                 ResourcesCompat.getDrawable(getResources(), R.drawable.shell1, null),
@@ -163,11 +159,18 @@ public class GameActivity extends Activity {
                 ResourcesCompat.getDrawable(getResources(), R.drawable.shell4, null),
         };
 
-        if (aiDifficulty == 0) {
-            _game = new Game(player1Name, player2Name, _playerActionListener, this);
-        } else {
-            _game = new Game(player1Name, player2Name, aiDifficulty, _playerActionListener,this);
+        Bundle bundle = getIntent().getExtras();
+        String firstName = bundle.getString(PLAYER_ONE);
+        String secondName = bundle.getString(PLAYER_TWO);
+        int aiDiff = bundle.getInt(AI_DIFF, 0);
+        boolean isOnlineGame = bundle.getBoolean(IS_ONLINE, false);
+
+        if(isOnlineGame){
+            usersConnection.setActivity(this);
         }
+
+        _game = new Game(_playerActionListener,isOnlineGame,firstName,secondName,aiDiff);
+
         _board = _game.getBoard();
 
         hideNav();                                                  //Hide navigation bar and system bar
@@ -635,67 +638,66 @@ public class GameActivity extends Activity {
 
     /**
      * Set up the host connection
+     * @param menuActivity the activity that calls this method, to use in the onPreExecute method in the AsyncTask, when establishing
+     *                     the connection.
+     * @param playerName the name of the current Player trying to connect to the other Player
      */
-    public static void setUpHostConnection(){
-        SungkaServer sungkaServer = new SungkaServer(4000);
+    public static void setUpHostConnection(MenuActivity menuActivity,String playerName){
+        SungkaServer sungkaServer = new SungkaServer(4000,menuActivity,playerName);
         sungkaServer.execute();
-        try {
+        /*try {
             sungkaServer.get();//wait for the connection to be established; returns true if it is set up,else false
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
-        }
-        setConnection(sungkaServer);
+        }*/
+       // setConnection(sungkaServer);
+        /*String otherName = "";
         try {
-            String otherName =sungkaServer.connectToSendNames("Oliver Host");//the name of the current player
+            otherName = sungkaServer.connectToSendNames(playerName);//the name of the current player
             Log.v(TAG,"Other name: "+otherName);
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        return otherName;*/
     }
 
     /**
      * Set up a connection where you join a host
-     * @param ip the ip to which you connect to
+     * @param menuActivity the activity that calls this method, to use in the onPreExecute method in the AsyncTask, when establishing
+     *                     the connection.
+     * @param ip the ip to which you connect to.
+     * @param playerName the name of the current Player trying to connect to the other Player
      */
-    public static void setUpJoinConnection(String ip){
+    public static void setUpJoinConnection(MenuActivity menuActivity,String ip,String playerName){
         // In the case of a client connecting to the server, the server needs to be set up before
-        SungkaClient sungkaClient = new SungkaClient(ip,4000);//server ip and port need to be inserted by the user
+        SungkaClient sungkaClient = new SungkaClient(ip,4000,playerName,menuActivity);//server ip and port need to be inserted by the user
         sungkaClient.execute();                 //this is a test one
-        try {
+       /*try {
             sungkaClient.get();//wait for the connection to be established; returns true if it is set up, else false
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-        setConnection(sungkaClient);
-        String otherName = null;
+        /*setConnection(sungkaClient);
+        String otherName = "";
         try {
-            otherName = sungkaClient.connectToSendNames("Oliver Join");//the name of the current player
+            otherName = sungkaClient.connectToSendNames(playerName);//the name of the current player
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         Log.v(TAG,"Other Name: "+otherName);
+        return otherName;*/
     }
 
 
-    /**
-     * Get the IP of the current device
-     * @return the IPv4 of the device
-     */
-    public String getIp(){
-        //To get the ip
-        WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
-        String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
-        Log.v(TAG, "ip: " + ip);
-        return ip;
-    }
+
 
     /**
      * Displays a message saying other person disconnected and brings them to the main menu.
@@ -782,7 +784,7 @@ public class GameActivity extends Activity {
         for(PlayerStatistic playerStatistic: playerStatistics){
             data += playerStatistic.toString();
         }
-        FileOutputStream fileOutputStream = openFileOutput(fileName,Context.MODE_PRIVATE);
+        FileOutputStream fileOutputStream = openFileOutput(fileName, Context.MODE_PRIVATE);
         fileOutputStream.write(data.getBytes());
         Log.v(TAG, "Stored the new stats");
         Log.v(TAG, "Stats:");
@@ -904,6 +906,16 @@ public class GameActivity extends Activity {
     }
 
 
+    public void onDestroy(){
+        super.onDestroy();
+        if(usersConnection != null){
+            try {
+                usersConnection.closeConnection();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
 
 }
