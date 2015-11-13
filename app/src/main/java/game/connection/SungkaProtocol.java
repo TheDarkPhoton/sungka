@@ -60,6 +60,8 @@ public class SungkaProtocol {
                 }
             });
 
+        }else if(message.equals(PLAYEREND)){//end the game
+
         }
     }
 }

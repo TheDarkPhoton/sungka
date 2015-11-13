@@ -1,4 +1,4 @@
-package helpers;
+package helpers.frontend;
 
 import android.content.Context;
 import android.widget.FrameLayout;
@@ -6,13 +6,15 @@ import android.widget.FrameLayout;
 import com.example.deathgull.sungka_project.R;
 
 import game.player.Player;
-import game.player.Side;
+import helpers.frontend.StatisticsRowView;
 
 /**
  * Created by martinkubat on 07/11/15.
  */
 public class MessageManager {
-    private YourMoveTextView[] _textViews = new YourMoveTextView[2];
+    private StatisticsRowView.YourMoveTextView[] _textViews = new StatisticsRowView.YourMoveTextView[2];
+    private StatisticsRowView.YourMoveTextView _top;
+    private StatisticsRowView.YourMoveTextView _bottom;
 
     private FrameLayout _parent;
     private int _currentSideIndex;
@@ -26,7 +28,7 @@ public class MessageManager {
         _parent = parent;
 
         for (int i = 0; i < 2; i++) {
-            _textViews[i] = new YourMoveTextView(context, Side.values()[i]);
+            _textViews[i] = new StatisticsRowView.YourMoveTextView(context, Side.values()[i]);
             _parent.addView(_textViews[i]);
         }
 

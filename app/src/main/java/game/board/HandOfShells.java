@@ -42,7 +42,11 @@ public class HandOfShells {
     public int getNextCup() {
         int next = (_cup_index + 1) % 16;
 
-        if (_board.getOpponent().isPlayersCup(_board.getCup(next), true)){
+        Player opponent = _board.getPlayerA();
+        if (_board.isPlayerA(_player))
+            opponent = _board.getPlayerB();
+
+        if (opponent.isPlayersCup(_board.getCup(next), true)){
             next = (next + 1) % 16;
         }
 
@@ -63,11 +67,6 @@ public class HandOfShells {
     public void dropAllShells(){
         _board.getCup(_cup_index).addShells(_shells);
         _shells = 0;
-
-//        if (_board.getOpponent().hasValidMove())
-//            _board.nextPlayersMove();
-//        else if (_board.hasValidMoves())
-//            _board.getCurrentPlayer().moveStart();
     }
 
     /**
@@ -110,8 +109,12 @@ public class HandOfShells {
             }
         }
         else if (_shells == 0){
-            Player newPlayer = _board.nextPlayersMove(_cup_index);
-            if (_board.hasValidMoves()){
+            Player newPlayer = _board.nextPlayersMove(_player, _cup_index);
+            if (_board.getCurrentPlayer() == null){
+                if (newPlayer == null)
+                    _player.setFirstMovesExhausted(true);
+            }
+            else if (_board.hasValidMoves()){
                 if (_player.isPlayersCup(_board.getCup(_cup_index), true)){
                     if (_board.isPlayerA(_player))
                         _board.addStateMessage(BoardState.PLAYER_A_GETS_ANOTHER_TURN);

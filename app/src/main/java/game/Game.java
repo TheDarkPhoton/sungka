@@ -21,11 +21,12 @@ public class Game {
     private PlayerActionListener playerActionListener;
     private GameActivity gameActivity;
     private Board board;
-    private Boolean isOnlineGame;
 
     public Game(String p1Name, String p2Name, PlayerActionListener playerActionListener, GameActivity gameActivity) {
         this.playerActionListener = playerActionListener;
         this.gameActivity = gameActivity;
+        // for now, assume human players
+        playerOne = new Human("Shell Master");
         isOnlineGame = false;
 
         playerOne = new Human(p1Name);
@@ -34,22 +35,11 @@ public class Game {
         playerTwo = new Human(p2Name);
         playerTwo.setPlayerActionListener(playerActionListener);
 
-        if(isOnlineGame){
+        if(playerTwo instanceof RemoteHuman){
             setUpForOnlineGame();
         }
 
-        /*//for the remote player
-        RemoteHuman remoteHuman = new RemoteHuman("Remote Human");
-        remoteHuman.setPlayerActionListener(playerActionListener);
-        GameActivity.getUsersConnection().setActivity(gameActivity);//need this so that the moves can be carried on the ui thread
-        GameActivity.getUsersConnection().setSungkaProtocol(remoteHuman);
-
-        GameActivity.getUsersConnection().beginListening();*/
-
         board = new Board(playerOne, playerTwo);
-
-        //need to decide which player starts first in a online game
-        //board.swapCurrentPlayer();
     }
 
     public Game(String p1Name, String p2Name, int aiDifficulty,

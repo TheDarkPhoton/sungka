@@ -9,7 +9,8 @@ import game.cup.Cup;
 import game.cup.PlayerCup;
 import game.cup.ShellCup;
 import game.player.Player;
-import game.player.Side;
+import helpers.backend.Node;
+import helpers.backend.State;
 
 /**
  * An object that describes the state of the current game board
@@ -35,11 +36,7 @@ public class Board {
         _playerOne = a;
         _playerTwo = b;
         // temporary player assignment
-        _currentPlayer = a;
-
-        // define which side each player is on
-        _playerOne.setSide(Side.A);
-        _playerTwo.setSide(Side.B);
+        _currentPlayer = null;
 
         //define player a cups
         for (int i = 0; i < 7; i++) {
@@ -58,17 +55,6 @@ public class Board {
         _cups[15] = new PlayerCup(a);
         b.bindStore(_cups[15]);
         b.bindBoard(this);
-    }
-
-    /**
-     * Used to swap the current player, used in the online game, in the case that one player starts before another
-     */
-    public void swapCurrentPlayer(){
-        if(_currentPlayer == _playerOne){
-            _currentPlayer = _playerTwo;
-        }else{
-            _currentPlayer = _playerOne;
-        }
     }
 
     /**
@@ -92,7 +78,14 @@ public class Board {
 
         addMove(getCurrentPlayer(), index);
         
-        Player player = robber ? getOpponent() : getCurrentPlayer();
+        Player player = (index < 7) ? getPlayerA() : getPlayerB();
+        if (robber){
+            if (isPlayerA(player))
+                player = getPlayerB();
+            else
+                player = getPlayerA();
+        }
+
         HandOfShells hand = new HandOfShells(player, index, _cups[index].pickUpShells());
 
         hand.bindBoard(this);
@@ -109,29 +102,34 @@ public class Board {
         Player player = robber ? getOpponent() : getCurrentPlayer();
         Cup cup = _cups[index];
 
-        if (!_validMoveExists || !(player.isPlayersCup(_cups[index]) && cup.getCount() > 0))
+        if (cup.getCount() == 0)
             return false;
 
-        return true;
+        return player == null || (_validMoveExists && player.isPlayersCup(cup));
     }
-
 
     /**
      * Determines whether to change who the current player is. Will return the player
      * that should move next.
-     * @param players_cup is used to check if the last shell landed in his store.
+     * @param cup is used to check if the last shell landed in player's store.
      * @return the player that is the current player.
      */
-    public Player nextPlayersMove(int players_cup){
+    public Player nextPlayersMove(Player player, int cup){
+        if (_currentPlayer == null) {
+            if (player.isPlayersCup(_cups[cup], true))
+                return player;
+
+            return null;
+        }
+
         _currentPlayer.moveEnd();
 
-        if (!(isCurrentPlayersStore(players_cup) && _currentPlayer.hasValidMove()) &&
+        if (!(isCurrentPlayersStore(cup) && _currentPlayer.hasValidMove()) &&
                 getOpponent().hasValidMove()) {
             _currentPlayer.resetMove();//the amount of moves the player has just done is set to 0 again
             _currentPlayer = getOpponent();
         }
         else if (!getCurrentPlayer().hasValidMove() && !getOpponent().hasValidMove()){
-            _currentPlayer = null;
             _validMoveExists = false;
             addStateMessage(BoardState.GAME_OVER);
         }
@@ -306,6 +304,29 @@ public class Board {
      */
     public void setCurrentPlayerA() {
         _currentPlayer = _playerOne;
+    }
+
+    public void setCurrentPlayerB() {
+        _currentPlayer = _playerTwo;
+    }
+
+
+    protected Integer[] getState(){
+        Integer[] state = new Integer[16];
+        for (int i = 0; i < _cups.length; i++)
+            state[i] = _cups[i].getCount();
+
+        return state;
+    }
+
+    public Node<State> getStateNode(){
+        Node<State> node = new Node<>(new State(1));
+
+        node.getElement().setPlayer(getOpponent());
+        node.getElement().setValue(0);
+        node.getElement().setState(getState());
+
+        return node;
     }
 
     /**

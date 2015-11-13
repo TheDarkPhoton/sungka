@@ -19,13 +19,10 @@ public class Simulator extends Board {
 
     private enum Explore{MIN, MAX}
 
-    private float _accuracy;
-    private float _difficulty;
-
     /**
      * Constructs board with default attributes.
      */
-    public Simulator(Board board, float accuracy, float difficulty) {
+    public Simulator(Board board) {
         super(new Human("A"), new Human("B"));
         if (board.isPlayerA(board.getCurrentPlayer()))
             _currentPlayer = getPlayerA();
@@ -36,9 +33,6 @@ public class Simulator extends Board {
         _current.getElement().setPlayer(getCurrentPlayer());
         _current.getElement().setValue(0);
         _current.getElement().setState(getState());
-
-        _accuracy = accuracy;
-        _difficulty = difficulty;
     }
 
     private void minSort(List<Node<State>> state){
@@ -81,13 +75,6 @@ public class Simulator extends Board {
             return (15 - _cups[index].getCount() == index);
     }
 
-    private Integer[] getState(){
-        Integer[] state = new Integer[16];
-        for (int i = 0; i < _cups.length; i++)
-            state[i] = _cups[i].getCount();
-
-        return state;
-    }
     private void loadState(State state){
         _currentPlayer = state.getPlayer();
         _validMoveExists = !state.isGoal();
@@ -231,7 +218,7 @@ public class Simulator extends Board {
 
         int index = 0;
         boolean allStatesExplored = false;
-        while (!allStatesExplored && index++ < 10) {
+        while (!allStatesExplored && index++ < 5) {
             initialLeafs = _leafs;
             _leafs = new ArrayList<>();
 
@@ -253,8 +240,6 @@ public class Simulator extends Board {
     }
 
     public int findBestMove(float accuracy) {
-        float test = GameActivity.random.nextFloat();
-
         Node<State> chosenState = _leafs.get(0);
         if (GameActivity.random.nextFloat() > accuracy)
             _leafs.get(GameActivity.random.nextInt(_leafs.size()));
@@ -278,5 +263,10 @@ public class Simulator extends Board {
 
         if (_leafs.get(0) != null)
             findBestMove(1);
+    }
+
+    public void setCurrentNode(Node<State> node){
+        _current = node;
+        loadState(_current.getElement());
     }
 }

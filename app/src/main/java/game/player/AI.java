@@ -1,15 +1,13 @@
 package game.player;
 
-import android.util.Pair;
 import android.os.Handler;
 
 import com.example.deathgull.sungka_project.GameActivity;
 
-import java.util.ArrayList;
-import java.util.Stack;
-
 import game.board.Board;
+import helpers.backend.Node;
 import helpers.backend.Simulator;
+import helpers.backend.State;
 
 /**
  * Class that represents the AI class, that will play against the PLAYER in the PLAYER vs AI mode.
@@ -33,7 +31,7 @@ public class AI extends Player {
     @Override
     public void bindBoard(Board board) {
         super.bindBoard(board);
-        sim = new Simulator(_board, _accuracy, _difficulty);
+        sim = new Simulator(_board);
     }
 
     @Override
@@ -42,29 +40,11 @@ public class AI extends Player {
         _playerActionListener.onMoveStart(this);
         _cannotPerformAnAction = false;
 
-        ArrayList<Pair<Player, Integer>> allMoves = _board.getMoves();
-        Stack<Pair<Player, Integer>> opponentMoves = new Stack<>();
-        for (int i = allMoves.size() - 1; i >= 0; --i) {
-            if (allMoves.get(i).first == this)
-                break;
-            else
-                opponentMoves.push(allMoves.get(i));
+        if (_board.getCurrentPlayer() == null){
+            firstMoveMode();
+        } else {
+            gameMode();
         }
-
-        while (!opponentMoves.isEmpty())
-            sim.doMove(opponentMoves.pop().second);
-
-        sim.explore(_difficulty);
-
-        Handler h = new Handler();
-        long delay = GameActivity.random.nextInt(1000) + 200;
-
-        h.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                move(sim.findBestMove(_accuracy));
-            }
-        }, delay);
     }
 
     @Override
@@ -81,5 +61,44 @@ public class AI extends Player {
     public void moveEnd() {
         super.moveEnd();
         _playerActionListener.onMoveEnd(this);
+    }
+
+    private void firstMoveMode(){
+        int index = GameActivity.random.nextInt(7);
+        while (_cups[index].isEmpty())
+            index = GameActivity.random.nextInt(7);
+
+        long delay = GameActivity.random.nextInt(1000) + 200;
+        final int finalIndex = index;
+
+        Handler h = new Handler();
+        h.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                sim.doMove(finalIndex + 8);
+                move(finalIndex + 8);
+            }
+        }, delay);
+    }
+
+    private void gameMode(){
+        Node<State> node = _board.getStateNode();
+        if (_board.isPlayerA(_board.getCurrentPlayer()))
+            node.getElement().setPlayer(sim.getPlayerA());
+        else
+            node.getElement().setPlayer(sim.getPlayerB());
+
+        sim.setCurrentNode(node);
+        sim.explore(_difficulty);
+
+        long delay = GameActivity.random.nextInt(1000) + 200;
+
+        Handler h = new Handler();
+        h.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                move(sim.findBestMove(_accuracy));
+            }
+        }, delay);
     }
 }

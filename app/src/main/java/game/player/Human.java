@@ -37,8 +37,11 @@ public class Human extends Player {
 
     @Override
     public void move(int index) {
-        if (_cannotPerformAnAction)
-            return;
+        if (_board.getCurrentPlayer() == null){
+            if (_firstMovesExhausted || _cannotPerformAnAction) return;
+        } else {
+            if (_cannotPerformAnAction) return;
+        }
 
         _cannotPerformAnAction = true;
 
