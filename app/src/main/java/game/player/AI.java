@@ -77,24 +77,9 @@ public class AI extends Player {
                 move(finalIndex + 8);
             }
         }, delay);
-
-//        sim.doMove(8);
-//        move(8);
     }
 
     private void gameMode(){
-//        ArrayList<Pair<Player, Integer>> allMoves = _board.getMoves();
-//        Stack<Pair<Player, Integer>> opponentMoves = new Stack<>();
-//        for (int i = allMoves.size() - 1; i >= 0; --i) {
-//            if (allMoves.get(i).first == this)
-//                break;
-//            else
-//                opponentMoves.push(allMoves.get(i));
-//        }
-//
-//        while (!opponentMoves.isEmpty())
-//            sim.doMove(opponentMoves.pop().second);
-
         Node<State> node = _board.getStateNode();
         if (_board.isPlayerA(_board.getCurrentPlayer()))
             node.getElement().setPlayer(sim.getPlayerA());
