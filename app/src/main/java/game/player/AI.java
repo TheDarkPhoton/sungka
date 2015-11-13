@@ -1,15 +1,13 @@
 package game.player;
 
-import android.util.Pair;
 import android.os.Handler;
 
 import com.example.deathgull.sungka_project.GameActivity;
 
-import java.util.ArrayList;
-import java.util.Stack;
-
 import game.board.Board;
+import helpers.backend.Node;
 import helpers.backend.Simulator;
+import helpers.backend.State;
 
 /**
  * Class that represents the AI class, that will play against the PLAYER in the PLAYER vs AI mode.
@@ -33,7 +31,7 @@ public class AI extends Player {
     @Override
     public void bindBoard(Board board) {
         super.bindBoard(board);
-        sim = new Simulator(_board, _accuracy, _difficulty);
+        sim = new Simulator(_board);
     }
 
     @Override
@@ -68,7 +66,6 @@ public class AI extends Player {
         while (_cups[index].isEmpty())
             index = GameActivity.random.nextInt(7);
 
-
         long delay = GameActivity.random.nextInt(1000) + 200;
         final int finalIndex = index;
 
@@ -80,21 +77,31 @@ public class AI extends Player {
                 move(finalIndex + 8);
             }
         }, delay);
+
+//        sim.doMove(8);
+//        move(8);
     }
 
     private void gameMode(){
-        ArrayList<Pair<Player, Integer>> allMoves = _board.getMoves();
-        Stack<Pair<Player, Integer>> opponentMoves = new Stack<>();
-        for (int i = allMoves.size() - 1; i >= 0; --i) {
-            if (allMoves.get(i).first == this)
-                break;
-            else
-                opponentMoves.push(allMoves.get(i));
-        }
+//        ArrayList<Pair<Player, Integer>> allMoves = _board.getMoves();
+//        Stack<Pair<Player, Integer>> opponentMoves = new Stack<>();
+//        for (int i = allMoves.size() - 1; i >= 0; --i) {
+//            if (allMoves.get(i).first == this)
+//                break;
+//            else
+//                opponentMoves.push(allMoves.get(i));
+//        }
+//
+//        while (!opponentMoves.isEmpty())
+//            sim.doMove(opponentMoves.pop().second);
 
-        while (!opponentMoves.isEmpty())
-            sim.doMove(opponentMoves.pop().second);
+        Node<State> node = _board.getStateNode();
+        if (_board.isPlayerA(_board.getCurrentPlayer()))
+            node.getElement().setPlayer(sim.getPlayerA());
+        else
+            node.getElement().setPlayer(sim.getPlayerB());
 
+        sim.setCurrentNode(node);
         sim.explore(_difficulty);
 
         long delay = GameActivity.random.nextInt(1000) + 200;

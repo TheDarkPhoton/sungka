@@ -9,6 +9,8 @@ import game.cup.Cup;
 import game.cup.PlayerCup;
 import game.cup.ShellCup;
 import game.player.Player;
+import helpers.backend.Node;
+import helpers.backend.State;
 
 /**
  * An object that describes the state of the current game board
@@ -305,5 +307,24 @@ public class Board {
 
     public void setCurrentPlayerB() {
         _currentPlayer = _playerTwo;
+    }
+
+
+    protected Integer[] getState(){
+        Integer[] state = new Integer[16];
+        for (int i = 0; i < _cups.length; i++)
+            state[i] = _cups[i].getCount();
+
+        return state;
+    }
+
+    public Node<State> getStateNode(){
+        Node<State> node = new Node<>(new State(1));
+
+        node.getElement().setPlayer(getOpponent());
+        node.getElement().setValue(0);
+        node.getElement().setState(getState());
+
+        return node;
     }
 }

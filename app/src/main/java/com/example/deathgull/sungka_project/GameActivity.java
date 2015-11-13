@@ -82,6 +82,7 @@ public class GameActivity extends Activity {
 
         @Override
         public void onMove(final Player player, final int index) {
+            Log.i(TAG, player.getName() + " performed an action on cup["+index+"]");
             Thread t = new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -100,7 +101,6 @@ public class GameActivity extends Activity {
                                 return;
                             }
 
-                            Log.i(TAG, player.getName() + " performed an action on cup["+index+"]");
 
                             if (_board.getCurrentPlayer() == null)
                                 player.setAnimationInProgress(true);
