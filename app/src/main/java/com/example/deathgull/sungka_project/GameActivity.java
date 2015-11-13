@@ -41,6 +41,7 @@ import game.player.AI;
 import game.player.Player;
 import game.player.PlayerActionAdapter;
 import game.player.RemoteHuman;
+import helpers.backend.PauseThreadFor;
 import helpers.frontend.CupButton;
 import helpers.backend.PauseThreadWhile;
 import helpers.frontend.ShellTranslation;
@@ -50,6 +51,7 @@ public class GameActivity extends Activity {
     private static final String TAG = "GameActivity";
     public static final Random random = new Random();                                               //Object for random number generation
     public static Drawable[] shells;
+    private static SungkaConnection usersConnection = null;
 
     private final Context _context = this;
 
@@ -63,7 +65,7 @@ public class GameActivity extends Activity {
 
     private float _animationDurationFactor = 1.0f;
 
-    private static SungkaConnection usersConnection = null;
+    private boolean _countdownMode = true;
 
     private PlayerActionAdapter _playerActionListener = new PlayerActionAdapter() {
         @Override
@@ -142,7 +144,6 @@ public class GameActivity extends Activity {
                 ResourcesCompat.getDrawable(getResources(), R.drawable.shell3, null),
                 ResourcesCompat.getDrawable(getResources(), R.drawable.shell4, null),
         };
-
         
         Game game = new Game(_playerActionListener,this);
         _board = game.getBoard();
@@ -151,6 +152,36 @@ public class GameActivity extends Activity {
         setScreenSize();                                            //Set screen size
         initLayouts();                                              //Setup layouts
         initView();                                                 //Programmatically create and lay out elements
+    }
+
+    private void startCounter() {
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Handler h = new Handler(_context.getMainLooper());
+
+                for (int i = 3; i >= 0; --i) {
+                    final int counter = i;
+                    h.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.i(TAG, "Count down: " + counter);
+                        }
+                    });
+                    new PauseThreadFor(1000);
+                }
+
+                h.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        _countdownMode = false;
+                        _board.getPlayerA().moveStart();
+                        _board.getPlayerB().moveStart();
+                    }
+                });
+            }
+        });
+        t.start();
     }
 
     @Override
@@ -221,15 +252,20 @@ public class GameActivity extends Activity {
             public void onGlobalLayout() {
                 _layoutBase.setY((_layoutMaster.getHeight() / 2) - (_layoutBase.getHeight() / 2));
 
-                if (once)
-                    return;
-                once = true;
-
                 for (CupButton btn : _cupButtons) {
                     btn.initShellLocation();
                 }
-                _board.getPlayerA().moveStart();
-                _board.getPlayerB().moveStart();
+
+                startCounter();
+//                Handler h = new Handler(_context.getMainLooper());
+//                h.post(new Runnable() {
+//                    @Override
+//                    public void run() {
+//
+//                    }
+//                });
+
+                _layoutMaster.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             }
         });
     }
@@ -265,7 +301,7 @@ public class GameActivity extends Activity {
                         player = _board.getPlayerB();
                     }
 
-                    if (player instanceof AI || player instanceof RemoteHuman)
+                    if (player instanceof AI || player instanceof RemoteHuman || _countdownMode)
                         return;
 
                     player.move(finalIndex);

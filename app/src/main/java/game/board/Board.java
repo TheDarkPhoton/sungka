@@ -55,17 +55,6 @@ public class Board {
         b.bindBoard(this);
     }
 
-//    /**
-//     * Used to swap the current player, used in the online game, in the case that one player starts before another
-//     */
-//    public void swapCurrentPlayer(){
-//        if(_currentPlayer == _playerOne){
-//            _currentPlayer = _playerTwo;
-//        }else{
-//            _currentPlayer = _playerOne;
-//        }
-//    }
-
     /**
      * Picks up shells from the selected cup.
      * @param index of the cup
@@ -117,7 +106,6 @@ public class Board {
         return player == null || (_validMoveExists && player.isPlayersCup(cup));
     }
 
-
     /**
      * Determines whether to change who the current player is. Will return the player
      * that should move next.
@@ -139,7 +127,6 @@ public class Board {
             _currentPlayer = getOpponent();
         }
         else if (!getCurrentPlayer().hasValidMove() && !getOpponent().hasValidMove()){
-//            _currentPlayer = null;
             _validMoveExists = false;
             addStateMessage(BoardState.GAME_OVER);
         }
