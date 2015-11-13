@@ -11,7 +11,6 @@ import game.player.Player;
  * Created by martinkubat on 07/11/15.
  */
 public class MessageManager {
-//    private StatisticsRowView.YourMoveTextView[] _textViews = new StatisticsRowView.YourMoveTextView[2];
     private YourMoveTextView _top;
     private YourMoveTextView _bottom;
 
@@ -26,8 +25,8 @@ public class MessageManager {
     public MessageManager(Context context, FrameLayout parent) {
         _parent = parent;
 
-        _top = new YourMoveTextView(context);
-        _bottom = new YourMoveTextView(context);
+        _top = new YourMoveTextView(context, true);
+        _bottom = new YourMoveTextView(context, false);
 
         _parent = parent;
         _parent.addView(_top);
@@ -46,11 +45,9 @@ public class MessageManager {
         _currentPlayer = player;
 
         if (player.getBoard().isPlayerA(player)) {
-            _bottom.setText(R.string.str_YourTurn);
             _bottom.setIsCurrentTurn(true);
             _top.setIsCurrentTurn(false);
         } else {
-            _top.setText(R.string.str_YourTurn);
             _top.setIsCurrentTurn(true);
             _bottom.setIsCurrentTurn(false);
         }
