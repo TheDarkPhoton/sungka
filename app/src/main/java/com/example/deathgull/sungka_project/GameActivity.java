@@ -148,6 +148,7 @@ public class GameActivity extends Activity {
 
         @Override
         public void onMoveEnd(Player player) {
+            _messageManager.onMoveEnd(player);
             Log.i(TAG, player.getName() + " ended his turn");
         }
     };

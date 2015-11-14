@@ -46,11 +46,18 @@ public class MessageManager {
 
         if (player.getBoard().isPlayerA(player)) {
             _bottom.setIsCurrentTurn(true);
-            _top.setIsCurrentTurn(false);
         } else {
             _top.setIsCurrentTurn(true);
-            _bottom.setIsCurrentTurn(false);
         }
+    }
+
+    public void onMoveEnd(Player player) {
+        if (player.getBoard().isPlayerA(player)) {
+            _bottom.setIsCurrentTurn(false);
+        } else {
+            _top.setIsCurrentTurn(false);
+        }
+
     }
 
     /**
