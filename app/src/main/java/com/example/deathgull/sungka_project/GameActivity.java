@@ -936,11 +936,11 @@ public class GameActivity extends Activity {
         bottomView.setLayoutParams(params);
         readyAreaView.addView(bottomView);
 
-        if (_board.getPlayerB() instanceof Human) {
+        if (_board.getPlayerA() instanceof Human) {
             topView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    isPlayerBReady = true;
+                    isPlayerAReady = true;
                     trySetupCountdown();
                 }
             });
