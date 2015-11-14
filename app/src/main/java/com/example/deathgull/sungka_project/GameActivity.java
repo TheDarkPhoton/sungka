@@ -34,7 +34,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -57,8 +56,8 @@ import helpers.backend.PauseThreadFor;
 import helpers.backend.PauseThreadWhile;
 import helpers.frontend.CupButton;
 import helpers.frontend.MessageManager;
-import helpers.frontend.PlayerNameTextView;
 import helpers.frontend.MusicService;
+import helpers.frontend.PlayerNameTextView;
 import helpers.frontend.ShellTranslation;
 
 public class GameActivity extends Activity {
@@ -78,7 +77,6 @@ public class GameActivity extends Activity {
     private GridLayout _layoutBase;                                                                 //Base layout
 
     private CupButton[] _cupButtons;
-    private Game _game;
     private Board _board;
 
     private MessageManager _messageManager;
@@ -92,7 +90,6 @@ public class GameActivity extends Activity {
     private boolean isPlayerAReady = false;
     private boolean isPlayerBReady = false;
     private LinearLayout readyAreaView;
-    private PlayerNameTextView[] _playerTextViews;
 
 
     private SoundPool _soundPool;
@@ -210,7 +207,7 @@ public class GameActivity extends Activity {
             usersConnection.setActivity(this);
         }
 
-        _game = new Game(_playerActionListener,isOnlineGame,firstName,secondName,aiDiff);
+        Game _game = new Game(_playerActionListener, isOnlineGame, firstName, secondName, aiDiff);
 
         _board = _game.getBoard();
 
@@ -396,7 +393,7 @@ public class GameActivity extends Activity {
         _cupButtons = new CupButton[16];
 
         // get package name for applying IDs
-        String packageName = getPackageName();
+        //String packageName = getPackageName();
 
         int topColumnIndex = 7;
         int bottomColumnIndex = 1;
@@ -413,7 +410,7 @@ public class GameActivity extends Activity {
         _messageManager = new MessageManager(this, _layoutMaster);
 
         // Setup Player views
-        _playerTextViews = new PlayerNameTextView[2];
+        PlayerNameTextView[] _playerTextViews = new PlayerNameTextView[2];
 
         _playerTextViews[0] = new PlayerNameTextView(this, _board.getPlayerA());
         _playerTextViews[1] = new PlayerNameTextView(this, _board.getPlayerB());
@@ -441,7 +438,7 @@ public class GameActivity extends Activity {
      * @param duration Duration of the animation.
      */
     private void moveShellsRec(final HandOfShells hand, final ArrayList<View> images, final int duration) {
-        int index = hand.getNextCup();
+        final int index = hand.getNextCup();
         final CupButton b = _cupButtons[index];
 
         final ArrayList<ShellTranslation> animations = new ArrayList<>();
@@ -452,16 +449,16 @@ public class GameActivity extends Activity {
             animations.get(i).startAnimation();
         }
 
-        if (index == 7 || index == 15) {
-            playSound(_soundStore);
-        } else {
-            playSound(_soundShell);
-        }
-
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
                 new PauseThreadWhile<>(animations, "hasEnded", false);
+
+                if (index == 7 || index == 15) {
+                    playSound(_soundStore);
+                } else {
+                    playSound(_soundShell);
+                }
 
                 Handler h = new Handler(_context.getMainLooper());
                 h.post(new Runnable() {
@@ -800,8 +797,8 @@ public class GameActivity extends Activity {
         ArrayList<PlayerStatistic> playerStatistics = new ArrayList<>();
 
 
-        for (int i = 0; i < names.length; i++) {
-            PlayerStatistic playerStatistic = new PlayerStatistic(names[i]);
+        for (String name : names) {
+            PlayerStatistic playerStatistic = new PlayerStatistic(name);
             playerStatistic.setGamesPlayed(random.nextInt(50));
             playerStatistic.setGamesDrawn(random.nextInt(50));
             playerStatistic.setGamesWon(random.nextInt(50));
@@ -905,9 +902,9 @@ public class GameActivity extends Activity {
             Log.v(TAG,textInFile);
             if(!textInFile.equals("")) {
                 String[] players = textInFile.split("\n");
-                for (int i = 0; i < players.length; i++) {
-                    Log.v(TAG,players[i]);
-                    String[] info = players[i].split(",");//to get the individual data of a PlayerStatistic
+                for (String player : players) {
+                    Log.v(TAG, player);
+                    String[] info = player.split(",");//to get the individual data of a PlayerStatistic
                     String playerName = info[0];
                     String gamesPlayed = info[1];
                     String gamesWon = info[2];
@@ -925,13 +922,11 @@ public class GameActivity extends Activity {
                     playerStatistic.setMaxNumShellsCollected(Integer.valueOf(maxShellCollected));
                     playerStatistic.setMaxConsecutiveMoves(Integer.valueOf(maxConsecutiveMoves));
                     playerStatistics.add(playerStatistic);
-                    Log.v(TAG,playerStatistic.toString());
+                    Log.v(TAG, playerStatistic.toString());
                 }
                 Log.v(TAG,"Read in the file");
             }
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

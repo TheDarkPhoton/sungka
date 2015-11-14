@@ -500,7 +500,7 @@ public class MenuActivity extends Activity {
     }
 
     public void connectionHasEstablished(){
-        _waiting.setText("Connection Established");
+        _waiting.setText(R.string.str_ConnectionEst);
     }
 
     /**

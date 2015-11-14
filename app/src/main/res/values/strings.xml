@@ -48,5 +48,6 @@
     </string-array>
     <string name="str_tapWhenYourReady">Tap when you\'re ready for countdown\!</string>
     <string name="str_tapAShells">Choose your starting shell</string>
+    <string name="str_ConnectionEst">Connection Established</string>
 
 </resources>
