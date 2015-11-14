@@ -35,7 +35,7 @@ public class BoardTest {
         when(playerA.hasValidMove()).thenReturn(true);
         when(playerB.hasValidMove()).thenReturn(true);
 
-        Player p = board.nextPlayersMove(0);
+        Player p = board.nextPlayersMove(playerA, 0);
 
         assertEquals(playerB, p);
     }
@@ -50,7 +50,7 @@ public class BoardTest {
         when(playerB.hasValidMove()).thenReturn(true);
         when(playerA.isPlayersCup(any(Cup.class), eq(true))).thenReturn(true);
 
-        Player p = board.nextPlayersMove(0);
+        Player p = board.nextPlayersMove(playerA, 0);
 
         assertEquals(playerA, p);
     }
@@ -65,7 +65,7 @@ public class BoardTest {
         when(playerB.hasValidMove()).thenReturn(false);
         when(playerA.isPlayersCup(any(Cup.class), eq(true))).thenReturn(true);
 
-        Player p = board.nextPlayersMove(0);
+        Player p = board.nextPlayersMove(playerA, 0);
 
         assertNull(p);
         assertFalse(board.hasValidMoves());
@@ -80,7 +80,7 @@ public class BoardTest {
         when(playerB.hasValidMove()).thenReturn(false);
         when(playerA.isPlayersCup(any(Cup.class), eq(false))).thenReturn(false);
 
-        Player p = board.nextPlayersMove(0);
+        Player p = board.nextPlayersMove(playerA, 0);
 
         assertNull(p);
         assertFalse(board.hasValidMoves());
