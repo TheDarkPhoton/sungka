@@ -82,7 +82,6 @@ public class GameActivity extends Activity {
     private float _animationDurationFactor = 1.0f;
 
     private boolean _countdownMode = true;
-    private boolean is_test;
 
     private boolean isPlayerAReady = false;
     private boolean isPlayerBReady = false;
@@ -292,6 +291,7 @@ public class GameActivity extends Activity {
                 }
 
                 if (IS_TEST) {
+                    _countdownMode = false;
                     _board.getPlayerA().moveStart();
                 } else {
                     setupReadyScreen();

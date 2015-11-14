@@ -1,5 +1,6 @@
 package game.board;
 
+import android.util.Log;
 import android.util.Pair;
 
 import java.util.ArrayList;
@@ -101,6 +102,8 @@ public class Board {
     public boolean isValid(int index, boolean robber) {
         Player player = robber ? getOpponent() : getCurrentPlayer();
         Cup cup = _cups[index];
+
+        Log.d("testing isValid", "on cup " + (index + 1));
 
         if (cup.getCount() == 0)
             return false;

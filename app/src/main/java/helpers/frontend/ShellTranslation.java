@@ -32,6 +32,10 @@ public class ShellTranslation implements Animation.AnimationListener {
         _view.startAnimation(_anim);
     }
 
+    public boolean hasEnded() {
+        return _anim.hasEnded();
+    }
+
     @Override
     public void onAnimationStart(Animation animation) {
 
