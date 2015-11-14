@@ -34,15 +34,14 @@
 
             <LinearLayout
                 android:orientation="vertical"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:padding="10dp"
-                android:layout_marginLeft="0dp">
+                android:layout_margin="10dp">
 
                 <Button
-                    android:layout_width="175dp"
-                    android:layout_height="40dp"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
                     android:id="@+id/btnPlay"
                     android:background="@drawable/roundedbuttonblack"
                     android:layout_margin="2dp"
@@ -53,8 +52,8 @@
                     android:textAllCaps="false" />
 
                 <Button
-                    android:layout_width="175dp"
-                    android:layout_height="40dp"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
                     android:id="@+id/btnLeaderboard"
                     android:background="@drawable/roundedbuttonblack"
                     android:layout_margin="2dp"
@@ -62,10 +61,27 @@
                     android:text="@string/str_Leaderboard"
                     android:textColor="#ffffff"
                     android:textSize="20sp"
-                    android:textAllCaps="false" />
+                    android:textAllCaps="false"
+                    android:paddingRight="20dp"
+                    android:paddingLeft="20dp" />
 
             </LinearLayout>
         </LinearLayout>
+
+        <Button
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:text="@string/str_Mute"
+            android:id="@+id/btnMute"
+            android:background="@drawable/roundedbuttonblack"
+            android:textColor="#ffffff"
+            android:textSize="12sp"
+            android:textAllCaps="false"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="10dp" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -155,7 +171,7 @@
                     android:text="@string/str_VS"
                     android:id="@+id/txtVS"
                     android:textColor="#000000"
-                    android:textSize="40dp"
+                    android:textSize="40sp"
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:layout_centerVertical="true"

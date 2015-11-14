@@ -1,8 +1,13 @@
 package com.example.deathgull.sungka_project;
 
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -18,6 +23,7 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -26,6 +32,7 @@ import java.util.Map;
 import java.util.SortedMap;
 
 import game.player.Player;
+import helpers.frontend.MusicService;
 import helpers.frontend.StatisticsCellView;
 import helpers.frontend.StatisticsColumnView;
 import helpers.frontend.StatisticsLeaderboardView;
@@ -65,6 +72,8 @@ public class StatisticsActivity extends Activity {
         setupSpinner();
         previousSpinnerIndex = 0;
         setupLeaderboard();
+
+        doBindService();
     }
 
     /**
@@ -208,9 +217,7 @@ public class StatisticsActivity extends Activity {
      */
     private Number calculateRankingForIndex(int index) {
         return index + 1;
-
     }
-
 
     /**
      * Gets data with a user's statistics.
@@ -219,4 +226,49 @@ public class StatisticsActivity extends Activity {
         return GameActivity.readStats(getApplicationContext());
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(musicService != null) {
+            musicService.resumeMusic();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(musicService != null) {
+            musicService.pauseMusic();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        doUnbindService();
+    }
+
+    private boolean isBound = false;
+    private MusicService musicService;
+    private ServiceConnection serviceConnection = new ServiceConnection(){
+        public void onServiceConnected(ComponentName name, IBinder binder) {
+            musicService = ((MusicService.ServiceBinder)binder).getService();
+        }
+
+        public void onServiceDisconnected(ComponentName name) {
+            musicService = null;
+        }
+    };
+
+    void doBindService(){
+        bindService(new Intent(this, MusicService.class), serviceConnection, Context.BIND_AUTO_CREATE);
+        isBound = true;
+    }
+
+    void doUnbindService() {
+        if(isBound) {
+            unbindService(serviceConnection);
+            isBound = false;
+        }
+    }
 }
