@@ -2,11 +2,15 @@ package com.example.deathgull.sungka_project;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.Vibrator;
 import android.text.format.Formatter;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -14,7 +18,6 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -22,22 +25,21 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
-import helpers.frontend.CupButton;
+import helpers.frontend.MusicService;
 
 public class MenuActivity extends Activity {
     private static final String TAG = "MenuActivity";
     private Bundle bundle;
+    private boolean _switchingActivities;
+    public static Vibrator vb;
     
     //Main menu elements
     private RelativeLayout _mainMenu;
-    private Button _play, _leaderboard;
+    private Button _play, _leaderboard, _mute;
 
     //Sub menu elements
     private RelativeLayout _alpha;
     private RelativeLayout _subMenu;
-    private LinearLayout _subHolder;
     private Button _previous;
     private TextView _player1Name, _VS;
     private LinearLayout _layoutBase, _layoutPlayer, _layoutAi, _layoutRemote, _layoutHost, _layoutJoin;
@@ -69,6 +71,7 @@ public class MenuActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        vb  = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
         bundle = new Bundle();
@@ -76,6 +79,10 @@ public class MenuActivity extends Activity {
         getElements();
         scale();
         initialise();
+
+        _switchingActivities = false;
+
+        startMusic();
     }
 
     @Override
@@ -107,10 +114,10 @@ public class MenuActivity extends Activity {
         _mainMenu = (RelativeLayout) findViewById(R.id.mainMenu);
         _play = (Button) findViewById(R.id.btnPlay);
         _leaderboard = (Button) findViewById(R.id.btnLeaderboard);
+        _mute = (Button) findViewById(R.id.btnMute);
 
         _alpha = (RelativeLayout) findViewById(R.id.alphaLayer);
         _subMenu = (RelativeLayout) findViewById(R.id.playSub);
-        _subHolder = (LinearLayout) findViewById(R.id.subMenu);
         _previous = (Button) findViewById(R.id.btnPrevious);
         _player1Name = (TextView) findViewById(R.id.txtPlayerName);
         _VS = (TextView) findViewById(R.id.txtVS);
@@ -166,6 +173,8 @@ public class MenuActivity extends Activity {
 
         _leaderboard.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
+                _switchingActivities = true;
+                vb.vibrate(25);
                 Intent intent = new Intent(MenuActivity.this, StatisticsActivity.class);
                 startActivity(intent);
             }
@@ -175,6 +184,7 @@ public class MenuActivity extends Activity {
             @Override public void onClick(View v) {
                 _index = 1;
                 _prevIndex = 0;
+                vb.vibrate(25);
                 updateView();
             }
         });
@@ -184,6 +194,7 @@ public class MenuActivity extends Activity {
                 Log.d(TAG, "_btnPlayer");
                 _index = 2;
                 _prevIndex = 1;
+                vb.vibrate(25);
                 updateView();
             }
         });
@@ -193,6 +204,7 @@ public class MenuActivity extends Activity {
                 Log.d(TAG, "_btnAi");
                 _index = 3;
                 _prevIndex = 1;
+                vb.vibrate(25);
                 updateView();
             }
         });
@@ -202,6 +214,7 @@ public class MenuActivity extends Activity {
                 Log.d(TAG, "_btnRemote");
                 _index = 4;
                 _prevIndex = 1;
+                vb.vibrate(25);
                 updateView();
             }
         });
@@ -210,6 +223,7 @@ public class MenuActivity extends Activity {
             @Override public void onClick(View v) {
                 _index = 5;
                 _prevIndex = 4;
+                vb.vibrate(25);
                 updateView();
 
                 //handle mutliplayer hosting methods.
@@ -238,6 +252,7 @@ public class MenuActivity extends Activity {
             @Override public void onClick(View v) {
                 _index = 6;
                 _prevIndex = 4;
+                vb.vibrate(25);
                 updateView();
             }
         });
@@ -245,6 +260,7 @@ public class MenuActivity extends Activity {
         _previous.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                 _index = _prevIndex;
+                vb.vibrate(25);
                 updateView();
                 if(_index == 1) {
                     _prevIndex = 0;
@@ -274,6 +290,7 @@ public class MenuActivity extends Activity {
         _btnPlayerPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                vb.vibrate(25);
                 String player1Name = _player1Name.getText().toString();
                 String player2Name = _player2Name.getText().toString();
 
@@ -294,6 +311,7 @@ public class MenuActivity extends Activity {
                     intent.putExtra(GameActivity.PLAYER_ONE, player1Name);
                     intent.putExtra(GameActivity.PLAYER_TWO, player2Name);
                     System.out.println("2 player play");
+                    _switchingActivities = true;
 
                     startActivity(intent);
                 }
@@ -303,6 +321,7 @@ public class MenuActivity extends Activity {
         // starts a human vs AI game
         _btnAiPlay.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
+                vb.vibrate(25);
                 int difficulty = _aiDiff.getProgress() + 50;
                 String player1Name = _player1Name.getText().toString();
                 String player2Name = getAiName(difficulty);
@@ -322,6 +341,7 @@ public class MenuActivity extends Activity {
                     intent.putExtra(GameActivity.PLAYER_ONE, player1Name);
                     intent.putExtra(GameActivity.PLAYER_TWO, player2Name);
                     intent.putExtra(GameActivity.AI_DIFF, difficulty);
+                    _switchingActivities = true;
                     startActivity(intent);
                 }
             }
@@ -329,6 +349,7 @@ public class MenuActivity extends Activity {
 
         _btnJoinIpAddress.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
+                vb.vibrate(25);
                 if (_player1Name.getText().toString().equals("...") || _player1Name.getText().toString().equals("")) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(MenuActivity.this).setMessage(R.string.msg_PlayerName);
                     AlertDialog dialog = builder.show();
@@ -350,6 +371,17 @@ public class MenuActivity extends Activity {
                     //to pass the names of the users to the game activity
                     bundle.putString("firstName",firstPlayerName);
                     System.out.println("remote play (join)");
+                }
+            }
+        });
+
+        _mute.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                vb.vibrate(25);
+                if(musicService.isMuted()) {
+                    musicService.unmuteMusic();
+                } else {
+                    musicService.muteMusic();
                 }
             }
         });
@@ -469,14 +501,74 @@ public class MenuActivity extends Activity {
     }
 
     public void setSecondPlayerName(String secondPlayerName){
-        Log.v(TAG,"Got the second player name "+secondPlayerName);
-        bundle.putString("secondName",secondPlayerName);
+        Log.v(TAG, "Got the second player name " + secondPlayerName);
+        bundle.putString("secondName", secondPlayerName);
     }
 
     public void startGameActivity(){
+        _switchingActivities = true;
         Log.v(TAG,"Starting the GameActivity");
         Intent intent = new Intent(MenuActivity.this,GameActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
+    }
+
+    /**
+     * binds to music service and starts playing
+     */
+    private void startMusic() {
+        doBindService();
+        Intent music = new Intent();
+        music.setClass(this, MusicService.class);
+        startService(music);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(musicService != null) {
+            musicService.resumeMusic();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(!_switchingActivities) {
+            if(musicService != null) {
+                musicService.pauseMusic();
+            }
+        }
+        _switchingActivities = false;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        doUnbindService();
+    }
+
+    private boolean isBound = false;
+    private MusicService musicService;
+    private ServiceConnection serviceConnection = new ServiceConnection(){
+        public void onServiceConnected(ComponentName name, IBinder binder) {
+            musicService = ((MusicService.ServiceBinder)binder).getService();
+        }
+
+        public void onServiceDisconnected(ComponentName name) {
+            musicService = null;
+        }
+    };
+
+    void doBindService(){
+        bindService(new Intent(this, MusicService.class), serviceConnection, Context.BIND_AUTO_CREATE);
+        isBound = true;
+    }
+
+    void doUnbindService() {
+        if(isBound) {
+            unbindService(serviceConnection);
+            isBound = false;
+        }
     }
 }

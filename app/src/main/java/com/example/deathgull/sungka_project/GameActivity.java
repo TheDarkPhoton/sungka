@@ -2,19 +2,22 @@ package com.example.deathgull.sungka_project;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.media.MediaPlayer;
-import android.net.wifi.WifiManager;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.support.v4.content.res.ResourcesCompat;
-import android.text.format.Formatter;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Pair;
@@ -36,8 +39,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
-import java.util.concurrent.ExecutionException;
-
 import game.connection.SungkaClient;
 import game.connection.SungkaConnection;
 import game.connection.SungkaServer;
@@ -54,6 +55,7 @@ import helpers.frontend.MessageManager;
 import helpers.backend.PauseThreadFor;
 import helpers.frontend.CupButton;
 import helpers.backend.PauseThreadWhile;
+import helpers.frontend.MusicService;
 import helpers.frontend.ShellTranslation;
 
 public class GameActivity extends Activity {
@@ -84,12 +86,16 @@ public class GameActivity extends Activity {
 
     private boolean _countdownMode = true;
 
+    private SoundPool _soundPool;
+    private int _soundShell, _soundStore;
+    private boolean _soundsLoaded;
+
     private PlayerActionAdapter _playerActionListener = new PlayerActionAdapter() {
         @Override
         public void onMoveStart(Player player) {
             Log.i(TAG, player.getName() + " started his turn");
             _messageManager.onMoveStart(player);
-            
+
             if (player instanceof Human && _board.getCurrentPlayer() != null) {
                 setupMove(player);
             }
@@ -141,6 +147,7 @@ public class GameActivity extends Activity {
         }
     };
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -152,12 +159,36 @@ public class GameActivity extends Activity {
                         FrameLayout.LayoutParams.MATCH_PARENT));
 
 
-        shells =new Drawable[]{
+        shells = new Drawable[] {
                 ResourcesCompat.getDrawable(getResources(), R.drawable.shell1, null),
                 ResourcesCompat.getDrawable(getResources(), R.drawable.shell2, null),
                 ResourcesCompat.getDrawable(getResources(), R.drawable.shell3, null),
                 ResourcesCompat.getDrawable(getResources(), R.drawable.shell4, null),
         };
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            AudioAttributes _attributes = new AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .setUsage(AudioAttributes.USAGE_GAME)
+                    .build();
+
+            _soundPool = new SoundPool.Builder()
+                    .setMaxStreams(25)
+                    .setAudioAttributes(_attributes)
+                    .build();
+        } else {
+            _soundPool = new SoundPool(25, AudioManager.STREAM_MUSIC, 0);
+        }
+
+        _soundsLoaded = false;
+        _soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+            @Override public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+                _soundsLoaded = true;
+            }
+        });
+
+        _soundShell = _soundPool.load(this, R.raw.shell, 1);
+        _soundStore = _soundPool.load(this, R.raw.cash, 1);
 
         Bundle bundle = getIntent().getExtras();
         String firstName = bundle.getString(PLAYER_ONE);
@@ -177,6 +208,8 @@ public class GameActivity extends Activity {
         setScreenSize();                                            //Set screen size
         initLayouts();                                              //Setup layouts
         initView();                                                 //Programmatically create and lay out elements
+
+        doBindService();
     }
 
     private void startCounter() {
@@ -225,11 +258,6 @@ public class GameActivity extends Activity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) { return true; }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
     }
 
     /**
@@ -403,9 +431,9 @@ public class GameActivity extends Activity {
         }
 
         if (index == 7 || index == 15) {
-            playSound(R.raw.cash);
+            playSound(_soundStore);
         } else {
-            playSound(R.raw.gunfire);
+            playSound(_soundShell);
         }
 
         Thread t = new Thread(new Runnable() {
@@ -454,7 +482,7 @@ public class GameActivity extends Activity {
         final ArrayList<View> images = robbedCup.getShells();
         images.addAll(activatorCup.getShells());
 
-        playSound(R.raw.cash);
+        playSound(_soundStore);
 
         final ArrayList<ShellTranslation> animations = new ArrayList<>();
         for (int i = 0; i < images.size(); i++) {
@@ -696,9 +724,6 @@ public class GameActivity extends Activity {
         return otherName;*/
     }
 
-
-
-
     /**
      * Displays a message saying other person disconnected and brings them to the main menu.
      */
@@ -720,7 +745,6 @@ public class GameActivity extends Activity {
         AlertDialog alertDialog = alertBuilder.create();
         alertDialog.show();
     }
-
 
     /**
      * Update the list of PlayerStatistic objects by updating data for the Player object provided, or add a new
@@ -796,7 +820,7 @@ public class GameActivity extends Activity {
         for(PlayerStatistic player: stats){
             Log.v(TAG,player.toString());
         }
-        Log.v(TAG,"Read stats");
+        Log.v(TAG, "Read stats");
     }
 
     /**
@@ -892,20 +916,19 @@ public class GameActivity extends Activity {
         return playerStatistics;
     }
 
-
-    private void playSound(int soundId) {
-        MediaPlayer mp = MediaPlayer.create(this, soundId);
-
-        switch (soundId) {
-            case R.raw.gunfire:
-                mp.setVolume(0.3f, 0.3f);
-                break;
+    /**
+     * Plays a given sound
+     * @param sound - sound id to play
+     */
+    private void playSound(int sound) {
+        if(_soundsLoaded) {
+            _soundPool.play(sound, 1.0f, 1.0f, 1, 0, 1);
         }
-
-        mp.start();
     }
 
-
+    /**
+     * closes multiplayer connections when activity is closed
+     */
     public void onDestroy(){
         super.onDestroy();
         if(usersConnection != null){
@@ -915,7 +938,46 @@ public class GameActivity extends Activity {
                 e.printStackTrace();
             }
         }
+        doUnbindService();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(musicService != null) {
+            musicService.resumeMusic();
+        }
+    }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(musicService != null) {
+            musicService.pauseMusic();
+        }
+    }
+
+    private boolean isBound = false;
+    private MusicService musicService;
+    private ServiceConnection serviceConnection = new ServiceConnection(){
+        public void onServiceConnected(ComponentName name, IBinder binder) {
+            musicService = ((MusicService.ServiceBinder)binder).getService();
+        }
+
+        public void onServiceDisconnected(ComponentName name) {
+            musicService = null;
+        }
+    };
+
+    void doBindService(){
+        bindService(new Intent(this, MusicService.class), serviceConnection, Context.BIND_AUTO_CREATE);
+        isBound = true;
+    }
+
+    void doUnbindService() {
+        if(isBound) {
+            unbindService(serviceConnection);
+            isBound = false;
+        }
+    }
 }
