@@ -164,6 +164,8 @@ public class MenuActivity extends Activity {
         _index = 0;
         _prevIndex = 0;
 
+        final String placeHolder = getResources().getString(R.string.str_NameHolder);
+
         _leaderboard.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                 Intent intent = new Intent(MenuActivity.this, StatisticsActivity.class);
@@ -215,12 +217,15 @@ public class MenuActivity extends Activity {
                 //handle mutliplayer hosting methods.
                 //use _ipAddress to show user ip address
                 _ipAddress.setText(getIp());
+                
                 //to pass to the game activity that it will be a online game
-                bundle.putBoolean(GameActivity.IS_ONLINE, true);
                 String firstPlayerName = _player1Name.getText().toString();
-                Log.v(TAG,"Setting up Host Connection");
-                GameActivity.setUpHostConnection(MenuActivity.this,firstPlayerName);
+                bundle.putBoolean(GameActivity.IS_ONLINE, true);
                 bundle.putString(GameActivity.PLAYER_ONE, firstPlayerName);
+                
+                Log.v(TAG, "Setting up Host Connection");
+                GameActivity.setUpHostConnection(MenuActivity.this, firstPlayerName);
+                
                 //use _waiting to show when waiting, and update when connection established
                /* String otherUserName = GameActivity.setUpHostConnection(MenuActivity.this,firstPlayerName);
                 //could maybe have a timeout if no connection is established
@@ -282,12 +287,12 @@ public class MenuActivity extends Activity {
                 String player1Name = _player1Name.getText().toString();
                 String player2Name = _player2Name.getText().toString();
 
-                if (player1Name.equals("...") || player1Name.equals("")) {
+                if (player1Name.equals(placeHolder) || player1Name.equals("")) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(MenuActivity.this).setMessage(R.string.msg_Player1Name);
                     AlertDialog dialog = builder.show();
                     TextView msg = (TextView) dialog.findViewById(android.R.id.message);
                     msg.setGravity(Gravity.CENTER); msg.setTextColor(Color.BLACK); msg.setTextSize(25);
-                } else if(player2Name.equals("...") || player2Name.equals("")) {
+                } else if(player2Name.equals(placeHolder) || player2Name.equals("")) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(MenuActivity.this).setMessage(R.string.msg_Player2Name);
                     AlertDialog dialog = builder.show();
                     TextView msg = (TextView) dialog.findViewById(android.R.id.message);
@@ -296,8 +301,10 @@ public class MenuActivity extends Activity {
                     //do 2 player play method
                     //use _player1Name as player 1's name, and _player2Name as player 2's name
                     Intent intent = new Intent(v.getContext(), GameActivity.class);
-                    intent.putExtra(GameActivity.PLAYER_ONE, player1Name);
-                    intent.putExtra(GameActivity.PLAYER_TWO, player2Name);
+                    bundle.putString(GameActivity.PLAYER_ONE, player1Name);
+                    bundle.putString(GameActivity.PLAYER_TWO, player2Name);
+                    intent.putExtras(bundle);
+
                     System.out.println("2 player play");
 
                     startActivity(intent);
@@ -312,7 +319,7 @@ public class MenuActivity extends Activity {
                 String player1Name = _player1Name.getText().toString();
                 String player2Name = getAiName(difficulty);
 
-                if (player1Name.equals("...") || player1Name.equals("")) {
+                if (player1Name.equals(placeHolder) || player1Name.equals("")) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(MenuActivity.this).setMessage(R.string.msg_PlayerName);
                     AlertDialog dialog = builder.show();
                     TextView msg = (TextView) dialog.findViewById(android.R.id.message);
@@ -324,9 +331,9 @@ public class MenuActivity extends Activity {
                     System.out.println("ai play, difficulty: " + difficulty);
 
                     Intent intent = new Intent(v.getContext(), GameActivity.class);
-                    intent.putExtra(GameActivity.PLAYER_ONE, player1Name);
-                    intent.putExtra(GameActivity.PLAYER_TWO, player2Name);
-                    intent.putExtra(GameActivity.AI_DIFF, difficulty);
+                    bundle.putString(GameActivity.PLAYER_ONE, player1Name);
+                    bundle.putString(GameActivity.PLAYER_TWO, player2Name);
+                    bundle.putInt(GameActivity.AI_DIFF, difficulty);
                     startActivity(intent);
                 }
             }
@@ -336,12 +343,12 @@ public class MenuActivity extends Activity {
             @Override public void onClick(View v) {
                 String firstPlayerName = _player1Name.getText().toString();
                 String ipAddress = _ipAddressToJoin.getText().toString();
-                if (firstPlayerName.equals("...") || firstPlayerName.equals("")) {
+                if (firstPlayerName.equals(placeHolder) || firstPlayerName.equals("")) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(MenuActivity.this).setMessage(R.string.msg_PlayerName);
                     AlertDialog dialog = builder.show();
                     TextView msg = (TextView) dialog.findViewById(android.R.id.message);
                     msg.setGravity(Gravity.CENTER); msg.setTextColor(Color.BLACK); msg.setTextSize(25);
-                } else if(ipAddress.equals("...") || ipAddress.equals("")) {
+                } else if(ipAddress.equals(placeHolder) || ipAddress.equals("")) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(MenuActivity.this).setMessage(R.string.msg_IPAddress);
                     AlertDialog dialog = builder.show();
                     TextView msg = (TextView) dialog.findViewById(android.R.id.message);
@@ -350,12 +357,10 @@ public class MenuActivity extends Activity {
                     //do remote play method
                     //use _player1Name as player 1's name
                     //use ipAddresToJoin as the IP address to try to connect to
-                    //to pass to the game activity that it will be a online game
+                    bundle.putString(GameActivity.PLAYER_ONE,firstPlayerName);
                     bundle.putBoolean(GameActivity.IS_ONLINE,true);
 
-                    GameActivity.setUpJoinConnection(MenuActivity.this,ipAddress,firstPlayerName);
-                    //to pass the names of the users to the game activity
-                    bundle.putString(GameActivity.PLAYER_ONE,firstPlayerName);
+                    GameActivity.setUpJoinConnection(MenuActivity.this, ipAddress, firstPlayerName);
                     System.out.println("remote play (join)");
                 }
             }
