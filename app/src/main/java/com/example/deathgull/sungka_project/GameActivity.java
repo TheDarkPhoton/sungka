@@ -58,6 +58,7 @@ import helpers.frontend.MessageManager;
 import helpers.backend.PauseThreadFor;
 import helpers.frontend.CupButton;
 import helpers.backend.PauseThreadWhile;
+import helpers.frontend.PlayerNameTextView;
 import helpers.frontend.ShellTranslation;
 
 public class GameActivity extends Activity {
@@ -91,6 +92,8 @@ public class GameActivity extends Activity {
     private boolean isPlayerAReady = false;
     private boolean isPlayerBReady = false;
     private LinearLayout readyAreaView;
+    private PlayerNameTextView[] _playerTextViews;
+
 
     private PlayerActionAdapter _playerActionListener = new PlayerActionAdapter() {
         @Override
@@ -378,6 +381,14 @@ public class GameActivity extends Activity {
         initCupButton("cup2_store", 15, 1, 0, CupButton.PLAYER_B, CupButton.STORE);
 
         _messageManager = new MessageManager(this, _layoutMaster);
+
+        // Setup Player views
+        _playerTextViews = new PlayerNameTextView[2];
+
+        _playerTextViews[0] = new PlayerNameTextView(this, _board.getPlayerA());
+        _playerTextViews[1] = new PlayerNameTextView(this, _board.getPlayerB());
+        _layoutMaster.addView(_playerTextViews[0]);
+        _layoutMaster.addView(_playerTextViews[1]);
 
         // Setup animation speed listener
         _layoutMaster.getRootView().setOnTouchListener(new View.OnTouchListener() {
@@ -818,7 +829,7 @@ public class GameActivity extends Activity {
         playerStatistic.increaseGamesPlayed();      //that holds the data for a Player that has just finished there first game
         if(_board.isDraw()){
             playerStatistic.increaseGamesDraw();
-        }else if(_board.getPlayerWon() == player){
+        }else if(_board.getPlayerWon() == player) {
             playerStatistic.increaseGamesWon();
         }else{
             playerStatistic.increaseGamesLost();

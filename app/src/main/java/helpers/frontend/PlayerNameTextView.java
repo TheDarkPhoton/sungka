@@ -28,6 +28,17 @@ public class PlayerNameTextView extends TextView {
         setText(player.getName());
         setTextSize(20.0f);
         setPadding(20, 20, 20, 20);
+
+        if (_player.getBoard().isPlayerA(_player)) {
+            _layoutParams.gravity = Gravity.BOTTOM;
+            setTextColor(Color.WHITE);
+            setGravity(Gravity.RIGHT);
+        } else {
+            _layoutParams.gravity = Gravity.TOP;
+            setTextColor(Color.BLACK);
+            setGravity(Gravity.LEFT);
+        }
+
     }
 
 }
