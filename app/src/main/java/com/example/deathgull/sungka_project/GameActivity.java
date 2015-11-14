@@ -91,7 +91,6 @@ public class GameActivity extends Activity {
     private boolean isPlayerBReady = false;
     private LinearLayout readyAreaView;
 
-
     private SoundPool _soundPool;
     private int _soundShell, _soundStore;
     private boolean _soundsLoaded;
@@ -109,6 +108,8 @@ public class GameActivity extends Activity {
 
         @Override
         public void onMove(final Player player, final int index) {
+            _messageManager.onMoveEnd(player);
+
             if (_board.getCurrentPlayer() != null)
                 dehighlightAllCups();
 
@@ -149,7 +150,6 @@ public class GameActivity extends Activity {
 
         @Override
         public void onMoveEnd(Player player) {
-            _messageManager.onMoveEnd(player);
             Log.i(TAG, player.getName() + " ended his turn");
         }
     };
