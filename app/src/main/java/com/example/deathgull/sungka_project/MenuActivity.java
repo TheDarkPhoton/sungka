@@ -71,7 +71,6 @@ public class MenuActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
-        bundle = new Bundle();
 
         getElements();
         scale();
@@ -334,6 +333,7 @@ public class MenuActivity extends Activity {
                     bundle.putString(GameActivity.PLAYER_ONE, player1Name);
                     bundle.putString(GameActivity.PLAYER_TWO, player2Name);
                     bundle.putInt(GameActivity.AI_DIFF, difficulty);
+                    intent.putExtras(bundle);
                     startActivity(intent);
                 }
             }
@@ -357,8 +357,8 @@ public class MenuActivity extends Activity {
                     //do remote play method
                     //use _player1Name as player 1's name
                     //use ipAddresToJoin as the IP address to try to connect to
-                    bundle.putString(GameActivity.PLAYER_ONE,firstPlayerName);
-                    bundle.putBoolean(GameActivity.IS_ONLINE,true);
+                    bundle.putString(GameActivity.PLAYER_ONE, firstPlayerName);
+                    bundle.putBoolean(GameActivity.IS_ONLINE, true);
 
                     GameActivity.setUpJoinConnection(MenuActivity.this, ipAddress, firstPlayerName);
                     System.out.println("remote play (join)");
@@ -495,6 +495,7 @@ public class MenuActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        bundle = new Bundle();
         _waiting.setText(R.string.str_Waiting);
     }
 }
