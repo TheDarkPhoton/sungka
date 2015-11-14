@@ -116,9 +116,9 @@ public class MessageManager {
      */
     public void waitingForOtherPlayer(Player player, Player otherPlayer) {
         if (player.getBoard().isPlayerA(player))
-            _top.displayPermanentMessage("Waiting for " + otherPlayer.getName());
+            _bottom.displayPermanentMessage("Waiting for " + otherPlayer.getName());
         else
-            _bottom.displayPermanentMessage("Waiting for "+otherPlayer.getName());
+            _top.displayPermanentMessage("Waiting for "+otherPlayer.getName());
     }
 
     public void countdown(int number) {
