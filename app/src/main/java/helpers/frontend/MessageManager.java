@@ -3,6 +3,7 @@ package helpers.frontend;
 import android.content.Context;
 import android.widget.FrameLayout;
 
+import com.example.deathgull.sungka_project.GameActivity;
 import com.example.deathgull.sungka_project.R;
 
 import game.player.Player;
@@ -122,6 +123,12 @@ public class MessageManager {
      * Gets called when they tap and say they they are ready before the other player
      */
     public void waitingForOtherPlayer(Player player, Player otherPlayer) {
+        /*if (!GameActivity.IS_TEST) {
+            if (player.getBoard().isPlayerA(player))
+                _bottom.displayPermanentMessage("Waiting for " + otherPlayer.getName());
+            else
+                _top.displayPermanentMessage("Waiting for "+otherPlayer.getName());
+        }*/
         if (player.getBoard().isPlayerA(player))
             _bottom.displayPermanentMessage("Waiting for " + otherPlayer.getName());
         else

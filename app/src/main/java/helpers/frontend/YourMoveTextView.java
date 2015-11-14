@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.example.deathgull.sungka_project.GameActivity;
 import com.example.deathgull.sungka_project.R;
 
 import game.player.Player;
@@ -35,7 +36,9 @@ public class YourMoveTextView extends TextView {
         );
         this.setLayoutParams(_layoutParams);
 
-        this.setText(R.string.str_tapWhenYourReady);
+        if (!GameActivity.IS_TEST) {
+            this.setText(R.string.str_tapWhenYourReady);
+        }
 
         this.setGravity(Gravity.CENTER);
 

@@ -59,6 +59,7 @@ public class GameActivity extends Activity {
     public static final String PLAYER_TWO = "playerTwoName";
     public static final String IS_ONLINE = "is_online_game";
     public static final String AI_DIFF = "ai_difficulty";
+    public static boolean IS_TEST;
 
     private static final String TAG = "GameActivity";
     private static final String fileName = "player_statistics";
@@ -81,6 +82,7 @@ public class GameActivity extends Activity {
     private float _animationDurationFactor = 1.0f;
 
     private boolean _countdownMode = true;
+    private boolean is_test;
 
     private boolean isPlayerAReady = false;
     private boolean isPlayerBReady = false;
@@ -156,7 +158,6 @@ public class GameActivity extends Activity {
                         FrameLayout.LayoutParams.MATCH_PARENT,
                         FrameLayout.LayoutParams.MATCH_PARENT));
 
-
         shells =new Drawable[]{
                 ResourcesCompat.getDrawable(getResources(), R.drawable.shell1, null),
                 ResourcesCompat.getDrawable(getResources(), R.drawable.shell2, null),
@@ -169,6 +170,7 @@ public class GameActivity extends Activity {
         String secondName = bundle.getString(PLAYER_TWO);
         int aiDiff = bundle.getInt(AI_DIFF, 0);
         boolean isOnlineGame = bundle.getBoolean(IS_ONLINE, false);
+        IS_TEST = bundle.getBoolean("is_test", false);
         Log.v(TAG,"Its an online game? "+isOnlineGame);
 
         if(isOnlineGame){
@@ -289,7 +291,11 @@ public class GameActivity extends Activity {
                     btn.initShellLocation();
                 }
 
-                setupReadyScreen();
+                if (IS_TEST) {
+                    _board.getPlayerA().moveStart();
+                } else {
+                    setupReadyScreen();
+                }
 
                 _layoutMaster.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             }
@@ -363,15 +369,12 @@ public class GameActivity extends Activity {
         //Initialise button array
         _cupButtons = new CupButton[16];
 
-        // get package name for applying IDs
-        String packageName = getPackageName();
-
         int topColumnIndex = 7;
         int bottomColumnIndex = 1;
         for(int i = 0; i < 7; i++) {
             //PLAYER shell cups
             initCupButtonSmall("cup1_" + (i + 1), i, 2, bottomColumnIndex++, CupButton.PLAYER_A);
-            initCupButtonSmall("cup2_" + (i + 9), i + 8, 0, topColumnIndex--, CupButton.PLAYER_B);
+            initCupButtonSmall("cup2_" + (i + 1), i + 8, 0, topColumnIndex--, CupButton.PLAYER_B);
         }
 
         //PLAYER stores
@@ -522,6 +525,14 @@ public class GameActivity extends Activity {
             PlayerActionAdapter.setAnimationInProgress(false);
 
         processBoardMessages();
+    }
+
+    /**
+     * A check to see whether shell animations are running.
+     * @return true if all shell animations have finished.
+     */
+    public boolean animationFinished() {
+        return !PlayerActionAdapter.isAnimationInProgress();
     }
 
     /**
@@ -714,9 +725,6 @@ public class GameActivity extends Activity {
         return otherName;*/
     }
 
-
-
-
     /**
      * Displays a message saying other person disconnected and brings them to the main menu.
      */
@@ -738,7 +746,6 @@ public class GameActivity extends Activity {
         AlertDialog alertDialog = alertBuilder.create();
         alertDialog.show();
     }
-
 
     /**
      * Update the list of PlayerStatistic objects by updating data for the Player object provided, or add a new
@@ -910,7 +917,6 @@ public class GameActivity extends Activity {
         return playerStatistics;
     }
 
-
     private void playSound(int soundId) {
        /* MediaPlayer mp = MediaPlayer.create(this, soundId);
 
@@ -947,7 +953,6 @@ public class GameActivity extends Activity {
         bottomView.setLayoutParams(params);
         readyAreaView.addView(bottomView);
 
-
         if (_board.getPlayerA() instanceof Human) {
             Log.i(TAG, "Player A is " + _board.getPlayerA());
             bottomView.setOnClickListener(new View.OnClickListener() {
@@ -982,7 +987,6 @@ public class GameActivity extends Activity {
             isPlayerBReady = true;
             trySetupCountdown();
         }
-
     }
 
     private void trySetupCountdown() {
