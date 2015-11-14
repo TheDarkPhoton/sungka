@@ -953,8 +953,11 @@ public class GameActivity extends Activity {
         bottomView.setLayoutParams(params);
         readyAreaView.addView(bottomView);
 
+        Log.i(TAG, "Player A is " + _board.getPlayerA());
+        Log.i(TAG, "Player B is " + _board.getPlayerB());
+
         if (_board.getPlayerA() instanceof Human) {
-            topView.setOnClickListener(new View.OnClickListener() {
+            bottomView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     isPlayerAReady = true;
