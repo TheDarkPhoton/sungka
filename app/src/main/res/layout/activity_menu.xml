@@ -69,19 +69,16 @@
         </LinearLayout>
 
         <Button
-            android:layout_width="50dp"
+            android:layout_width="40dp"
             android:layout_height="40dp"
-            android:text="@string/str_Mute"
             android:id="@+id/btnMute"
-            android:background="@drawable/roundedbuttonblack"
-            android:textColor="#ffffff"
-            android:textSize="12sp"
-            android:textAllCaps="false"
+            android:background="@drawable/unmute"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_marginLeft="10dp"
-            android:layout_marginBottom="10dp" />
+            android:layout_marginBottom="10dp"
+            android:backgroundTint="#000000" />
     </RelativeLayout>
 
     <RelativeLayout

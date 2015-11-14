@@ -7,10 +7,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Vibrator;
+import android.support.v4.content.res.ResourcesCompat;
 import android.text.format.Formatter;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -18,23 +20,21 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import org.w3c.dom.Text;
 import helpers.frontend.MusicService;
-
-import helpers.frontend.CupButton;
 
 public class MenuActivity extends Activity {
     private static final String TAG = "MenuActivity";
     private Bundle bundle;
     private boolean _switchingActivities;
     public static Vibrator vb;
+    private Drawable[] _muteIcons;
+    private int _muteIndex;
     
     //Main menu elements
     private RelativeLayout _mainMenu;
@@ -77,6 +77,12 @@ public class MenuActivity extends Activity {
         vb  = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
+
+        _muteIcons = new Drawable[] {
+                ResourcesCompat.getDrawable(getResources(), R.drawable.mute, null),
+                ResourcesCompat.getDrawable(getResources(), R.drawable.unmute, null)
+        };
+        _muteIndex = 1;
 
         getElements();
         scale();
@@ -393,6 +399,13 @@ public class MenuActivity extends Activity {
         _mute.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                 vb.vibrate(25);
+                if(_muteIndex == 1) {
+                    _muteIndex = 0;
+                } else {
+                    _muteIndex = 1;
+                }
+                _mute.setBackground(_muteIcons[_muteIndex]);
+
                 if(musicService.isMuted()) {
                     musicService.unmuteMusic();
                 } else {
@@ -510,6 +523,7 @@ public class MenuActivity extends Activity {
     public String getIp(){
         //To get the ip
         WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
+        //noinspection deprecation
         String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
         Log.v(TAG, "ip: " + ip);
         return ip;

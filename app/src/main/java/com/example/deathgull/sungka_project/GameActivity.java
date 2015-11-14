@@ -183,6 +183,7 @@ public class GameActivity extends Activity {
                     .setAudioAttributes(_attributes)
                     .build();
         } else {
+            //noinspection deprecation
             _soundPool = new SoundPool(25, AudioManager.STREAM_MUSIC, 0);
         }
 
