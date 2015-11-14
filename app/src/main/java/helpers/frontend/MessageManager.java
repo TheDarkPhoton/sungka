@@ -111,4 +111,19 @@ public class MessageManager {
             _bottom.displayTemporaryMessage(R.string.str_AnotherTurn);
     }
 
+    /**
+     * Gets called when they tap and say they they are ready before the other player
+     */
+    public void waitingForOtherPlayer(Player player, Player otherPlayer) {
+        if (player.getBoard().isPlayerA(player))
+            _top.displayPermanentMessage("Waiting for " + otherPlayer.getName());
+        else
+            _bottom.displayPermanentMessage("Waiting for "+otherPlayer.getName());
+    }
+
+    public void countdown(int number) {
+        _top.displayPermanentMessage("" + number);
+        _bottom.displayPermanentMessage("" + number);
+    }
+
 }

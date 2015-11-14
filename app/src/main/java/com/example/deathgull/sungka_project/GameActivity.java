@@ -1,11 +1,13 @@
 package com.example.deathgull.sungka_project;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
@@ -22,11 +24,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import java.io.FileInputStream;
@@ -82,6 +86,10 @@ public class GameActivity extends Activity {
     private float _animationDurationFactor = 1.0f;
 
     private boolean _countdownMode = true;
+
+    private boolean isPlayerAReady = false;
+    private boolean isPlayerBReady = false;
+    private LinearLayout readyAreaView;
 
     private PlayerActionAdapter _playerActionListener = new PlayerActionAdapter() {
         @Override
@@ -187,6 +195,7 @@ public class GameActivity extends Activity {
                         @Override
                         public void run() {
                             Log.i(TAG, "Count down: " + counter);
+                            _messageManager.countdown(counter);
                         }
                     });
                     new PauseThreadFor(1000);
@@ -275,7 +284,8 @@ public class GameActivity extends Activity {
                     btn.initShellLocation();
                 }
 
-                startCounter();
+                setupReadyScreen();
+
 
                 _layoutMaster.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             }
@@ -680,7 +690,7 @@ public class GameActivity extends Activity {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        Log.v(TAG,"Other Name: "+otherName);
+        Log.v(TAG, "Other Name: " + otherName);
     }
 
 
@@ -793,7 +803,7 @@ public class GameActivity extends Activity {
         for(PlayerStatistic player: stats){
             Log.v(TAG,player.toString());
         }
-        Log.v(TAG,"Read stats");
+        Log.v(TAG, "Read stats");
     }
 
     /**
@@ -902,6 +912,77 @@ public class GameActivity extends Activity {
         mp.start();
     }
 
+    private void setupReadyScreen() {
+        readyAreaView = new LinearLayout(this);
+        readyAreaView.setLayoutParams(new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+        ));
+        readyAreaView.setOrientation(LinearLayout.VERTICAL);
+        _layoutMaster.addView(readyAreaView);
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+        params.weight = 0.5f;
+
+
+        View topView = new View(this);
+        topView.setLayoutParams(params);
+        readyAreaView.addView(topView);
+
+        View bottomView = new View(this);
+        bottomView.setLayoutParams(params);
+        readyAreaView.addView(bottomView);
+
+        if (_board.getPlayerB() instanceof Human) {
+            topView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    isPlayerBReady = true;
+                    trySetupCountdown();
+                }
+            });
+        } else {
+            isPlayerAReady = true;
+            trySetupCountdown();
+        }
+
+        if (_board.getPlayerB() instanceof Human) {
+            bottomView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    isPlayerBReady = true;
+                    trySetupCountdown();
+                }
+            });
+        } else {
+            isPlayerBReady = true;
+            trySetupCountdown();
+        }
+
+    }
+
+    private void trySetupCountdown() {
+        if (isPlayerAReady && isPlayerBReady) {
+            readyAreaView.removeAllViews();
+            _layoutMaster.removeView(readyAreaView);
+            readyAreaView = null;
+            startCounter();
+
+        } else if (isPlayerAReady) {
+            _messageManager.waitingForOtherPlayer(
+                    _board.getPlayerA(),
+                    _board.getPlayerB()
+            );
+        } else if (isPlayerBReady) {
+            _messageManager.waitingForOtherPlayer(
+                    _board.getPlayerB(),
+                    _board.getPlayerA()
+            );
+        }
+    }
 
 
 
