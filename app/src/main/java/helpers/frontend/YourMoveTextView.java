@@ -35,7 +35,8 @@ public class YourMoveTextView extends TextView {
         );
         this.setLayoutParams(_layoutParams);
 
-        revertToDefault();
+        this.setText(R.string.str_tapWhenYourReady);
+
         this.setGravity(Gravity.CENTER);
 
         this.setTextSize(getResources().getDimensionPixelSize(R.dimen.your_turn_text_size));
@@ -81,6 +82,10 @@ public class YourMoveTextView extends TextView {
      */
     public void displayPermanentMessage(@StringRes int stringResource) {
         setText(stringResource);
+    }
+
+    public void displayPermanentMessage(String string) {
+        setText(string);
     }
 
     /**
