@@ -1,25 +1,19 @@
 package com.example.deathgull.sungka_project;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
-import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.res.ResourcesCompat;
-import android.text.format.Formatter;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -40,24 +34,23 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
-import java.util.concurrent.ExecutionException;
-
+import game.Game;
+import game.board.Board;
+import game.board.BoardState;
+import game.board.HandOfShells;
 import game.connection.SungkaClient;
 import game.connection.SungkaConnection;
+import game.connection.SungkaProtocol;
 import game.connection.SungkaServer;
-import game.board.Board;
-import game.Game;
-import game.board.HandOfShells;
-import game.board.BoardState;
 import game.player.AI;
 import game.player.Human;
 import game.player.Player;
 import game.player.PlayerActionAdapter;
 import game.player.RemoteHuman;
-import helpers.frontend.MessageManager;
 import helpers.backend.PauseThreadFor;
-import helpers.frontend.CupButton;
 import helpers.backend.PauseThreadWhile;
+import helpers.frontend.CupButton;
+import helpers.frontend.MessageManager;
 import helpers.frontend.PlayerNameTextView;
 import helpers.frontend.ShellTranslation;
 
@@ -821,7 +814,7 @@ public class GameActivity extends Activity {
         for(PlayerStatistic player: stats){
             Log.v(TAG,player.toString());
         }
-        Log.v(TAG,"Read stats");
+        Log.v(TAG, "Read stats");
     }
 
     /**
@@ -919,7 +912,7 @@ public class GameActivity extends Activity {
 
 
     private void playSound(int soundId) {
-        MediaPlayer mp = MediaPlayer.create(this, soundId);
+       /* MediaPlayer mp = MediaPlayer.create(this, soundId);
 
         switch (soundId) {
             case R.raw.gunfire:
@@ -927,7 +920,7 @@ public class GameActivity extends Activity {
                 break;
         }
 
-        mp.start();
+        mp.start();*/
     }
 
     private void setupReadyScreen() {
@@ -960,6 +953,9 @@ public class GameActivity extends Activity {
             bottomView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if(usersConnection != null){//online game
+                        usersConnection.sendMessage(SungkaProtocol.STARTCOUNTER);
+                    }
                     isPlayerAReady = true;
                     trySetupCountdown();
                 }
@@ -978,7 +974,11 @@ public class GameActivity extends Activity {
                     trySetupCountdown();
                 }
             });
-        } else {
+        }else if(_board.getPlayerB() instanceof RemoteHuman){
+            Log.i(TAG,"Player B is "+_board.getPlayerB().getName());
+            isPlayerBReady = false;
+        }
+        else {
             isPlayerBReady = true;
             trySetupCountdown();
         }
@@ -1020,5 +1020,10 @@ public class GameActivity extends Activity {
     public void onBackPressed() {
         super.onBackPressed();
         finish();
+    }
+
+    public void setPlayerBReady(){
+        isPlayerBReady = true;
+        trySetupCountdown();
     }
 }

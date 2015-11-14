@@ -52,7 +52,13 @@ public class SungkaProtocol {
         }
         else if(message.equals(STARTCOUNTER)){
             //start the counter
-            gameActivity.startCounter();
+            gameActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    gameActivity.setPlayerBReady();
+                }
+            });
+
         }else if(message.contains(PLAYERMOVE)){
             Log.v("SungkaProtocol", message);
             final int indexMove = new Integer(message.split(PLAYERMOVE)[1])+8;
