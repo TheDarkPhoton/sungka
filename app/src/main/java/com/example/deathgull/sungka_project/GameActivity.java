@@ -44,6 +44,7 @@ import java.util.concurrent.ExecutionException;
 
 import game.connection.SungkaClient;
 import game.connection.SungkaConnection;
+import game.connection.SungkaProtocol;
 import game.connection.SungkaServer;
 import game.board.Board;
 import game.Game;
@@ -820,7 +821,7 @@ public class GameActivity extends Activity {
         for(PlayerStatistic player: stats){
             Log.v(TAG,player.toString());
         }
-        Log.v(TAG,"Read stats");
+        Log.v(TAG, "Read stats");
     }
 
     /**
@@ -959,6 +960,9 @@ public class GameActivity extends Activity {
             bottomView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if(usersConnection != null){//online game
+                        usersConnection.sendMessage(SungkaProtocol.STARTCOUNTER);
+                    }
                     isPlayerAReady = true;
                     trySetupCountdown();
                 }
@@ -977,7 +981,11 @@ public class GameActivity extends Activity {
                     trySetupCountdown();
                 }
             });
-        } else {
+        }else if(_board.getPlayerB() instanceof RemoteHuman){
+            Log.i(TAG,"Player B is "+_board.getPlayerB().getName());
+            isPlayerBReady = false;
+        }
+        else {
             isPlayerBReady = true;
             trySetupCountdown();
         }
@@ -1019,5 +1027,10 @@ public class GameActivity extends Activity {
     public void onBackPressed() {
         super.onBackPressed();
         finish();
+    }
+
+    public void setPlayerBReady(){
+        isPlayerBReady = true;
+        trySetupCountdown();
     }
 }
