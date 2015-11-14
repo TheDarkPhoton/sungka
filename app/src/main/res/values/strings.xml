@@ -45,4 +45,7 @@
         <item>Average Alan</item>
         <item>TrollMaster 9000</item>
     </string-array>
+    <string name="str_tapWhenYourReady">Tap when you\'re ready for countdown\!</string>
+    <string name="str_tapAShells">Choose your starting shell</string>
+
 </resources>
