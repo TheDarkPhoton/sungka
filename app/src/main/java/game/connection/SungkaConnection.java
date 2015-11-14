@@ -31,9 +31,9 @@ public abstract class SungkaConnection extends AsyncTask<String,Integer,Boolean>
     protected Runnable pingOther = new Runnable() {
         @Override
         public void run() {//every 5 seconds ping and wait 10 seconds for a
-            Log.v(TAG,"sending Ping through a message");
+         //   Log.v(TAG,"sending Ping through a message");
             sendMessage(SungkaProtocol.PING);
-            Log.v(TAG,"started timer");
+         //   Log.v(TAG,"started timer");
             connectionLostHandler.postDelayed(connectionLost, 10000);
         }
     };
@@ -42,6 +42,7 @@ public abstract class SungkaConnection extends AsyncTask<String,Integer,Boolean>
         public void run() {
             //connection is lost
             Log.v(TAG,"didnt receive a ping back");
+            stopPings();
             gameActivity.otherPlayerDidDisconnect();
         }
     };
@@ -53,7 +54,7 @@ public abstract class SungkaConnection extends AsyncTask<String,Integer,Boolean>
      * @param message the information of the board which you want to send to the other device
      */
     public void sendMessage(String message){
-        Log.v("SungkaConnection",message);
+       // Log.v("SungkaConnection",message);
         printWriter.println(message);
     }
 
@@ -109,7 +110,7 @@ public abstract class SungkaConnection extends AsyncTask<String,Integer,Boolean>
      * Stop timing for a response of a Ping
      */
     public void stopTimer(){
-        Log.v(TAG,"Stoped the timer with the time Handler");
+      //  Log.v(TAG,"Stoped the timer with the time Handler");
         connectionLostHandler.removeCallbacks(connectionLost);
     }
 
@@ -117,7 +118,7 @@ public abstract class SungkaConnection extends AsyncTask<String,Integer,Boolean>
      * Send a ping to the other device in 50ms
      */
     public void ping(){
-        Log.v(TAG,"About to send a ping in 50ms");
+    //    Log.v(TAG,"About to send a ping in 50ms");
         pingHandler.postDelayed(pingOther, 50);
     }
 
@@ -130,11 +131,33 @@ public abstract class SungkaConnection extends AsyncTask<String,Integer,Boolean>
 
     }
 
+    protected void onPostExecute(Boolean result){
+        super.onPostExecute(result);
+        Log.v(TAG, "Connection Established");
+       /* if(result == false){
+            //didnt connect
+        }else {*/
+        // listenForClientHandler.postDelayed(listenForClient, 50);//start the listenForClient runnable thread in 50 ms
+        GameActivity.setConnection(this);
+        menuActivity.connectionHasEstablished();
+        try {
+            menuActivity.setSecondPlayerName(connectToSendNames(playerName));
+            menuActivity.startGameActivity();
+        } catch (Exception e) {
+            //wasnt able to connect
+            e.printStackTrace();
+        }
+        // }
+    }
+
+
+
     /**
      * Close the connection of the socket being used
      * @throws IOException
      */
     public abstract void closeConnection() throws IOException;
+
 
 
 }

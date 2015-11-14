@@ -164,6 +164,7 @@ public class GameActivity extends Activity {
         String secondName = bundle.getString(PLAYER_TWO);
         int aiDiff = bundle.getInt(AI_DIFF, 0);
         boolean isOnlineGame = bundle.getBoolean(IS_ONLINE, false);
+        Log.v(TAG,"Its an online game? "+isOnlineGame);
 
         if(isOnlineGame){
             usersConnection.setActivity(this);
@@ -179,7 +180,10 @@ public class GameActivity extends Activity {
         initView();                                                 //Programmatically create and lay out elements
     }
 
-    private void startCounter() {
+    /**
+     * The counter that is started before the Players can start their first move
+     */
+    public void startCounter() {
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -278,8 +282,9 @@ public class GameActivity extends Activity {
                 for (CupButton btn : _cupButtons) {
                     btn.initShellLocation();
                 }
-
-                startCounter();
+                //if(usersConnection == null) {//its not a multiplayer game, so the counter can be started locally
+                    startCounter();
+              //  }
 
                 _layoutMaster.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             }
@@ -558,10 +563,10 @@ public class GameActivity extends Activity {
                         usersConnection.stopPings();
                         usersConnection.stopPings();
                     }
-                    for (int i = 0; i < _board.getMoves().size(); i++) {
+                   /* for (int i = 0; i < _board.getMoves().size(); i++) {
                         Pair<Player, Integer> move = _board.getMoves().get(i);
                         Log.i(TAG, i + ": " + move.second + " -> " + move.first.getName());
-                    }
+                    }*/
                     ArrayList<PlayerStatistic> playerStatistics = readStats(getApplicationContext());//read the stats
                     //store the leaderboard data for non online games
                     if(!(_board.getPlayerA() instanceof RemoteHuman)){//if the first player isnt a remote human than store data for them
@@ -917,5 +922,9 @@ public class GameActivity extends Activity {
         }
     }
 
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 }

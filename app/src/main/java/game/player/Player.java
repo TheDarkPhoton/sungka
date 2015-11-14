@@ -19,6 +19,7 @@ public abstract class Player {
     protected Cup[] _cups;
     protected int maxConsecutiveMoves;
     protected int moves;
+    private int prevStoreCount;
     
     protected ArrayList<MoveInfo> _moveInfos;//arraylist to store the users moves in a game
     protected MoveInfo _currentMove;
@@ -43,6 +44,7 @@ public abstract class Player {
         _moveInfos = new ArrayList<>();
         moves = 0;
         maxConsecutiveMoves = 0;
+        prevStoreCount = 0;
     }
 
     /**
@@ -79,20 +81,20 @@ public abstract class Player {
 
     public void moveStart(){
         _currentMove = new MoveInfo(System.currentTimeMillis(),getName());//starting the move info object
+        prevStoreCount = _store.getCount();
     }
 
     public abstract void move(int index);
-
     public void moveEnd(){
        // Log.v("Player","Checking if its equal to null");
         if(_currentMove != null) {
             _currentMove.endMove(System.currentTimeMillis());
             _currentMove.calculateMoveDuration();//calculate the duration of the move and store it in the object
-            if (_moveInfos.size() == 0) {//this is the first move
-                _currentMove.setNumOfShellsCollected(_store.getCount());
-            } else {//the amount of shells collected in this move, is the amount of shells in the store now minus the amount of shells in the store in the previous turn
-                _currentMove.setNumOfShellsCollected(_store.getCount() - _moveInfos.get(_moveInfos.size() - 1).getNumOfShellsCollected());
-            }
+            Log.v("Player","Previous store: "+prevStoreCount);//previous  store count
+            Log.v("Player","Current store: "+_store.getCount());//current store count
+            int shellsCollected = _store.getCount()-prevStoreCount;//shells collected in this turn
+            _currentMove.setNumOfShellsCollected(shellsCollected);
+            Log.v("Player","Shells collected: "+shellsCollected);
             _moveInfos.add(_currentMove);//want to maybe get the points the user collected in that move
         }else{
             Log.v("Player","Equal to null");
@@ -225,6 +227,7 @@ public abstract class Player {
     public int getMaxNumberShellsCollected(){
         int maxNumberShells = 0;
         for(MoveInfo moveInfo : _moveInfos){
+            Log.v("Player","Shells Collected "+moveInfo.getNumOfShellsCollected());
             if(maxNumberShells < moveInfo.getNumOfShellsCollected()){
                 maxNumberShells = moveInfo.getNumOfShellsCollected();
             }

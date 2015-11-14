@@ -2,7 +2,6 @@ package game.connection;
 
 import android.util.Log;
 
-import com.example.deathgull.sungka_project.GameActivity;
 import com.example.deathgull.sungka_project.MenuActivity;
 
 import java.io.BufferedReader;
@@ -11,11 +10,9 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.concurrent.ExecutionException;
 
 import game.player.RemoteHuman;
-//TODO: be able to let a user set up a server, and allow the server to be able handle all the operations
-//TODO:including passing information of the current state of the board between the Players, as well as their moves
+
 
 /**
  * This class represents the Server that one Player will set up, so that another Player
@@ -27,22 +24,10 @@ public class SungkaServer extends SungkaConnection {
     private ServerSocket serverSocket;
     private Socket clientSocket;
 
-
-    /**
-     * The constructor used to provide the necessary information to set up the ServerSocket
-     * @param portNumber the port that the ServerSocket will bind to
-     * @param remoteHuman the other Player in the game
-     * @param playerName the name of the Player on the current device
-     */
-    public SungkaServer(int portNumber,RemoteHuman remoteHuman, String playerName){
-        this.portNumber = portNumber;
-        //sungkaProtocol = new SungkaProtocol(remoteHuman);
-        this.playerName = playerName;
-    }
-
     /**
      * The constructor used to provide the necessary information to set up the ServerSocket
      * @param portNumber the port that the ServerSocket will bind to.
+     * @param menuActivity the MenuActivity from where we need to show that a connection has been established
      * @param playerName the name of the Player on the current device
      */
     public SungkaServer(int portNumber,MenuActivity menuActivity,String playerName){
@@ -82,27 +67,7 @@ public class SungkaServer extends SungkaConnection {
 
     @Override
     protected void onPreExecute() {
-        //TODO:could show a dialog on the gameActivity while the connection is established between the devices
         super.onPreExecute();
-    }
-
-    protected void onPostExecute(Boolean result){
-        super.onPostExecute(result);
-        Log.v(TAG,"Connection Established");
-       /* if(result == false){
-            //didnt connect
-        }else {*/
-        // listenForClientHandler.postDelayed(listenForClient, 50);//start the listenForClient runnable thread in 50 ms
-        GameActivity.setConnection(this);
-        menuActivity.connectionHasEstablished();
-        try {
-            menuActivity.setSecondPlayerName(connectToSendNames(playerName));
-            menuActivity.startGameActivity();
-        } catch (Exception e) {
-            //wasnt able to connect
-            e.printStackTrace();
-        }
-        // }
     }
 
 

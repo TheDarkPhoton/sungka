@@ -16,6 +16,7 @@ public class SungkaProtocol {
     public static final String PLAYERMOVE = "MOVE:";
     public static final String PING = "PING";
     public static final String PINGBACK = "PINGBACK";
+    public static final String STARTCOUNTER = "STARTCOUNTER";
     private GameActivity gameActivity;
     private SungkaConnection sungkaConnection;
 
@@ -37,19 +38,22 @@ public class SungkaProtocol {
     public void updateGame(String message){
         if(message.equals(PING)){
             //ping back
-            Log.v(TAG,"Got a Ping");
-            Log.v(TAG,"Sending a Ping back");
+           // Log.v(TAG,"Got a Ping");
+          //  Log.v(TAG,"Sending a Ping back");
             sungkaConnection.sendMessage(PINGBACK);
         }else if(message.equals(PINGBACK)){
             //remove the timer
-            Log.v(TAG,"Got a ping back");
-            Log.v(TAG,"Stop the timer");
+          //  Log.v(TAG,"Got a ping back");
+          //  Log.v(TAG,"Stop the timer");
             sungkaConnection.stopTimer();
             //ping again
-            Log.v(TAG,"Ping again");
+          //  Log.v(TAG,"Ping again");
             sungkaConnection.ping();
         }
-        else if(message.contains(PLAYERMOVE)){
+        else if(message.equals(STARTCOUNTER)){
+            //start the counter
+            gameActivity.startCounter();
+        }else if(message.contains(PLAYERMOVE)){
             Log.v("SungkaProtocol", message);
             final int indexMove = new Integer(message.split(PLAYERMOVE)[1])+8;
             Log.v("SungkaProtocol","Index: "+indexMove);

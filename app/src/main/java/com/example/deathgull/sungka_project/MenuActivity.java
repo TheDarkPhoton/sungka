@@ -216,11 +216,11 @@ public class MenuActivity extends Activity {
                 //use _ipAddress to show user ip address
                 _ipAddress.setText(getIp());
                 //to pass to the game activity that it will be a online game
-                bundle.putBoolean("isOnline", true);
+                bundle.putBoolean(GameActivity.IS_ONLINE, true);
                 String firstPlayerName = _player1Name.getText().toString();
                 Log.v(TAG,"Setting up Host Connection");
                 GameActivity.setUpHostConnection(MenuActivity.this,firstPlayerName);
-                bundle.putString("firstName", firstPlayerName);
+                bundle.putString(GameActivity.PLAYER_ONE, firstPlayerName);
                 //use _waiting to show when waiting, and update when connection established
                /* String otherUserName = GameActivity.setUpHostConnection(MenuActivity.this,firstPlayerName);
                 //could maybe have a timeout if no connection is established
@@ -251,6 +251,11 @@ public class MenuActivity extends Activity {
                 }
                 if(_index == 4) {
                     _prevIndex = 1;
+                }
+                //if its hosting
+                if(GameActivity.getUsersConnection() != null){
+                    GameActivity.getUsersConnection().cancel(true);//if its hosting a game and you press back, cancel it
+                    _waiting.setText(R.string.str_Waiting);//set the text back to its original state
                 }
             }
         });
@@ -329,12 +334,14 @@ public class MenuActivity extends Activity {
 
         _btnJoinIpAddress.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
-                if (_player1Name.getText().toString().equals("...") || _player1Name.getText().toString().equals("")) {
+                String firstPlayerName = _player1Name.getText().toString();
+                String ipAddress = _ipAddressToJoin.getText().toString();
+                if (firstPlayerName.equals("...") || firstPlayerName.equals("")) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(MenuActivity.this).setMessage(R.string.msg_PlayerName);
                     AlertDialog dialog = builder.show();
                     TextView msg = (TextView) dialog.findViewById(android.R.id.message);
                     msg.setGravity(Gravity.CENTER); msg.setTextColor(Color.BLACK); msg.setTextSize(25);
-                } else if(_ipAddressToJoin.getText().toString().equals("...") || _ipAddressToJoin.getText().toString().equals("")) {
+                } else if(ipAddress.equals("...") || ipAddress.equals("")) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(MenuActivity.this).setMessage(R.string.msg_IPAddress);
                     AlertDialog dialog = builder.show();
                     TextView msg = (TextView) dialog.findViewById(android.R.id.message);
@@ -344,11 +351,11 @@ public class MenuActivity extends Activity {
                     //use _player1Name as player 1's name
                     //use ipAddresToJoin as the IP address to try to connect to
                     //to pass to the game activity that it will be a online game
-                    bundle.putBoolean("isOnline",true);
-                    String firstPlayerName = _player1Name.getText().toString();
-                    GameActivity.setUpJoinConnection(MenuActivity.this,_ipAddressToJoin.getText().toString(),firstPlayerName);
+                    bundle.putBoolean(GameActivity.IS_ONLINE,true);
+
+                    GameActivity.setUpJoinConnection(MenuActivity.this,ipAddress,firstPlayerName);
                     //to pass the names of the users to the game activity
-                    bundle.putString("firstName",firstPlayerName);
+                    bundle.putString(GameActivity.PLAYER_ONE,firstPlayerName);
                     System.out.println("remote play (join)");
                 }
             }
@@ -470,7 +477,7 @@ public class MenuActivity extends Activity {
 
     public void setSecondPlayerName(String secondPlayerName){
         Log.v(TAG,"Got the second player name "+secondPlayerName);
-        bundle.putString("secondName",secondPlayerName);
+        bundle.putString(GameActivity.PLAYER_TWO,secondPlayerName);
     }
 
     public void startGameActivity(){
@@ -478,5 +485,11 @@ public class MenuActivity extends Activity {
         Intent intent = new Intent(MenuActivity.this,GameActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        _waiting.setText(R.string.str_Waiting);
     }
 }
