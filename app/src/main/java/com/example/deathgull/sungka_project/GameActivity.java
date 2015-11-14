@@ -953,10 +953,9 @@ public class GameActivity extends Activity {
         bottomView.setLayoutParams(params);
         readyAreaView.addView(bottomView);
 
-        Log.i(TAG, "Player A is " + _board.getPlayerA());
-        Log.i(TAG, "Player B is " + _board.getPlayerB());
 
         if (_board.getPlayerA() instanceof Human) {
+            Log.i(TAG, "Player A is " + _board.getPlayerA());
             bottomView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -970,7 +969,8 @@ public class GameActivity extends Activity {
         }
 
         if (_board.getPlayerB() instanceof Human) {
-            bottomView.setOnClickListener(new View.OnClickListener() {
+            Log.i(TAG, "Player B is " + _board.getPlayerB());
+            topView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     isPlayerBReady = true;

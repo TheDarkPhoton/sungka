@@ -273,5 +273,9 @@ public abstract class Player {
     public int getMaxConsecutiveMoves(){
         return maxConsecutiveMoves;
     }
-    
+
+    @Override
+    public String toString() {
+        return super.toString() + "(" + getName() + ")";
+    }
 }
