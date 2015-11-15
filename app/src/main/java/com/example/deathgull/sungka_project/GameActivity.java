@@ -8,11 +8,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.SoundPool;
+import android.opengl.Visibility;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,6 +22,8 @@ import android.os.IBinder;
 import android.support.v4.content.res.ResourcesCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -27,6 +31,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.ImageView;
@@ -393,9 +398,6 @@ public class GameActivity extends Activity {
         //Initialise button array
         _cupButtons = new CupButton[16];
 
-        // get package name for applying IDs
-        //String packageName = getPackageName();
-
         int topColumnIndex = 7;
         int bottomColumnIndex = 1;
         for(int i = 0; i < 7; i++) {
@@ -641,15 +643,60 @@ public class GameActivity extends Activity {
             e.printStackTrace();
         }
 
+        // put in button to return to the main menu
+//        LinearLayout returnLayout = new LinearLayout(this);
+        Button btnReturn = new Button(this);
+
+        // set up layout
+        LinearLayout.LayoutParams paramsLayout = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+
+        paramsLayout.setMargins(50, 20, 50, 20);
+//        returnLayout.setLayoutParms(paramsLayout);
+//        returnLayout.setGravity(Gravity.CENTER);
+//        returnLayout.setVisibility(View.GONE);
+
+        // set up button
+//        LinearLayout.LayoutParams paramsButton = new LinearLayout.LayoutParams(
+//                LinearLayout.LayoutParams.MATCH_PARENT,
+//                LinearLayout.LayoutParams.MATCH_PARENT);
+
+        btnReturn.setLayoutParams(paramsLayout);
+//        btnReturn.setLayoutParams(paramsButton);
+//        btnReturn.setGravity(Gravity.CENTER);
+        btnReturn.setBackgroundResource(R.drawable.roundedbuttonwhite);
+        btnReturn.setTextColor(Color.BLACK);
+        btnReturn.setTextSize(TypedValue.COMPLEX_UNIT_PX, 25);
+        btnReturn.setText(getResources().getString(R.string.msg_ReturnToMenu));
+        btnReturn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        WindowManager wm = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
+        wm.getDefaultDisplay().getMetrics(displayMetrics);
+
+        _layoutMaster.addView(btnReturn);
+        btnReturn.setX((displayMetrics.widthPixels / 2.0f) - 100.0f);
+        btnReturn.setY((displayMetrics.heightPixels / 2.0f) + 100.0f);
+
+//        returnLayout.addView(btnReturn);
+//        btnReturn.setGravity(Gravity.CENTER);
+//        _layoutMaster.addView(returnLayout);
+
         // Return to main menu after 5 seconds
-        Log.v(TAG,"Finish the game");
+        /*Log.v(TAG,"Finish the game");
         Handler h = new Handler();
         h.postDelayed(new Runnable() {
             @Override
             public void run() {
                 finish();
             }
-        }, 5000);
+        }, 5000);*/
     }
 
     /**

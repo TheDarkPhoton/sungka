@@ -403,8 +403,7 @@ public class CupButton extends Button implements View.OnTouchListener {
         alphaAnimation.setFillAfter(true);
         startAnimation(alphaAnimation);
 
-
-        Log.i("Cup Button", toValue + " toAlpha");
+//        Log.i("Cup Button", toValue + " toAlpha");
 
         _opacity = toValue;
     }
