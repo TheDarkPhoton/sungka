@@ -464,7 +464,7 @@ public class MenuActivity extends Activity {
             WindowManager.LayoutParams params = new WindowManager.LayoutParams();
             params.copyFrom(dialog.getWindow().getAttributes());
             params.width = (int)(_sWidth/1.1);
-            params.height = (int)(_sHeight/1.2);
+            params.height = WindowManager.LayoutParams.WRAP_CONTENT;
             dialog.getWindow().setAttributes(params);
         }
         TextView msg = (TextView) dialog.findViewById(android.R.id.message);
