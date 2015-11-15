@@ -1,4 +1,4 @@
-package com.example.deathgull.sungka_project;
+package game.player;
 
 /**
  * This class represents the statistics collected for a unique Player.

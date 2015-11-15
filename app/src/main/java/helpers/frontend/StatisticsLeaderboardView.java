@@ -9,11 +9,9 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.deathgull.sungka_project.PlayerStatistic;
+import game.player.PlayerStatistic;
 
 import java.util.ArrayList;
-
-import game.player.Player;
 
 
 /**
