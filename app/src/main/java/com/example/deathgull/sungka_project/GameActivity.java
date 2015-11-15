@@ -8,11 +8,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.SoundPool;
+import android.opengl.Visibility;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,6 +22,8 @@ import android.os.IBinder;
 import android.support.v4.content.res.ResourcesCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -27,6 +31,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.ImageView;
@@ -319,6 +324,8 @@ public class GameActivity extends Activity {
                     btn.initShellLocation();
                 }
 
+                initReturnButtonLocation();
+
                 setupReadyScreen();
 
                 _layoutMaster.getViewTreeObserver().removeOnGlobalLayoutListener(this);
@@ -393,9 +400,6 @@ public class GameActivity extends Activity {
         //Initialise button array
         _cupButtons = new CupButton[16];
 
-        // get package name for applying IDs
-        //String packageName = getPackageName();
-
         int topColumnIndex = 7;
         int bottomColumnIndex = 1;
         for(int i = 0; i < 7; i++) {
@@ -407,6 +411,8 @@ public class GameActivity extends Activity {
         //PLAYER stores
         initCupButton("cup1_store", 7, 1, 8, CupButton.PLAYER_A, CupButton.STORE);
         initCupButton("cup2_store", 15, 1, 0, CupButton.PLAYER_B, CupButton.STORE);
+
+        initReturnButton();
 
         _messageManager = new MessageManager(this, _layoutMaster);
 
@@ -430,6 +436,50 @@ public class GameActivity extends Activity {
                 return false;
             }
         });
+    }
+
+    /**
+     * Put a button which wil appear at the end of the game into the layout.
+     */
+    private void initReturnButton() {
+        Button btnReturn = new Button(this);
+
+        // set up layout
+        FrameLayout.LayoutParams paramsButton = new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT);
+
+        btnReturn.setBackgroundResource(R.drawable.roundedbuttonwhite);
+        btnReturn.setTextColor(Color.BLACK);
+        btnReturn.setTextSize(TypedValue.COMPLEX_UNIT_PX, 25);
+        btnReturn.setText(getResources().getString(R.string.msg_ReturnToMenu));
+        btnReturn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        btnReturn.setLayoutParams(paramsButton);
+        _layoutMaster.addView(btnReturn);
+
+        int id = getResources().getIdentifier("btn_ReturnToMenu", "id", getPackageName());
+        btnReturn.setId(id);
+
+    }
+
+    /**
+     * Set the position of the "return to game" button.
+     */
+    private void initReturnButtonLocation() {
+        Button btnReturn = (Button) findViewById(R.id.btn_ReturnToMenu);
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        WindowManager wm = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
+        wm.getDefaultDisplay().getMetrics(displayMetrics);
+
+        btnReturn.setX((displayMetrics.widthPixels - btnReturn.getWidth()) / 2.0f);
+        btnReturn.setY(displayMetrics.heightPixels / 2.0f);
+        btnReturn.setVisibility(View.GONE);
     }
 
     /**
@@ -623,10 +673,7 @@ public class GameActivity extends Activity {
             usersConnection.stopPings();
 
         }
-                   /* for (int i = 0; i < _board.getMoves().size(); i++) {
-                        Pair<Player, Integer> move = _board.getMoves().get(i);
-                        Log.i(TAG, i + ": " + move.second + " -> " + move.first.getName());
-                    }*/
+
         ArrayList<PlayerStatistic> playerStatistics = readStats(getApplicationContext());//read the stats
         //store the leaderboard data for non online games
         if(!(_board.getPlayerA() instanceof RemoteHuman)){//if the first player isnt a remote human than store data for them
@@ -641,16 +688,11 @@ public class GameActivity extends Activity {
             e.printStackTrace();
         }
 
-        // Return to main menu after 5 seconds
-        Log.v(TAG,"Finish the game");
-        Handler h = new Handler();
-        h.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                finish();
-            }
-        }, 5000);
+        ((Button) findViewById(R.id.btn_ReturnToMenu)).setVisibility(View.VISIBLE);
+
     }
+
+
 
     /**
      * Highlight all the buttons that need highlighting
