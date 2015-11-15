@@ -621,7 +621,6 @@ public class GameActivity extends Activity {
         Log.i(TAG, "Game Over!!!");
         if(usersConnection != null){
             usersConnection.stopPings();
-            usersConnection.stopPings();
 
         }
                    /* for (int i = 0; i < _board.getMoves().size(); i++) {

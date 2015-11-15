@@ -27,6 +27,7 @@ public abstract class SungkaConnection extends AsyncTask<String,Integer,Boolean>
     protected GameActivity gameActivity;
     private String otherName;
     private Handler connectionLostHandler = new Handler();
+    private boolean pingAgain = true;
     private Handler pingHandler = new Handler();
     protected Runnable pingOther = new Runnable() {
         @Override
@@ -119,7 +120,9 @@ public abstract class SungkaConnection extends AsyncTask<String,Integer,Boolean>
      */
     public void ping(){
     //    Log.v(TAG,"About to send a ping in 50ms");
-        pingHandler.postDelayed(pingOther, 50);
+        if(pingAgain) {
+            pingHandler.postDelayed(pingOther, 50);
+        }
     }
 
     /**
@@ -127,13 +130,14 @@ public abstract class SungkaConnection extends AsyncTask<String,Integer,Boolean>
      */
     public void stopPings(){
         Log.v(TAG,"Stopped pings");
+        pingAgain = false;
         pingHandler.removeCallbacks(pingOther);
 
     }
 
     protected void onPostExecute(Boolean result){
         super.onPostExecute(result);
-        if(result == true) {
+        if(result) {
             Log.v(TAG, "Connection Established");
             GameActivity.setConnection(this);
             menuActivity.connectionHasEstablished();
