@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.wifi.WifiManager;
@@ -16,10 +18,12 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.text.format.Formatter;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -28,6 +32,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import helpers.frontend.CupButton;
 import helpers.frontend.MusicService;
 
 public class MenuActivity extends Activity {
@@ -40,7 +45,7 @@ public class MenuActivity extends Activity {
     
     //Main menu elements
     private RelativeLayout _mainMenu;
-    private Button _play, _leaderboard, _mute;
+    private Button _play, _leaderboard, _mute, _help;
 
     //Sub menu elements
     private RelativeLayout _alpha;
@@ -74,6 +79,8 @@ public class MenuActivity extends Activity {
     //Other variables
     private int _index, _prevIndex;
 
+    private int _sWidth, _sHeight;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         vb  = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
@@ -86,6 +93,7 @@ public class MenuActivity extends Activity {
         };
         _muteIndex = 1;
 
+        getScreenSize();
         getElements();
         scale();
         initialise();
@@ -125,6 +133,7 @@ public class MenuActivity extends Activity {
         _play = (Button) findViewById(R.id.btnPlay);
         _leaderboard = (Button) findViewById(R.id.btnLeaderboard);
         _mute = (Button) findViewById(R.id.btnMute);
+        _help = (Button) findViewById(R.id.btnHelp);
 
         _alpha = (RelativeLayout) findViewById(R.id.alphaLayer);
         _subMenu = (RelativeLayout) findViewById(R.id.playSub);
@@ -336,15 +345,9 @@ public class MenuActivity extends Activity {
                 String player2Name = _player2Name.getText().toString();
 
                 if (player1Name.equals(placeHolder) || player1Name.equals("")) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(MenuActivity.this).setMessage(R.string.msg_Player1Name);
-                    AlertDialog dialog = builder.show();
-                    TextView msg = (TextView) dialog.findViewById(android.R.id.message);
-                    msg.setGravity(Gravity.CENTER); msg.setTextColor(Color.BLACK); msg.setTextSize(25);
+                    makeDialog(R.string.msg_Player1Name, Gravity.CENTER, 25, false);
                 } else if(player2Name.equals(placeHolder) || player2Name.equals("")) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(MenuActivity.this).setMessage(R.string.msg_Player2Name);
-                    AlertDialog dialog = builder.show();
-                    TextView msg = (TextView) dialog.findViewById(android.R.id.message);
-                    msg.setGravity(Gravity.CENTER); msg.setTextColor(Color.BLACK); msg.setTextSize(25);
+                    makeDialog(R.string.msg_Player2Name, Gravity.CENTER, 25, false);
                 } else {
                     //do 2 player play method
                     //use _player1Name as player 1's name, and _player2Name as player 2's name
@@ -370,10 +373,7 @@ public class MenuActivity extends Activity {
                 String player2Name = getAiName(difficulty);
 
                 if (player1Name.equals(placeHolder) || player1Name.equals("")) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(MenuActivity.this).setMessage(R.string.msg_PlayerName);
-                    AlertDialog dialog = builder.show();
-                    TextView msg = (TextView) dialog.findViewById(android.R.id.message);
-                    msg.setGravity(Gravity.CENTER); msg.setTextColor(Color.BLACK); msg.setTextSize(25);
+                    makeDialog(R.string.msg_PlayerName, Gravity.CENTER, 25, false);
                 } else {
                     //do ai play method
                     //use _player1Name as player's name
@@ -397,15 +397,9 @@ public class MenuActivity extends Activity {
                 String firstPlayerName = _player1Name.getText().toString();
                 String ipAddress = _ipAddressToJoin.getText().toString();
                 if (firstPlayerName.equals(placeHolder) || firstPlayerName.equals("")) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(MenuActivity.this).setMessage(R.string.msg_PlayerName);
-                    AlertDialog dialog = builder.show();
-                    TextView msg = (TextView) dialog.findViewById(android.R.id.message);
-                    msg.setGravity(Gravity.CENTER); msg.setTextColor(Color.BLACK); msg.setTextSize(25);
+                    makeDialog(R.string.msg_PlayerName, Gravity.CENTER, 25, false);
                 } else if(ipAddress.equals(placeHolder) || ipAddress.equals("")) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(MenuActivity.this).setMessage(R.string.msg_IPAddress);
-                    AlertDialog dialog = builder.show();
-                    TextView msg = (TextView) dialog.findViewById(android.R.id.message);
-                    msg.setGravity(Gravity.CENTER); msg.setTextColor(Color.BLACK); msg.setTextSize(25);
+                    makeDialog(R.string.msg_IPAddress, Gravity.CENTER, 25, false);
                 } else {
                     //do remote play method
                     //use _player1Name as player 1's name
@@ -436,7 +430,45 @@ public class MenuActivity extends Activity {
                 }
             }
         });
+
+        _help.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                vb.vibrate(25);
+                makeDialog(R.string.msg_Help, Gravity.LEFT, 15, true);
+            }
+        });
     }
+
+    private void getScreenSize() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        WindowManager wm = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
+        wm.getDefaultDisplay().getMetrics(displayMetrics);
+        _sWidth = displayMetrics.widthPixels;
+        _sHeight = displayMetrics.heightPixels;
+    }
+
+    private void makeDialog(int message, int gravity, float textSize, boolean changeSize) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MenuActivity.this).setMessage(message);
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                vb.vibrate(25);
+                dialog.cancel();
+            }
+        });
+        AlertDialog dialog = builder.show();
+        Button button = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        button.setBackgroundResource(R.drawable.roundedbuttonblack);
+        button.setTextColor(Color.WHITE);
+        if(changeSize) {
+            WindowManager.LayoutParams params = new WindowManager.LayoutParams();
+            params.copyFrom(dialog.getWindow().getAttributes());
+            params.width = (int)(_sWidth/1.1);
+            params.height = (int)(_sHeight/1.2);
+            dialog.getWindow().setAttributes(params);
+        }
+        TextView msg = (TextView) dialog.findViewById(android.R.id.message);
+        msg.setGravity(gravity); msg.setTextColor(Color.BLACK); msg.setTextSize(textSize);    }
 
     /**
      * updates the menu to show and hide elements

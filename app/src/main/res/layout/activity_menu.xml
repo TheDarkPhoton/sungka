@@ -77,8 +77,19 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_marginLeft="10dp"
+            android:layout_marginBottom="10dp" />
+
+        <Button
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/btnHelp"
+            android:background="@drawable/help"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="10dp"
             android:layout_marginBottom="10dp"
-            android:backgroundTint="#000000" />
+            android:gravity="center|fill" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -142,7 +153,6 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/str_NameHolder"
                         android:id="@+id/txtPlayerName"
                         android:textColor="#000000"
                         android:textSize="25sp"
@@ -151,7 +161,8 @@
                         android:background="#ffffff"
                         android:editable="true"
                         android:focusable="true"
-                        android:focusableInTouchMode="true" />
+                        android:focusableInTouchMode="true"
+                        android:hint="@string/str_NameHolder" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -308,7 +319,6 @@
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="@string/str_NameHolder"
                                 android:id="@+id/txtPlayerName2"
                                 android:textColor="#000000"
                                 android:textSize="25sp"
@@ -317,7 +327,8 @@
                                 android:background="#ffffff"
                                 android:focusableInTouchMode="true"
                                 android:focusable="true"
-                                android:editable="true" />
+                                android:editable="true"
+                                android:hint="@string/str_NameHolder" />
 
                         </LinearLayout>
 
@@ -550,7 +561,6 @@
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="@string/str_NameHolder"
                                 android:id="@+id/txtIpEntry"
                                 android:textColor="#000000"
                                 android:textSize="25sp"
@@ -559,7 +569,8 @@
                                 android:background="#ffffff"
                                 android:editable="true"
                                 android:focusable="true"
-                                android:focusableInTouchMode="true" />
+                                android:focusableInTouchMode="true"
+                                android:hint="@string/str_IPHolder" />
 
                         </LinearLayout>
 

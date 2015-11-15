@@ -23,7 +23,8 @@
     <string name="str_playerDisconnectedTitle">Player Disconnected</string>
     <string name="str_playerDisconnected">It seems the other player left (rage quit).</string>
     <string name="str_Player">Player</string>
-    <string name="str_NameHolder">&#8230;</string>
+    <string name="str_NameHolder">Name</string>
+    <string name="str_IPHolder">IP Address</string>
     <string name="str_VS">VS</string>
     <string name="str_Ai">AI</string>
     <string name="str_Remote">Remote</string>
@@ -39,9 +40,9 @@
     <string name="msg_Player1Name">Please enter player 1 name!</string>
     <string name="msg_Player2Name">Please enter player 2 name!</string>
     <string name="msg_IPAddress">Please enter an IP address!</string>
+    <string name="msg_ReturnToMenu">Return to main menu</string>
     <string name="str_no_stats_data">There are no statistics data. Try playing more games!</string>
     <string name="str_Mute">Mute\nMusic</string>
-    <string name="msg_ReturnToMenu">Return to main menu</string>
     <string-array name="ai_names">
         <item>Easy Pete</item>
         <item>Average Alan</item>
@@ -50,5 +51,10 @@
     <string name="str_tapWhenYourReady">Tap when you\'re ready for countdown\!</string>
     <string name="str_tapAShells">Choose your starting shell</string>
     <string name="str_ConnectionEst">Connection Established</string>
-
+    <string name="msg_Help"><b>How to play:</b>
+        \nYour cups are the 7 facing you and your store is the larger cup on your right.
+        \nAt the start of the game, press a cup on your side after the countdown finishes. The first player to distribute their shells gets the first move.
+        \nIf the last shell to be distributed lands in your store, you get another move.
+        \nIf the last shell to be distributed lands in one of your empty cups, the shells from the opposite cup are moved to your store.
+        \nThe game ends when no shells exist in the cups, and the player with the most shells in their store wins.</string>
 </resources>
