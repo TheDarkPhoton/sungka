@@ -308,7 +308,8 @@ public class MenuActivity extends Activity {
         _player1Name.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
+                String holder = getResources().getString(R.string.str_NameHolder);
+                if (hasFocus && _player1Name.getText().toString().equals(holder)) {
                     _player1Name.setText("");
                 }
             }
@@ -317,7 +318,8 @@ public class MenuActivity extends Activity {
         _player2Name.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
+                String holder = getResources().getString(R.string.str_NameHolder);
+                if (hasFocus && _player2Name.getText().toString().equals(holder)) {
                     _player2Name.setText("");
                 }
             }
@@ -438,6 +440,8 @@ public class MenuActivity extends Activity {
      * updates the menu to show and hide elements
      */
     private void updateView() {
+        updatePlayerNames();
+
         switch(_index) {
             case 0:
                 _mainMenu.setVisibility(View.VISIBLE);
@@ -516,6 +520,18 @@ public class MenuActivity extends Activity {
                 _layoutHost.setVisibility(View.GONE);
                 _layoutJoin.setVisibility(View.VISIBLE);
                 break;
+        }
+    }
+
+    private void updatePlayerNames() {
+        String holder = getResources().getString(R.string.str_NameHolder);
+
+        if (_player1Name.getText().toString().isEmpty()) {
+            _player1Name.setText(holder);
+        }
+
+        if (_player2Name.getText().toString().isEmpty()) {
+            _player2Name.setText(holder);
         }
     }
 
