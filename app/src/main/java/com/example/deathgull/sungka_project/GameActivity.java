@@ -598,50 +598,62 @@ public class GameActivity extends Activity {
                 case PLAYER_A_WAS_ROBBED_OF_HIS_FINAL_MOVE:
                     _messageManager.playerGotRobbedOfHisFinalMove(_board.getPlayerA());
                     Log.i(TAG, _board.getPlayerA().getName() + " was robbed of his final move... " + _board.getPlayerB().getName() + " gets another turn.");
+                    checkGameOver();
                     break;
                 case PLAYER_B_WAS_ROBBED_OF_HIS_FINAL_MOVE:
                     _messageManager.playerGotRobbedOfHisFinalMove(_board.getPlayerB());
                     Log.i(TAG, _board.getPlayerB().getName() + " was robbed of his final move... " + _board.getPlayerA().getName() + " gets another turn.");
+                    checkGameOver();
                     break;
                 case GAME_OVER:
-                    _messageManager.gameOver(_board.isDraw(), _board.getWinningPlayer());
-                    Log.i(TAG, "Game Over!!!");
-                    if(usersConnection != null){
-                        usersConnection.stopPings();
-                        usersConnection.stopPings();
-                    }
-                   /* for (int i = 0; i < _board.getMoves().size(); i++) {
-                        Pair<Player, Integer> move = _board.getMoves().get(i);
-                        Log.i(TAG, i + ": " + move.second + " -> " + move.first.getName());
-                    }*/
-                    ArrayList<PlayerStatistic> playerStatistics = readStats(getApplicationContext());//read the stats
-                    //store the leaderboard data for non online games
-                    if(!(_board.getPlayerA() instanceof RemoteHuman)){//if the first player isnt a remote human than store data for them
-                        updateList(_board.getPlayerA(),playerStatistics);
-                    }
-                    if(!(_board.getPlayerB() instanceof RemoteHuman)){//if the second player isnt a remote human than store data for them
-                        updateList(_board.getPlayerB(),playerStatistics);
-                    }
-                    try {
-                        storeStats(playerStatistics);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                    // Return to main menu after 5 seconds
-                    Log.v(TAG,"Finish the game");
-                    Handler h = new Handler();
-                    h.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            finish();
-                        }
-                    }, 5000);
+                    doGameOver();
                     break;
             }
         }
 
         msgs.clear();
+    }
+
+    private void checkGameOver() {
+        if (!(_board.getPlayerA().hasValidMove() || _board.getPlayerB().hasValidMove())) {
+            doGameOver();
+        }
+    }
+
+    private void doGameOver() {
+        _messageManager.gameOver(_board.isDraw(), _board.getWinningPlayer());
+        Log.i(TAG, "Game Over!!!");
+        if(usersConnection != null){
+            usersConnection.stopPings();
+            usersConnection.stopPings();
+        }
+                   /* for (int i = 0; i < _board.getMoves().size(); i++) {
+                        Pair<Player, Integer> move = _board.getMoves().get(i);
+                        Log.i(TAG, i + ": " + move.second + " -> " + move.first.getName());
+                    }*/
+        ArrayList<PlayerStatistic> playerStatistics = readStats(getApplicationContext());//read the stats
+        //store the leaderboard data for non online games
+        if(!(_board.getPlayerA() instanceof RemoteHuman)){//if the first player isnt a remote human than store data for them
+            updateList(_board.getPlayerA(),playerStatistics);
+        }
+        if(!(_board.getPlayerB() instanceof RemoteHuman)){//if the second player isnt a remote human than store data for them
+            updateList(_board.getPlayerB(),playerStatistics);
+        }
+        try {
+            storeStats(playerStatistics);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Return to main menu after 5 seconds
+        Log.v(TAG,"Finish the game");
+        Handler h = new Handler();
+        h.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                finish();
+            }
+        }, 5000);
     }
 
     /**

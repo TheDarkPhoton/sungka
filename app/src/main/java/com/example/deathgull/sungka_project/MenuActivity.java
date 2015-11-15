@@ -271,18 +271,19 @@ public class MenuActivity extends Activity {
         });
 
         _previous.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
+            @Override
+            public void onClick(View v) {
                 _index = _prevIndex;
                 vb.vibrate(25);
                 updateView();
-                if(_index == 1) {
+                if (_index == 1) {
                     _prevIndex = 0;
                 }
-                if(_index == 4) {
+                if (_index == 4) {
                     _prevIndex = 1;
                 }
                 //if its hosting
-                if(GameActivity.getUsersConnection() != null){
+                if (GameActivity.getUsersConnection() != null) {
                     GameActivity.getUsersConnection().cancel(true);//if its hosting a game and you press back, cancel it
                     _waiting.setText(R.string.str_Waiting);//set the text back to its original state
                 }
@@ -301,6 +302,24 @@ public class MenuActivity extends Activity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+
+        _player1Name.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    _player1Name.setText("");
+                }
+            }
+        });
+
+        _player2Name.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    _player2Name.setText("");
+                }
             }
         });
 
