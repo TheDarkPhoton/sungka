@@ -80,6 +80,9 @@ public class MessageManager {
                 _bottom.displayPermanentMessage(R.string.str_YouLost);
             }
         }
+
+        _top.setIsGameover(true);
+        _bottom.setIsGameover(true);
     }
 
     /**

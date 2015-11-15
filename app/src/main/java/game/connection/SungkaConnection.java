@@ -27,6 +27,7 @@ public abstract class SungkaConnection extends AsyncTask<String,Integer,Boolean>
     protected GameActivity gameActivity;
     private String otherName;
     private Handler connectionLostHandler = new Handler();
+    private boolean pingAgain = true;
     private Handler pingHandler = new Handler();
     protected Runnable pingOther = new Runnable() {
         @Override
@@ -119,7 +120,9 @@ public abstract class SungkaConnection extends AsyncTask<String,Integer,Boolean>
      */
     public void ping(){
     //    Log.v(TAG,"About to send a ping in 50ms");
-        pingHandler.postDelayed(pingOther, 50);
+        if(pingAgain) {
+            pingHandler.postDelayed(pingOther, 50);
+        }
     }
 
     /**
@@ -127,27 +130,28 @@ public abstract class SungkaConnection extends AsyncTask<String,Integer,Boolean>
      */
     public void stopPings(){
         Log.v(TAG,"Stopped pings");
+        pingAgain = false;
         pingHandler.removeCallbacks(pingOther);
 
     }
 
     protected void onPostExecute(Boolean result){
         super.onPostExecute(result);
-        Log.v(TAG, "Connection Established");
-       /* if(result == false){
-            //didnt connect
-        }else {*/
-        // listenForClientHandler.postDelayed(listenForClient, 50);//start the listenForClient runnable thread in 50 ms
-        GameActivity.setConnection(this);
-        menuActivity.connectionHasEstablished();
-        try {
-            menuActivity.setSecondPlayerName(connectToSendNames(playerName));
-            menuActivity.startGameActivity();
-        } catch (Exception e) {
-            //wasnt able to connect
-            e.printStackTrace();
+        if(result) {
+            Log.v(TAG, "Connection Established");
+            GameActivity.setConnection(this);
+            menuActivity.connectionHasEstablished();
+            try {
+                menuActivity.setSecondPlayerName(connectToSendNames(playerName));
+                menuActivity.startGameActivity();
+            } catch (Exception e) {
+                //wasnt able to connect
+                e.printStackTrace();
+            }
+        }else{
+            Log.v(TAG,"Error connecting");
+            menuActivity.showToast("Invalid IP Adress");
         }
-        // }
     }
 
 

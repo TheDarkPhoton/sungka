@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.example.deathgull.sungka_project.GameActivity;
 import com.example.deathgull.sungka_project.R;
 
 import game.player.Player;
@@ -21,7 +20,7 @@ public class YourMoveTextView extends TextView {
     private boolean _isCurrentTurn = true;
     private boolean _isPermanentMessageShown = false;
     private Player _player;
-
+    private boolean _isGameover = false;
 
     /**
      * Constructor
@@ -36,9 +35,7 @@ public class YourMoveTextView extends TextView {
         );
         this.setLayoutParams(_layoutParams);
 
-        if (!GameActivity.IS_TEST) {
-            this.setText(R.string.str_tapWhenYourReady);
-        }
+        this.safeSetText(R.string.str_tapWhenYourReady);
 
         this.setGravity(Gravity.CENTER);
 
@@ -61,7 +58,7 @@ public class YourMoveTextView extends TextView {
      * @param stringResource of the string to display
      */
     public void displayTemporaryMessage(@StringRes int stringResource) {
-        setText(stringResource);
+        safeSetText(stringResource);
 
         _temporaryMessageDisplayed = true;
         h.postDelayed(new Runnable() {
@@ -84,11 +81,11 @@ public class YourMoveTextView extends TextView {
      * @param stringResource of the string to display
      */
     public void displayPermanentMessage(@StringRes int stringResource) {
-        setText(stringResource);
+        safeSetText(stringResource);
     }
 
     public void displayPermanentMessage(String string) {
-        setText(string);
+        safeSetText(string);
     }
 
     /**
@@ -96,9 +93,9 @@ public class YourMoveTextView extends TextView {
      */
     private void revertToDefault() {
         if (_isCurrentTurn) {
-            setText(R.string.str_YourTurn);
+            safeSetText(R.string.str_YourTurn);
         } else {
-            setText("");
+            safeSetText("");
         }
     }
 
@@ -111,5 +108,21 @@ public class YourMoveTextView extends TextView {
         if (!_temporaryMessageDisplayed) {
             revertToDefault();
         }
+    }
+    
+    private void safeSetText(String text) {
+        if (!_isGameover) {
+            setText(text);
+        }
+    }
+    
+    private void safeSetText(@StringRes int text) {
+        if (!_isGameover) {
+            setText(text);
+        }
+    }
+
+    public void setIsGameover(boolean _isGameover) {
+        this._isGameover = _isGameover;
     }
 }

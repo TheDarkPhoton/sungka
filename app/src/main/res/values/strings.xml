@@ -40,6 +40,8 @@
     <string name="msg_Player2Name">Please enter player 2 name!</string>
     <string name="msg_IPAddress">Please enter an IP address!</string>
     <string name="str_no_stats_data">There are no statistics data. Try playing more games!</string>
+    <string name="str_Mute">Mute\nMusic</string>
+    <string name="msg_ReturnToMenu">Return to main menu</string>
     <string-array name="ai_names">
         <item>Easy Pete</item>
         <item>Average Alan</item>
@@ -47,5 +49,6 @@
     </string-array>
     <string name="str_tapWhenYourReady">Tap when you\'re ready for countdown\!</string>
     <string name="str_tapAShells">Choose your starting shell</string>
+    <string name="str_ConnectionEst">Connection Established</string>
 
 </resources>

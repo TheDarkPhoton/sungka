@@ -92,7 +92,10 @@ public class HandOfShells {
             if (_board.isPlayerA(_player)) {
                 if (_board.getPlayerB().hasValidMove()) {
                     _board.addStateMessage(BoardState.PLAYER_B_WAS_ROBBED);
-                    _board.addStateMessage(BoardState.PLAYER_B_TURN);
+                    if (!checkGameOver()) {
+                        _board.addStateMessage(BoardState.PLAYER_B_TURN);
+
+                    }
                 }
                 else {
                     _board.addStateMessage(BoardState.PLAYER_B_WAS_ROBBED_OF_HIS_FINAL_MOVE);
@@ -101,7 +104,10 @@ public class HandOfShells {
             else if (_board.isPlayerB(_player)) {
                 if (_board.getPlayerA().hasValidMove()) {
                     _board.addStateMessage(BoardState.PLAYER_A_WAS_ROBBED);
-                    _board.addStateMessage(BoardState.PLAYER_A_TURN);
+                    if (!checkGameOver()) {
+                        _board.addStateMessage(BoardState.PLAYER_A_TURN);
+
+                    }
                 }
                 else {
                     _board.addStateMessage(BoardState.PLAYER_A_WAS_ROBBED_OF_HIS_FINAL_MOVE);
@@ -150,6 +156,14 @@ public class HandOfShells {
         }
 
         return hand;
+    }
+
+    private boolean checkGameOver() {
+        if (!(_board.getPlayerA().hasValidMove() || _board.getPlayerB().hasValidMove())) {
+            _board.addStateMessage(BoardState.GAME_OVER);
+            return true;
+        }
+        return false;
     }
 
     /**

@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.deathgull.sungka_project.GameActivity;
+import com.example.deathgull.sungka_project.MenuActivity;
 import com.example.deathgull.sungka_project.R;
 
 import java.util.ArrayList;
@@ -339,6 +340,7 @@ public class CupButton extends Button implements View.OnTouchListener {
     public boolean onTouch(View v, MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                MenuActivity.vb.vibrate(25);
                 scaleUp();
                 break;
             case MotionEvent.ACTION_UP:
@@ -401,8 +403,7 @@ public class CupButton extends Button implements View.OnTouchListener {
         alphaAnimation.setFillAfter(true);
         startAnimation(alphaAnimation);
 
-
-        Log.i("Cup Button", toValue + " toAlpha");
+//        Log.i("Cup Button", toValue + " toAlpha");
 
         _opacity = toValue;
     }

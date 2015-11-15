@@ -2,18 +2,28 @@ package com.example.deathgull.sungka_project;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.media.MediaPlayer;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
+import android.media.SoundPool;
+import android.opengl.Visibility;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.support.v4.content.res.ResourcesCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -21,6 +31,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.ImageView;
@@ -28,7 +39,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -51,6 +61,7 @@ import helpers.backend.PauseThreadFor;
 import helpers.backend.PauseThreadWhile;
 import helpers.frontend.CupButton;
 import helpers.frontend.MessageManager;
+import helpers.frontend.MusicService;
 import helpers.frontend.PlayerNameTextView;
 import helpers.frontend.ShellTranslation;
 
@@ -59,7 +70,6 @@ public class GameActivity extends Activity {
     public static final String PLAYER_TWO = "playerTwoName";
     public static final String IS_ONLINE = "is_online_game";
     public static final String AI_DIFF = "ai_difficulty";
-    public static boolean IS_TEST;
 
     private static final String TAG = "GameActivity";
     private static final String fileName = "player_statistics";
@@ -72,7 +82,6 @@ public class GameActivity extends Activity {
     private GridLayout _layoutBase;                                                                 //Base layout
 
     private CupButton[] _cupButtons;
-    private Game _game;
     private Board _board;
 
     private MessageManager _messageManager;
@@ -86,15 +95,17 @@ public class GameActivity extends Activity {
     private boolean isPlayerAReady = false;
     private boolean isPlayerBReady = false;
     private LinearLayout readyAreaView;
-    private PlayerNameTextView[] _playerTextViews;
 
+    private SoundPool _soundPool;
+    private int _soundShell, _soundStore;
+    private boolean _soundsLoaded;
 
     private PlayerActionAdapter _playerActionListener = new PlayerActionAdapter() {
         @Override
         public void onMoveStart(Player player) {
             Log.i(TAG, player.getName() + " started his turn");
             _messageManager.onMoveStart(player);
-            
+
             if (player instanceof Human && _board.getCurrentPlayer() != null) {
                 setupMove(player);
             }
@@ -102,6 +113,8 @@ public class GameActivity extends Activity {
 
         @Override
         public void onMove(final Player player, final int index) {
+            _messageManager.onMoveEnd(player);
+
             if (_board.getCurrentPlayer() != null)
                 dehighlightAllCups();
 
@@ -142,7 +155,6 @@ public class GameActivity extends Activity {
 
         @Override
         public void onMoveEnd(Player player) {
-            _messageManager.onMoveEnd(player);
             Log.i(TAG, player.getName() + " ended his turn");
         }
     };
@@ -157,26 +169,51 @@ public class GameActivity extends Activity {
                         FrameLayout.LayoutParams.MATCH_PARENT,
                         FrameLayout.LayoutParams.MATCH_PARENT));
 
-        shells =new Drawable[]{
+
+        shells = new Drawable[] {
                 ResourcesCompat.getDrawable(getResources(), R.drawable.shell1, null),
                 ResourcesCompat.getDrawable(getResources(), R.drawable.shell2, null),
                 ResourcesCompat.getDrawable(getResources(), R.drawable.shell3, null),
                 ResourcesCompat.getDrawable(getResources(), R.drawable.shell4, null),
         };
 
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            AudioAttributes _attributes = new AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .setUsage(AudioAttributes.USAGE_GAME)
+                    .build();
+
+            _soundPool = new SoundPool.Builder()
+                    .setMaxStreams(25)
+                    .setAudioAttributes(_attributes)
+                    .build();
+        } else {
+            //noinspection deprecation
+            _soundPool = new SoundPool(25, AudioManager.STREAM_MUSIC, 0);
+        }
+
+        _soundsLoaded = false;
+        _soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+            @Override public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+                _soundsLoaded = true;
+            }
+        });
+
+        _soundShell = _soundPool.load(this, R.raw.shell, 1);
+        _soundStore = _soundPool.load(this, R.raw.cash, 1);
+
         Bundle bundle = getIntent().getExtras();
         String firstName = bundle.getString(PLAYER_ONE);
         String secondName = bundle.getString(PLAYER_TWO);
         int aiDiff = bundle.getInt(AI_DIFF, 0);
         boolean isOnlineGame = bundle.getBoolean(IS_ONLINE, false);
-        IS_TEST = bundle.getBoolean("is_test", false);
         Log.v(TAG,"Its an online game? "+isOnlineGame);
 
         if(isOnlineGame){
             usersConnection.setActivity(this);
         }
 
-        _game = new Game(_playerActionListener,isOnlineGame,firstName,secondName,aiDiff);
+        Game _game = new Game(_playerActionListener, isOnlineGame, firstName, secondName, aiDiff);
 
         _board = _game.getBoard();
 
@@ -184,6 +221,8 @@ public class GameActivity extends Activity {
         setScreenSize();                                            //Set screen size
         initLayouts();                                              //Setup layouts
         initView();                                                 //Programmatically create and lay out elements
+
+        doBindService();
     }
 
     /**
@@ -238,11 +277,6 @@ public class GameActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
     /**
      * Hide navigation bar and system bar for all API levels
      */
@@ -290,12 +324,9 @@ public class GameActivity extends Activity {
                     btn.initShellLocation();
                 }
 
-                if (IS_TEST) {
-                    _countdownMode = false;
-                    _board.getPlayerA().moveStart();
-                } else {
-                    setupReadyScreen();
-                }
+                initReturnButtonLocation();
+
+                setupReadyScreen();
 
                 _layoutMaster.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             }
@@ -374,17 +405,19 @@ public class GameActivity extends Activity {
         for(int i = 0; i < 7; i++) {
             //PLAYER shell cups
             initCupButtonSmall("cup1_" + (i + 1), i, 2, bottomColumnIndex++, CupButton.PLAYER_A);
-            initCupButtonSmall("cup2_" + (i + 1), i + 8, 0, topColumnIndex--, CupButton.PLAYER_B);
+            initCupButtonSmall("cup2_" + (i + 9), i + 8, 0, topColumnIndex--, CupButton.PLAYER_B);
         }
 
         //PLAYER stores
         initCupButton("cup1_store", 7, 1, 8, CupButton.PLAYER_A, CupButton.STORE);
         initCupButton("cup2_store", 15, 1, 0, CupButton.PLAYER_B, CupButton.STORE);
 
+        initReturnButton();
+
         _messageManager = new MessageManager(this, _layoutMaster);
 
         // Setup Player views
-        _playerTextViews = new PlayerNameTextView[2];
+        PlayerNameTextView[] _playerTextViews = new PlayerNameTextView[2];
 
         _playerTextViews[0] = new PlayerNameTextView(this, _board.getPlayerA());
         _playerTextViews[1] = new PlayerNameTextView(this, _board.getPlayerB());
@@ -406,13 +439,57 @@ public class GameActivity extends Activity {
     }
 
     /**
+     * Put a button which wil appear at the end of the game into the layout.
+     */
+    private void initReturnButton() {
+        Button btnReturn = new Button(this);
+
+        // set up layout
+        FrameLayout.LayoutParams paramsButton = new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT);
+
+        btnReturn.setBackgroundResource(R.drawable.roundedbuttonwhite);
+        btnReturn.setTextColor(Color.BLACK);
+        btnReturn.setTextSize(TypedValue.COMPLEX_UNIT_PX, 25);
+        btnReturn.setText(getResources().getString(R.string.msg_ReturnToMenu));
+        btnReturn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        btnReturn.setLayoutParams(paramsButton);
+        _layoutMaster.addView(btnReturn);
+
+        int id = getResources().getIdentifier("btn_ReturnToMenu", "id", getPackageName());
+        btnReturn.setId(id);
+
+    }
+
+    /**
+     * Set the position of the "return to game" button.
+     */
+    private void initReturnButtonLocation() {
+        Button btnReturn = (Button) findViewById(R.id.btn_ReturnToMenu);
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        WindowManager wm = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
+        wm.getDefaultDisplay().getMetrics(displayMetrics);
+
+        btnReturn.setX((displayMetrics.widthPixels - btnReturn.getWidth()) / 2.0f);
+        btnReturn.setY(displayMetrics.heightPixels / 2.0f);
+        btnReturn.setVisibility(View.GONE);
+    }
+
+    /**
      * Recursive animation method, performs single animation from cup a to cup b.
      * @param hand Used to control the state of the backend.
      * @param images Images to be moved from the clicked cup.
      * @param duration Duration of the animation.
      */
     private void moveShellsRec(final HandOfShells hand, final ArrayList<View> images, final int duration) {
-        int index = hand.getNextCup();
+        final int index = hand.getNextCup();
         final CupButton b = _cupButtons[index];
 
         final ArrayList<ShellTranslation> animations = new ArrayList<>();
@@ -423,16 +500,16 @@ public class GameActivity extends Activity {
             animations.get(i).startAnimation();
         }
 
-        if (index == 7 || index == 15) {
-            playSound(R.raw.cash);
-        } else {
-            playSound(R.raw.gunfire);
-        }
-
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
                 new PauseThreadWhile<>(animations, "hasEnded", false);
+
+                if (index == 7 || index == 15) {
+                    playSound(_soundStore);
+                } else {
+                    playSound(_soundShell);
+                }
 
                 Handler h = new Handler(_context.getMainLooper());
                 h.post(new Runnable() {
@@ -475,7 +552,7 @@ public class GameActivity extends Activity {
         final ArrayList<View> images = robbedCup.getShells();
         images.addAll(activatorCup.getShells());
 
-        playSound(R.raw.cash);
+        playSound(_soundStore);
 
         final ArrayList<ShellTranslation> animations = new ArrayList<>();
         for (int i = 0; i < images.size(); i++) {
@@ -528,14 +605,6 @@ public class GameActivity extends Activity {
     }
 
     /**
-     * A check to see whether shell animations are running.
-     * @return true if all shell animations have finished.
-     */
-    public boolean animationFinished() {
-        return !PlayerActionAdapter.isAnimationInProgress();
-    }
-
-    /**
      * Displays messages that explains what happened during animation. TODO Display info messages on the screen.
      */
     private void processBoardMessages(){
@@ -575,51 +644,55 @@ public class GameActivity extends Activity {
                 case PLAYER_A_WAS_ROBBED_OF_HIS_FINAL_MOVE:
                     _messageManager.playerGotRobbedOfHisFinalMove(_board.getPlayerA());
                     Log.i(TAG, _board.getPlayerA().getName() + " was robbed of his final move... " + _board.getPlayerB().getName() + " gets another turn.");
+                    checkGameOver();
                     break;
                 case PLAYER_B_WAS_ROBBED_OF_HIS_FINAL_MOVE:
                     _messageManager.playerGotRobbedOfHisFinalMove(_board.getPlayerB());
                     Log.i(TAG, _board.getPlayerB().getName() + " was robbed of his final move... " + _board.getPlayerA().getName() + " gets another turn.");
+                    checkGameOver();
                     break;
                 case GAME_OVER:
-                    _messageManager.gameOver(_board.isDraw(), _board.getWinningPlayer());
-                    Log.i(TAG, "Game Over!!!");
-                    if(usersConnection != null){
-                        usersConnection.stopPings();
-                        usersConnection.stopPings();
-                    }
-                   /* for (int i = 0; i < _board.getMoves().size(); i++) {
-                        Pair<Player, Integer> move = _board.getMoves().get(i);
-                        Log.i(TAG, i + ": " + move.second + " -> " + move.first.getName());
-                    }*/
-                    ArrayList<PlayerStatistic> playerStatistics = readStats(getApplicationContext());//read the stats
-                    //store the leaderboard data for non online games
-                    if(!(_board.getPlayerA() instanceof RemoteHuman)){//if the first player isnt a remote human than store data for them
-                        updateList(_board.getPlayerA(),playerStatistics);
-                    }
-                    if(!(_board.getPlayerB() instanceof RemoteHuman)){//if the second player isnt a remote human than store data for them
-                        updateList(_board.getPlayerB(),playerStatistics);
-                    }
-                    try {
-                        storeStats(playerStatistics);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                    // Return to main menu after 5 seconds
-                    Log.v(TAG,"Finish the game");
-                    Handler h = new Handler();
-                    h.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            finish();
-                        }
-                    }, 5000);
+                    doGameOver();
                     break;
             }
         }
 
         msgs.clear();
     }
+
+    private void checkGameOver() {
+        if (!(_board.getPlayerA().hasValidMove() || _board.getPlayerB().hasValidMove())) {
+            doGameOver();
+        }
+    }
+
+    private void doGameOver() {
+        _messageManager.gameOver(_board.isDraw(), _board.getWinningPlayer());
+        Log.i(TAG, "Game Over!!!");
+        if(usersConnection != null){
+            usersConnection.stopPings();
+
+        }
+
+        ArrayList<PlayerStatistic> playerStatistics = readStats(getApplicationContext());//read the stats
+        //store the leaderboard data for non online games
+        if(!(_board.getPlayerA() instanceof RemoteHuman)){//if the first player isnt a remote human than store data for them
+            updateList(_board.getPlayerA(),playerStatistics);
+        }
+        if(!(_board.getPlayerB() instanceof RemoteHuman)){//if the second player isnt a remote human than store data for them
+            updateList(_board.getPlayerB(),playerStatistics);
+        }
+        try {
+            storeStats(playerStatistics);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        ((Button) findViewById(R.id.btn_ReturnToMenu)).setVisibility(View.VISIBLE);
+
+    }
+
+
 
     /**
      * Highlight all the buttons that need highlighting
@@ -674,24 +747,7 @@ public class GameActivity extends Activity {
     public static void setUpHostConnection(MenuActivity menuActivity,String playerName){
         SungkaServer sungkaServer = new SungkaServer(4000,menuActivity,playerName);
         sungkaServer.execute();
-        /*try {
-            sungkaServer.get();//wait for the connection to be established; returns true if it is set up,else false
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }*/
-       // setConnection(sungkaServer);
-        /*String otherName = "";
-        try {
-            otherName = sungkaServer.connectToSendNames(playerName);//the name of the current player
-            Log.v(TAG,"Other name: "+otherName);
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return otherName;*/
+
     }
 
     /**
@@ -705,24 +761,7 @@ public class GameActivity extends Activity {
         // In the case of a client connecting to the server, the server needs to be set up before
         SungkaClient sungkaClient = new SungkaClient(ip,4000,playerName,menuActivity);//server ip and port need to be inserted by the user
         sungkaClient.execute();                 //this is a test one
-       /*try {
-            sungkaClient.get();//wait for the connection to be established; returns true if it is set up, else false
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-        /*setConnection(sungkaClient);
-        String otherName = "";
-        try {
-            otherName = sungkaClient.connectToSendNames(playerName);//the name of the current player
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        Log.v(TAG,"Other Name: "+otherName);
-        return otherName;*/
+
     }
 
     /**
@@ -779,8 +818,8 @@ public class GameActivity extends Activity {
         ArrayList<PlayerStatistic> playerStatistics = new ArrayList<>();
 
 
-        for (int i = 0; i < names.length; i++) {
-            PlayerStatistic playerStatistic = new PlayerStatistic(names[i]);
+        for (String name : names) {
+            PlayerStatistic playerStatistic = new PlayerStatistic(name);
             playerStatistic.setGamesPlayed(random.nextInt(50));
             playerStatistic.setGamesDrawn(random.nextInt(50));
             playerStatistic.setGamesWon(random.nextInt(50));
@@ -884,9 +923,9 @@ public class GameActivity extends Activity {
             Log.v(TAG,textInFile);
             if(!textInFile.equals("")) {
                 String[] players = textInFile.split("\n");
-                for (int i = 0; i < players.length; i++) {
-                    Log.v(TAG,players[i]);
-                    String[] info = players[i].split(",");//to get the individual data of a PlayerStatistic
+                for (String player : players) {
+                    Log.v(TAG, player);
+                    String[] info = player.split(",");//to get the individual data of a PlayerStatistic
                     String playerName = info[0];
                     String gamesPlayed = info[1];
                     String gamesWon = info[2];
@@ -904,29 +943,15 @@ public class GameActivity extends Activity {
                     playerStatistic.setMaxNumShellsCollected(Integer.valueOf(maxShellCollected));
                     playerStatistic.setMaxConsecutiveMoves(Integer.valueOf(maxConsecutiveMoves));
                     playerStatistics.add(playerStatistic);
-                    Log.v(TAG,playerStatistic.toString());
+                    Log.v(TAG, playerStatistic.toString());
                 }
                 Log.v(TAG,"Read in the file");
             }
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
         return playerStatistics;
-    }
-
-    private void playSound(int soundId) {
-       /* MediaPlayer mp = MediaPlayer.create(this, soundId);
-
-        switch (soundId) {
-            case R.raw.gunfire:
-                mp.setVolume(0.3f, 0.3f);
-                break;
-        }
-
-        mp.start();*/
     }
 
     private void setupReadyScreen() {
@@ -952,6 +977,7 @@ public class GameActivity extends Activity {
         View bottomView = new View(this);
         bottomView.setLayoutParams(params);
         readyAreaView.addView(bottomView);
+
 
         if (_board.getPlayerA() instanceof Human) {
             Log.i(TAG, "Player A is " + _board.getPlayerA());
@@ -987,6 +1013,7 @@ public class GameActivity extends Activity {
             isPlayerBReady = true;
             trySetupCountdown();
         }
+
     }
 
     private void trySetupCountdown() {
@@ -1009,6 +1036,19 @@ public class GameActivity extends Activity {
         }
     }
 
+    /**
+     * Plays a given sound
+     * @param sound - sound id to play
+     */
+    private void playSound(int sound) {
+        if(_soundsLoaded) {
+            _soundPool.play(sound, 1.0f, 1.0f, 1, 0, 1);
+        }
+    }
+
+    /**
+     * closes multiplayer connections when activity is closed
+     */
     public void onDestroy(){
         super.onDestroy();
         if(usersConnection != null){
@@ -1018,6 +1058,7 @@ public class GameActivity extends Activity {
                 e.printStackTrace();
             }
         }
+        doUnbindService();
     }
 
     @Override
@@ -1029,5 +1070,45 @@ public class GameActivity extends Activity {
     public void setPlayerBReady(){
         isPlayerBReady = true;
         trySetupCountdown();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(musicService != null) {
+            musicService.resumeMusic();
+        }
+    }
+    
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(musicService != null) {
+            musicService.pauseMusic();
+        }
+    }
+
+    private boolean isBound = false;
+    private MusicService musicService;
+    private ServiceConnection serviceConnection = new ServiceConnection(){
+        public void onServiceConnected(ComponentName name, IBinder binder) {
+            musicService = ((MusicService.ServiceBinder)binder).getService();
+        }
+
+        public void onServiceDisconnected(ComponentName name) {
+            musicService = null;
+        }
+    };
+
+    void doBindService(){
+        bindService(new Intent(this, MusicService.class), serviceConnection, Context.BIND_AUTO_CREATE);
+        isBound = true;
+    }
+
+    void doUnbindService() {
+        if(isBound) {
+            unbindService(serviceConnection);
+            isBound = false;
+        }
     }
 }

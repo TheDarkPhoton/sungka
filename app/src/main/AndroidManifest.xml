@@ -5,10 +5,11 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/shellup"
+        android:icon="@drawable/icon"
         android:label="@string/app_name"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
 
@@ -36,6 +37,7 @@
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.DeviceDefault.Light.NoActionBar.Fullscreen" >
         </activity>
-    </application>
 
+        <service android:name="helpers.frontend.MusicService" android:enabled="true"/>
+    </application>
 </manifest>

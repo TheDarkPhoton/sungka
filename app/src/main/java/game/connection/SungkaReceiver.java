@@ -34,7 +34,7 @@ public class SungkaReceiver implements Runnable{
         String fromOtherDevice;
         //check that buffered reader isnt null
         try {
-            while((fromOtherDevice = bufferedReader.readLine())!=null) {//text received from the other device
+            while( (fromOtherDevice = bufferedReader.readLine())!=null) {//text received from the other device
                 if (sungkaProtocol != null) {
                    // Log.v("SungkaReceiver",fromOtherDevice);
                     sungkaProtocol.updateGame(fromOtherDevice);
