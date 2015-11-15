@@ -19,4 +19,6 @@
     <item type="id" name="btn_ReturnToMenu" />
     <item type="id" name="moveTextPlayer1" />
     <item type="id" name="moveTextPlayer2" />
+    <item type="id" name="readyTopView" />
+    <item type="id" name="readyBottomView" />
 </resources>

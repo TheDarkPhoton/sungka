@@ -34,8 +34,8 @@ public class GameActivityTest extends ActivityInstrumentationTestCase2<GameActiv
 
         Intent intent = new Intent();
         intent.putExtras(bundle);
-        setActivityIntent(intent);
 
+        setActivityIntent(intent);
         setActivityInitialTouchMode(true);
 
         activity = getActivity();

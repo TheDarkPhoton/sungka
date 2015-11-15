@@ -1027,6 +1027,11 @@ public class GameActivity extends Activity {
             isPlayerBReady = true;
             trySetupCountdown();
         }
+
+        int idTop = getResources().getIdentifier("readyTopView", "id", getPackageName());
+        int idBot = getResources().getIdentifier("readyBottomView", "id", getPackageName());
+        topView.setId(idTop);
+        bottomView.setId(idBot);
     }
 
     private void trySetupCountdown() {

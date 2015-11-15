@@ -1,6 +1,8 @@
 package helpers.frontend;
 
 import android.content.Context;
+import android.util.Log;
+import android.view.View;
 import android.widget.FrameLayout;
 
 import com.example.deathgull.sungka_project.GameActivity;
@@ -145,8 +147,8 @@ public class MessageManager {
     }
 
     public void countdown(int number) {
-        _top.displayPermanentMessage("" + number);
-        _bottom.displayPermanentMessage("" + number);
+        _top.displayPermanentMessage(String.valueOf(number));
+        _bottom.displayPermanentMessage(String.valueOf(number));
     }
 
 }
