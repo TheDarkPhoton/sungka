@@ -133,21 +133,21 @@ public abstract class SungkaConnection extends AsyncTask<String,Integer,Boolean>
 
     protected void onPostExecute(Boolean result){
         super.onPostExecute(result);
-        Log.v(TAG, "Connection Established");
-       /* if(result == false){
-            //didnt connect
-        }else {*/
-        // listenForClientHandler.postDelayed(listenForClient, 50);//start the listenForClient runnable thread in 50 ms
-        GameActivity.setConnection(this);
-        menuActivity.connectionHasEstablished();
-        try {
-            menuActivity.setSecondPlayerName(connectToSendNames(playerName));
-            menuActivity.startGameActivity();
-        } catch (Exception e) {
-            //wasnt able to connect
-            e.printStackTrace();
+        if(result == true) {
+            Log.v(TAG, "Connection Established");
+            GameActivity.setConnection(this);
+            menuActivity.connectionHasEstablished();
+            try {
+                menuActivity.setSecondPlayerName(connectToSendNames(playerName));
+                menuActivity.startGameActivity();
+            } catch (Exception e) {
+                //wasnt able to connect
+                e.printStackTrace();
+            }
+        }else{
+            Log.v(TAG,"Error connecting");
+            menuActivity.showToast("Invalid IP Adress");
         }
-        // }
     }
 
 

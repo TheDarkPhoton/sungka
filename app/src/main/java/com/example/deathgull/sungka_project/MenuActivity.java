@@ -26,6 +26,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import helpers.frontend.MusicService;
 
 public class MenuActivity extends Activity {
@@ -636,5 +638,14 @@ public class MenuActivity extends Activity {
             unbindService(serviceConnection);
             isBound = false;
         }
+    }
+
+    /**
+     * Used to show a toast in the menu activity, with the given message
+     * @param message the message that you want to show in the Toast
+     */
+    public void showToast(String message){
+        Toast toast = Toast.makeText(getApplicationContext(),message,Toast.LENGTH_SHORT);
+        toast.show();
     }
 }

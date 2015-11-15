@@ -622,6 +622,7 @@ public class GameActivity extends Activity {
         if(usersConnection != null){
             usersConnection.stopPings();
             usersConnection.stopPings();
+
         }
                    /* for (int i = 0; i < _board.getMoves().size(); i++) {
                         Pair<Player, Integer> move = _board.getMoves().get(i);
@@ -705,24 +706,7 @@ public class GameActivity extends Activity {
     public static void setUpHostConnection(MenuActivity menuActivity,String playerName){
         SungkaServer sungkaServer = new SungkaServer(4000,menuActivity,playerName);
         sungkaServer.execute();
-        /*try {
-            sungkaServer.get();//wait for the connection to be established; returns true if it is set up,else false
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }*/
-       // setConnection(sungkaServer);
-        /*String otherName = "";
-        try {
-            otherName = sungkaServer.connectToSendNames(playerName);//the name of the current player
-            Log.v(TAG,"Other name: "+otherName);
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return otherName;*/
+
     }
 
     /**
@@ -736,24 +720,7 @@ public class GameActivity extends Activity {
         // In the case of a client connecting to the server, the server needs to be set up before
         SungkaClient sungkaClient = new SungkaClient(ip,4000,playerName,menuActivity);//server ip and port need to be inserted by the user
         sungkaClient.execute();                 //this is a test one
-       /*try {
-            sungkaClient.get();//wait for the connection to be established; returns true if it is set up, else false
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-        /*setConnection(sungkaClient);
-        String otherName = "";
-        try {
-            otherName = sungkaClient.connectToSendNames(playerName);//the name of the current player
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        Log.v(TAG,"Other Name: "+otherName);
-        return otherName;*/
+
     }
 
     /**
