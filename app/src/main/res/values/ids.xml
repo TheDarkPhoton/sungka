@@ -17,4 +17,6 @@
     <item type="id" name="cup2_7" />
     <item type="id" name="cup2_store" />
     <item type="id" name="btn_ReturnToMenu" />
+    <item type="id" name="moveTextPlayer1" />
+    <item type="id" name="moveTextPlayer2" />
 </resources>

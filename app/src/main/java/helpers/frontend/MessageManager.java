@@ -33,6 +33,12 @@ public class MessageManager {
         _parent.addView(_top);
         _parent.addView(_bottom);
 
+        // set ids on the text views
+        GameActivity activity = (GameActivity) context;
+        int idTop = activity.getResources().getIdentifier("moveTextPlayer2", "id", activity.getPackageName());
+        int idBot = activity.getResources().getIdentifier("moveTextPlayer1", "id", activity.getPackageName());
+        _top.setId(idTop);
+        _bottom.setId(idBot);
     }
 
     /**
