@@ -1,7 +1,7 @@
 package game.board;
 
 /**
- * Created by darkphoton on 27/10/15.
+ * Enumeration of the Board state
  */
 public enum BoardState {
     PLAYER_A_TURN,
