@@ -340,9 +340,7 @@ public class CupButton extends Button implements View.OnTouchListener {
     public boolean onTouch(View v, MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                if (!GameActivity.IS_TEST) {
-                    MenuActivity.vb.vibrate(25);
-                }
+                    GameActivity.vb.vibrate(25);
                 scaleUp();
                 break;
             case MotionEvent.ACTION_UP:

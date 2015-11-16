@@ -139,7 +139,8 @@ public class StatisticsActivity extends Activity {
             int a = 0;
             for (Map.Entry<String, Object> entry: playerStatistics.entrySet()) {
                 labelTextViews[a].setText(entry.getKey());
-                valueTextViews[a].setText("" + entry.getValue());
+//                valueTextViews[a].setText("" + entry.getValue());
+                valueTextViews[a].setText(String.format("%s", entry.getValue()));
                 a++;
             }
         }

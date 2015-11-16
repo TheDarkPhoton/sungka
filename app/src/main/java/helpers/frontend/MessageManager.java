@@ -60,6 +60,10 @@ public class MessageManager {
         }
     }
 
+    /**
+     * Called when a player ends a move
+     * @param player
+     */
     public void onMoveEnd(Player player) {
         if (player.getBoard().isPlayerA(player)) {
             _bottom.setIsCurrentTurn(false);

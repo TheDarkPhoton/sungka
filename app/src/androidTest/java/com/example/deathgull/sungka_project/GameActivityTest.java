@@ -48,7 +48,7 @@ public class GameActivityTest extends ActivityInstrumentationTestCase2<GameActiv
 
         while (animationRunning) {
             getInstrumentation().waitForIdleSync();
-            if (activity.animationFinished()) {
+            if (activity.animationFinished(false)) {
                 animationRunning = false;
             }
         }

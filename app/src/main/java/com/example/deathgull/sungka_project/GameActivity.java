@@ -19,6 +19,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Vibrator;
 import android.support.v4.content.res.ResourcesCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -76,6 +77,7 @@ public class GameActivity extends Activity {
     private static final String fileName = "player_statistics";
     public static final Random random = new Random();                                               //Object for random number generation
     public static Drawable[] shells;
+    public static Vibrator vb;
 
     private final Context _context = this;
 
@@ -156,12 +158,14 @@ public class GameActivity extends Activity {
 
         @Override
         public void onMoveEnd(Player player) {
+            _messageManager.onMoveEnd(player);
             Log.i(TAG, player.getName() + " ended his turn");
         }
     };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        vb  = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         super.onCreate(savedInstanceState);
 
         setContentView(
@@ -615,8 +619,13 @@ public class GameActivity extends Activity {
      * A check to see whether shell animations are running.
      * @return true if all shell animations have finished.
      */
-    public boolean animationFinished() {
-        return !PlayerActionAdapter.isAnimationInProgress();
+    public boolean animationFinished(boolean isFirstTurn) {
+        if (isFirstTurn) {
+            return _board.getPlayerA().isFirstMovesExhausted() &&
+                    _board.getPlayerB().isFirstMovesExhausted();
+        } else {
+            return !PlayerActionAdapter.isAnimationInProgress();
+        }
     }
 
     /**

@@ -558,6 +558,7 @@
                                 android:layout_margin="5dp"
                                 android:background="#ffffff"
                                 android:editable="true"
+                                android:inputType="number"
                                 android:focusable="true"
                                 android:focusableInTouchMode="true" />
 
