@@ -18,6 +18,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Vibrator;
 import android.support.v4.content.res.ResourcesCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -36,6 +37,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -69,11 +71,13 @@ public class GameActivity extends Activity {
     public static final String PLAYER_TWO = "playerTwoName";
     public static final String IS_ONLINE = "is_online_game";
     public static final String AI_DIFF = "ai_difficulty";
+    public static boolean IS_TEST;
 
     private static final String TAG = "GameActivity";
     private static final String fileName = "player_statistics";
     public static final Random random = new Random();                                               //Object for random number generation
     public static Drawable[] shells;
+    public static Vibrator vb;
 
     private final Context _context = this;
 
@@ -154,12 +158,14 @@ public class GameActivity extends Activity {
 
         @Override
         public void onMoveEnd(Player player) {
+            _messageManager.onMoveEnd(player);
             Log.i(TAG, player.getName() + " ended his turn");
         }
     };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        vb  = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         super.onCreate(savedInstanceState);
 
         setContentView(
@@ -206,6 +212,7 @@ public class GameActivity extends Activity {
         String secondName = bundle.getString(PLAYER_TWO);
         int aiDiff = bundle.getInt(AI_DIFF, 0);
         boolean isOnlineGame = bundle.getBoolean(IS_ONLINE, false);
+        IS_TEST = bundle.getBoolean("is_test", false);
         Log.v(TAG,"Its an online game? "+isOnlineGame);
 
         if(isOnlineGame){
@@ -325,7 +332,12 @@ public class GameActivity extends Activity {
 
                 initReturnButtonLocation();
 
-                setupReadyScreen();
+                if (IS_TEST) {
+                    _countdownMode = false;
+                    _board.getPlayerA().moveStart();
+                } else {
+                    setupReadyScreen();
+                }
 
                 _layoutMaster.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             }
@@ -404,7 +416,7 @@ public class GameActivity extends Activity {
         for(int i = 0; i < 7; i++) {
             //PLAYER shell cups
             initCupButtonSmall("cup1_" + (i + 1), i, 2, bottomColumnIndex++, CupButton.PLAYER_A);
-            initCupButtonSmall("cup2_" + (i + 9), i + 8, 0, topColumnIndex--, CupButton.PLAYER_B);
+            initCupButtonSmall("cup2_" + (i + 1), i + 8, 0, topColumnIndex--, CupButton.PLAYER_B);
         }
 
         //PLAYER stores
@@ -604,6 +616,19 @@ public class GameActivity extends Activity {
     }
 
     /**
+     * A check to see whether shell animations are running.
+     * @return true if all shell animations have finished.
+     */
+    public boolean animationFinished(boolean isFirstTurn) {
+        if (isFirstTurn) {
+            return _board.getPlayerA().isFirstMovesExhausted() &&
+                    _board.getPlayerB().isFirstMovesExhausted();
+        } else {
+            return !PlayerActionAdapter.isAnimationInProgress();
+        }
+    }
+
+    /**
      * Displays messages that explains what happened during animation. TODO Display info messages on the screen.
      */
     private void processBoardMessages(){
@@ -673,7 +698,7 @@ public class GameActivity extends Activity {
 
         }
 
-        ArrayList<PlayerStatistic> playerStatistics = readStats(getApplicationContext());//read the stats
+        ArrayList<PlayerStatistic> playerStatistics = readStats(getApplicationContext(), null);//read the stats
         //store the leaderboard data for non online games
         if(!(_board.getPlayerA() instanceof RemoteHuman)){//if the first player isnt a remote human than store data for them
             updateList(_board.getPlayerA(),playerStatistics);
@@ -811,28 +836,39 @@ public class GameActivity extends Activity {
      * Creates fake data and stores them on the device
      * Call only once per device!
      */
-    private void createDummyData() {
-        String[] names = {"John Snow", "Ned Stark", "Jamie Lannister", "Robbert Baratheon", "Tyrion Lannister"};
+    private static void createDummyData(Context context) {
+        String path = "player_statistics_dummy";
 
-        ArrayList<PlayerStatistic> playerStatistics = new ArrayList<>();
+        if (!(new File(path).exists())) {
+            String line1 = "Han Solo,3,0,1,1,5062.428571428572,26,12\n";
+            String line2 = "Chewie,3,1,0,1,4832.684210526316,34,3\n";
+            String data = line1 + line2;
 
-
-        for (String name : names) {
-            PlayerStatistic playerStatistic = new PlayerStatistic(name);
-            playerStatistic.setGamesPlayed(random.nextInt(50));
-            playerStatistic.setGamesDrawn(random.nextInt(50));
-            playerStatistic.setGamesWon(random.nextInt(50));
-            playerStatistic.setGamesLost(random.nextInt(50));
-            playerStatistic.setAverageMoveTimeInMillis(random.nextDouble() * 50000);
-            playerStatistic.setMaxConsecutiveMoves(random.nextInt(50));
-            playerStatistic.setMaxNumShellsCollected(random.nextInt(50));
-            playerStatistics.add(playerStatistic);
+            try {
+                FileOutputStream fileOutputStream = context.openFileOutput(path, Context.MODE_PRIVATE);
+                fileOutputStream.write(data.getBytes());
+                fileOutputStream.close();
+                Log.i(TAG, "Created dummy data");
+            } catch (IOException e) {
+                Log.w(TAG, "Could not create dummy data!");
+            }
         }
+    }
 
-        try {
-            storeStats(playerStatistics);
-        } catch (Exception e) {
-            Log.e(TAG, e.toString());
+    private static void createEmptyData(Context context) {
+        String path = "player_statistics_empty";
+        File file = new File(path);
+        if (!file.exists()) {
+            String data = "";
+
+            try {
+                FileOutputStream fileOutputStream = context.openFileOutput(path, Context.MODE_PRIVATE);
+                fileOutputStream.write(data.getBytes());
+                fileOutputStream.close();
+                Log.i(TAG, "Created empty data");
+            } catch (IOException e) {
+                Log.w(TAG, "Could  not create empty data!");
+            }
         }
     }
 
@@ -855,7 +891,7 @@ public class GameActivity extends Activity {
         fileOutputStream.close();
         //replaced the old file with a new one that has the updated data
         Log.v(TAG, "About ot read stats");
-        ArrayList<PlayerStatistic> stats = readStats(getApplicationContext());
+        ArrayList<PlayerStatistic> stats = readStats(getApplicationContext(), null);
         for(PlayerStatistic player: stats){
             Log.v(TAG,player.toString());
         }
@@ -905,17 +941,26 @@ public class GameActivity extends Activity {
     }
 
     /**
-     * Read the stats stored in the data file "player_statistics"
+     * Read the stats stored in the data file "player_statistics", or some other file if parameter
+     * `file` is not null.
      * @param context the context the application is currently in (to open the file input)
+     * @param file the name of the data file to be read from. Can be null.
      * @return an ArrayList of PlayerStatistic objects (can be empty if there is no data)
      */
-    public static ArrayList<PlayerStatistic> readStats(Context context) {
+    public static ArrayList<PlayerStatistic> readStats(Context context, String file) {
+        if (file == null) {
+            file = fileName;
+        } else {
+            createDummyData(context);
+            createEmptyData(context);
+        }
+
         FileInputStream fileInputStream;
         ArrayList<PlayerStatistic> playerStatistics = new ArrayList<PlayerStatistic>();
         String textInFile = "";
         int n;
         try {
-            fileInputStream = context.openFileInput(fileName);
+            fileInputStream = context.openFileInput(file);
             while ((n = fileInputStream.read()) != -1) {
                 textInFile += Character.toString((char) n);
             }
@@ -977,7 +1022,6 @@ public class GameActivity extends Activity {
         bottomView.setLayoutParams(params);
         readyAreaView.addView(bottomView);
 
-
         if (_board.getPlayerA() instanceof Human) {
             Log.i(TAG, "Player A is " + _board.getPlayerA());
             bottomView.setOnClickListener(new View.OnClickListener() {
@@ -1013,6 +1057,10 @@ public class GameActivity extends Activity {
             trySetupCountdown();
         }
 
+        int idTop = getResources().getIdentifier("readyTopView", "id", getPackageName());
+        int idBot = getResources().getIdentifier("readyBottomView", "id", getPackageName());
+        topView.setId(idTop);
+        bottomView.setId(idBot);
     }
 
     private void trySetupCountdown() {

@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -51,14 +52,15 @@ public class MenuActivity extends Activity {
     private RelativeLayout _alpha;
     private RelativeLayout _subMenu;
     private Button _previous;
-    private TextView _player1Name, _VS;
+    private EditText _player1Name;
+    private TextView _VS;
     private LinearLayout _layoutBase, _layoutPlayer, _layoutAi, _layoutRemote, _layoutHost, _layoutJoin;
 
     //Base elements
     private Button _btnPlayer, _btnAi, _btnRemote;
 
     //Player elements
-    private TextView _player2Name;
+    private EditText _player2Name;
     private Button _btnPlayerPlay;
 
     //Ai elements
@@ -138,7 +140,7 @@ public class MenuActivity extends Activity {
         _alpha = (RelativeLayout) findViewById(R.id.alphaLayer);
         _subMenu = (RelativeLayout) findViewById(R.id.playSub);
         _previous = (Button) findViewById(R.id.btnPrevious);
-        _player1Name = (TextView) findViewById(R.id.txtPlayerName);
+        _player1Name = (EditText) findViewById(R.id.txtPlayerName);
         _VS = (TextView) findViewById(R.id.txtVS);
 
         _layoutBase = (LinearLayout) findViewById(R.id.layoutBase);
@@ -152,7 +154,7 @@ public class MenuActivity extends Activity {
         _btnAi = (Button) findViewById(R.id.btnAi);
         _btnRemote = (Button) findViewById(R.id.btnRemote);
 
-        _player2Name = (TextView) findViewById(R.id.txtPlayerName2);
+        _player2Name = (EditText) findViewById(R.id.txtPlayerName2);
         _btnPlayerPlay = (Button) findViewById(R.id.btnPlayerPlay);
 
         _aiDiff = (SeekBar) findViewById(R.id.seekAiDiff);
@@ -165,7 +167,7 @@ public class MenuActivity extends Activity {
         _ipAddress = (TextView) findViewById(R.id.txtIPAddress);
         _waiting = (TextView) findViewById(R.id.txtWaiting);
 
-        _ipAddressToJoin = (TextView) findViewById(R.id.txtIpEntry);
+        _ipAddressToJoin = (EditText) findViewById(R.id.txtIpEntry);
         _btnJoinIpAddress = (Button) findViewById(R.id.btnRemoteJoin);
     }
 
@@ -197,6 +199,8 @@ public class MenuActivity extends Activity {
                 _switchingActivities = true;
                 vb.vibrate(25);
                 Intent intent = new Intent(MenuActivity.this, StatisticsActivity.class);
+                String file = null;
+                intent.putExtra(StatisticsActivity.DATA_FILE, file);
                 startActivity(intent);
             }
         });
@@ -474,8 +478,6 @@ public class MenuActivity extends Activity {
      * updates the menu to show and hide elements
      */
     private void updateView() {
-        updatePlayerNames();
-
         switch(_index) {
             case 0:
                 _mainMenu.setVisibility(View.VISIBLE);
@@ -554,18 +556,6 @@ public class MenuActivity extends Activity {
                 _layoutHost.setVisibility(View.GONE);
                 _layoutJoin.setVisibility(View.VISIBLE);
                 break;
-        }
-    }
-
-    private void updatePlayerNames() {
-        String holder = getResources().getString(R.string.str_NameHolder);
-
-        if (_player1Name.getText().toString().isEmpty()) {
-            _player1Name.setText(holder);
-        }
-
-        if (_player2Name.getText().toString().isEmpty()) {
-            _player2Name.setText(holder);
         }
     }
 

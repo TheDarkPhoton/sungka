@@ -22,7 +22,7 @@ public class MoveInfo {
     }
 
     /**
-     * This method is called after the player has ended there move, need to be called after
+     * This method is called after the player has ended their move, need to be called after
      * endMove(double timeEndMoveMilli) else an empty String is returned
      * @return the duration of the Players move in the format of mm:ss (minutes:seconds)
      */

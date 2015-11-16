@@ -1,8 +1,11 @@
 package helpers.frontend;
 
 import android.content.Context;
+import android.util.Log;
+import android.view.View;
 import android.widget.FrameLayout;
 
+import com.example.deathgull.sungka_project.GameActivity;
 import com.example.deathgull.sungka_project.R;
 
 import game.player.Player;
@@ -32,6 +35,12 @@ public class MessageManager {
         _parent.addView(_top);
         _parent.addView(_bottom);
 
+        // set ids on the text views
+        GameActivity activity = (GameActivity) context;
+        int idTop = activity.getResources().getIdentifier("moveTextPlayer2", "id", activity.getPackageName());
+        int idBot = activity.getResources().getIdentifier("moveTextPlayer1", "id", activity.getPackageName());
+        _top.setId(idTop);
+        _bottom.setId(idBot);
     }
 
     /**
@@ -51,6 +60,10 @@ public class MessageManager {
         }
     }
 
+    /**
+     * Called when a player ends a move
+     * @param player
+     */
     public void onMoveEnd(Player player) {
         if (player.getBoard().isPlayerA(player)) {
             _bottom.setIsCurrentTurn(false);
@@ -125,6 +138,12 @@ public class MessageManager {
      * Gets called when they tap and say they they are ready before the other player
      */
     public void waitingForOtherPlayer(Player player, Player otherPlayer) {
+        /*if (!GameActivity.IS_TEST) {
+            if (player.getBoard().isPlayerA(player))
+                _bottom.displayPermanentMessage("Waiting for " + otherPlayer.getName());
+            else
+                _top.displayPermanentMessage("Waiting for "+otherPlayer.getName());
+        }*/
         if (player.getBoard().isPlayerA(player))
             _bottom.displayPermanentMessage("Waiting for " + otherPlayer.getName());
         else
@@ -132,8 +151,8 @@ public class MessageManager {
     }
 
     public void countdown(int number) {
-        _top.displayPermanentMessage("" + number);
-        _bottom.displayPermanentMessage("" + number);
+        _top.displayPermanentMessage(String.valueOf(number));
+        _bottom.displayPermanentMessage(String.valueOf(number));
     }
 
 }

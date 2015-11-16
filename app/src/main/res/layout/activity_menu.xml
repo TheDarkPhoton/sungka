@@ -150,7 +150,7 @@
                         android:textColor="#ffffff"
                         android:textSize="25sp" />
 
-                    <TextView
+                    <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/txtPlayerName"
@@ -159,10 +159,9 @@
                         android:layout_margin="5dp"
                         android:gravity="center"
                         android:background="#ffffff"
-                        android:editable="true"
+                        android:hint="@string/str_NameHolder"
                         android:focusable="true"
-                        android:focusableInTouchMode="true"
-                        android:hint="@string/str_NameHolder" />
+                        android:focusableInTouchMode="true" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -316,7 +315,7 @@
                                 android:textColor="#ffffff"
                                 android:textSize="25sp" />
 
-                            <TextView
+                            <EditText
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:id="@+id/txtPlayerName2"
@@ -325,10 +324,9 @@
                                 android:layout_margin="5dp"
                                 android:gravity="center"
                                 android:background="#ffffff"
+                                android:hint="@string/str_NameHolder"
                                 android:focusableInTouchMode="true"
-                                android:focusable="true"
-                                android:editable="true"
-                                android:hint="@string/str_NameHolder" />
+                                android:focusable="true" />
 
                         </LinearLayout>
 
@@ -558,19 +556,34 @@
                                 android:textColor="#ffffff"
                                 android:textSize="25sp" />
 
-                            <TextView
+                            <EditText
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:hint="@string/str_NameHolder"
                                 android:id="@+id/txtIpEntry"
                                 android:textColor="#000000"
                                 android:textSize="25sp"
                                 android:gravity="center"
                                 android:layout_margin="5dp"
                                 android:background="#ffffff"
-                                android:editable="true"
+                                android:inputType="phone"
                                 android:focusable="true"
-                                android:focusableInTouchMode="true"
-                                android:hint="@string/str_IPHolder" />
+                                android:focusableInTouchMode="true" />
+
+                            <!--<TextView-->
+                                <!--android:layout_width="match_parent"-->
+                                <!--android:layout_height="wrap_content"-->
+                                <!--android:text="@string/str_NameHolder"-->
+                                <!--android:id="@+id/txtIpEntry"-->
+                                <!--android:textColor="#000000"-->
+                                <!--android:textSize="25sp"-->
+                                <!--android:gravity="center"-->
+                                <!--android:layout_margin="5dp"-->
+                                <!--android:background="#ffffff"-->
+                                <!--android:editable="true"-->
+                                <!--android:inputType="number"-->
+                                <!--android:focusable="true"-->
+                                <!--android:focusableInTouchMode="true" />-->
 
                         </LinearLayout>
 

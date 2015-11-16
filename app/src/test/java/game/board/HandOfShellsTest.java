@@ -106,7 +106,7 @@ public class HandOfShellsTest {
         when(board.getPlayerB()).thenReturn(playerB);
         when(board.getOpponent()).thenReturn(playerB);
         when(board.hasValidMoves()).thenReturn(true);
-        when(board.nextPlayersMove(anyInt())).thenReturn(playerA);
+        when(board.nextPlayersMove(any(Player.class), anyInt())).thenReturn(playerA);
         when(playerA.isPlayersCup(any(Cup.class), eq(true))).thenReturn(true);
         when(playerA.isPlayersCup(any(Cup.class))).thenReturn(true);
         when(playerA.hasValidMove()).thenReturn(true);
