@@ -89,15 +89,27 @@ public class AI extends Player {
             node.getElement().setPlayer(sim.getPlayerB());
 
         sim.setCurrentNode(node);
-        sim.explore(_difficulty);
-
         long delay = GameActivity.random.nextInt(1000) + 200;
 
         Handler h = new Handler();
         h.postDelayed(new Runnable() {
             @Override
             public void run() {
-                move(sim.findBestMove(_accuracy));
+                sim.explore(_difficulty);
+                int cupIndex = sim.findBestMove(_accuracy);
+
+                if (_board.getCup(cupIndex).getCount() > 0)
+                    move(cupIndex);
+                else{
+                    int index = GameActivity.random.nextInt(7);
+                    while (_cups[index].isEmpty())
+                        index = GameActivity.random.nextInt(7);
+
+                    long delay = GameActivity.random.nextInt(1000) + 200;
+                    final int finalIndex = index;
+                    move(finalIndex + 8);
+                }
+
             }
         }, delay);
     }

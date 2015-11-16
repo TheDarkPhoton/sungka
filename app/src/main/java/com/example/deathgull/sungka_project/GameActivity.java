@@ -527,7 +527,9 @@ public class GameActivity extends Activity {
                     @Override
                     public void run() {
                         final HandOfShells robbersHand = hand.dropShell();
-                        b.addShell((ImageView) images.remove(images.size() - 1));
+
+                        if (images.size() > 0)
+                            b.addShell((ImageView) images.remove(images.size() - 1));
 
                         if (images.size() > 0) {
                             moveShellsRec(hand, images, duration);

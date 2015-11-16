@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import game.cup.Cup;
 import game.cup.PlayerCup;
 import game.cup.ShellCup;
+import game.player.AI;
 import game.player.Player;
 import helpers.backend.Node;
 import helpers.backend.State;
@@ -105,8 +106,8 @@ public class Board {
 
         Log.d("testing isValid", "on cup " + (index + 1));
 
-        if (cup.getCount() == 0)
-            return false;
+//        if (cup.getCount() == 0)
+//            return false;
 
         return player == null || (_validMoveExists && player.isPlayersCup(cup));
     }
