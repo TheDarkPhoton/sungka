@@ -1,20 +1,14 @@
 package com.example.deathgull.sungka_project;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.test.ActivityInstrumentationTestCase2;
-import android.test.TouchUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
+import game.player.PlayerStatistic;
 
 /**
  * Tests the activity in which game stats are stored.
@@ -23,10 +17,6 @@ public class StatisticsActivityTest extends ActivityInstrumentationTestCase2<Sta
     private static final String dummyData = "player_statistics_dummy";
     private static final String emptyData = "player_statistics_empty";
     private static final String TAG = "StatsActivity";
-
-    private View selected;
-
-//    private StatisticsActivity activity;
 
     public StatisticsActivityTest() {
         super(StatisticsActivity.class);
