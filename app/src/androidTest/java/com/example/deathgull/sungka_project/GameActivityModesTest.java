@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.TouchUtils;
+import android.util.Log;
 import android.view.View;
 
 import helpers.frontend.CupButton;
@@ -100,6 +101,69 @@ public class GameActivityModesTest extends ActivityInstrumentationTestCase2<Game
         assertEquals("1", cup1_store.getText().toString());
         assertEquals("1", cup2_store.getText().toString());
         assertEquals(yourTurn, textP1.getText().toString());
+    }
+
+    /**
+     * Make sure that first move functionality functions correctly when both players get extra
+     * moves on their first turns.
+     */
+    public void testFirstMove_ExtraMoves() {
+        bundle.putString(GameActivity.PLAYER_TWO, "Player Two");
+        intent.putExtras(bundle);
+        setActivityIntent(intent);
+
+        activity = getActivity();
+        initPlayerTexts();
+
+        String yourTurn = activity.getResources().getString(R.string.str_YourTurn);
+
+        View vTop = activity.findViewById(R.id.readyTopView);
+        View vBot = activity.findViewById(R.id.readyBottomView);
+        CupButton cup1_1 = (CupButton) activity.findViewById(R.id.cup1_1);
+        CupButton cup1_4 = (CupButton) activity.findViewById(R.id.cup1_4);
+        CupButton cup2_1 = (CupButton) activity.findViewById(R.id.cup2_1);
+        CupButton cup2_6 = (CupButton) activity.findViewById(R.id.cup2_6);
+        CupButton cup1_store = (CupButton) activity.findViewById(R.id.cup1_store);
+        CupButton cup2_store = (CupButton) activity.findViewById(R.id.cup2_store);
+
+        TouchUtils.clickView(this, vBot);
+        TouchUtils.clickView(this, vTop);
+        waitForCountdown();
+
+        TouchUtils.clickView(this, cup1_1);
+        TouchUtils.clickView(this, cup2_1);
+
+        try {
+            Thread.sleep(6000, 0);
+        } catch (InterruptedException e) {
+            Log.i("test", "held");
+
+        }
+
+        assertEquals(yourTurn, textP1.getText().toString());
+        assertEquals(yourTurn, textP2.getText().toString());
+
+
+        TouchUtils.clickView(this, cup1_4);
+        TouchUtils.clickView(this, cup2_6);
+        waitForAnimations(true);
+
+        assertEquals("1", cup1_4.getText().toString());
+        assertEquals("1", cup1_1.getText().toString());
+        assertEquals("1", cup2_1.getText().toString());
+        assertEquals("0", cup2_6.getText().toString());
+        assertEquals("2", cup1_store.getText().toString());
+        assertEquals("2", cup2_store.getText().toString());
+
+        assertEquals(yourTurn, textP1.getText().toString());
+        assertNotSame(yourTurn, textP2.getText().toString());
+
+        // make sure that player 1 has the current turn
+
+        TouchUtils.clickView(this, cup1_4);
+        waitForAnimations(false);
+
+        assertEquals("0", cup1_4.getText().toString());
     }
 
     public void testAiGameStart() {
