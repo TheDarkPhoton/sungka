@@ -43,17 +43,6 @@ public class GameActivityTest extends ActivityInstrumentationTestCase2<GameActiv
         textP2 = (YourMoveTextView) activity.findViewById(R.id.moveTextPlayer2);
     }
 
-    private void waitForAnimations() {
-        boolean animationRunning = true;
-
-        while (animationRunning) {
-            getInstrumentation().waitForIdleSync();
-            if (activity.animationFinished(false)) {
-                animationRunning = false;
-            }
-        }
-    }
-
     /**
      * Make sure that the GameActivity is being created properly.
      */
@@ -548,5 +537,16 @@ public class GameActivityTest extends ActivityInstrumentationTestCase2<GameActiv
 
         Button btnReturn = (Button) activity.findViewById(R.id.btn_ReturnToMenu);
         assertEquals(View.VISIBLE, btnReturn.getVisibility());
+    }
+
+    private void waitForAnimations() {
+        boolean animationRunning = true;
+
+        while (animationRunning) {
+            getInstrumentation().waitForIdleSync();
+            if (activity.animationFinished(false)) {
+                animationRunning = false;
+            }
+        }
     }
 }

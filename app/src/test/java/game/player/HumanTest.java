@@ -77,7 +77,7 @@ public class HumanTest {
         try {
             Thread.sleep(1000, 0);
         } catch (InterruptedException e) {
-//            Log.w(TAG, "testMoveInfoStored: thread was interrupted");
+            Log.w(TAG, "testMoveInfoStored: thread was interrupted");
         }
 
         playerA.moveEnd();

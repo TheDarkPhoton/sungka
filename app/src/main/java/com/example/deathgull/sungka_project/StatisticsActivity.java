@@ -5,14 +5,13 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
@@ -21,17 +20,12 @@ import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.SortedMap;
 
-import game.player.Player;
 import helpers.frontend.MusicService;
 import helpers.frontend.StatisticsCellView;
 import helpers.frontend.StatisticsColumnView;
@@ -40,6 +34,7 @@ import helpers.frontend.StatisticsOnPlayerClickListener;
 import helpers.frontend.StatisticsRowView;
 
 public class StatisticsActivity extends Activity {
+    public static final String DATA_FILE = "fileName";
 
     private ScrollView _contentLayout;
     private Spinner _playerSpinner;
@@ -54,13 +49,15 @@ public class StatisticsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statistics);
 
+        Intent intent = getIntent();
+        String file = intent.getStringExtra(DATA_FILE);
 
         _contentLayout = (ScrollView) findViewById(R.id.content_layout);
 
         _playerSpinner = (Spinner) findViewById(R.id.user_spinner);
 
         // Get data
-        _playerStatistics = getStatistics();
+        _playerStatistics = getStatistics(file);
 
         if (_playerStatistics.isEmpty()) {
             setupEmptyScreen();
@@ -137,12 +134,16 @@ public class StatisticsActivity extends Activity {
 
 
             int a = 0;
+            TypedArray ids = getResources().obtainTypedArray(R.array.statsScores);
             for (Map.Entry<String, Object> entry: playerStatistics.entrySet()) {
                 labelTextViews[a].setText(entry.getKey());
 //                valueTextViews[a].setText("" + entry.getValue());
                 valueTextViews[a].setText(String.format("%s", entry.getValue()));
+                valueTextViews[a].setId(ids.getResourceId(a, 0));
+
                 a++;
             }
+            ids.recycle();
         }
     }
 
@@ -202,6 +203,8 @@ public class StatisticsActivity extends Activity {
         ));
         int p = 30;
         emptyMessageTextView.setPadding(p,p,p,p);
+        int id = getResources().getIdentifier("statsEmptyText", "id", getPackageName());
+        emptyMessageTextView.setId(id);
 
         _contentLayout.setFillViewport(true);
 
@@ -223,8 +226,8 @@ public class StatisticsActivity extends Activity {
     /**
      * Gets data with a user's statistics.
      */
-    public ArrayList<PlayerStatistic> getStatistics(){
-        return GameActivity.readStats(getApplicationContext());
+    public ArrayList<PlayerStatistic> getStatistics(String fileName){
+        return GameActivity.readStats(getApplicationContext(), fileName);
     }
 
     @Override

@@ -190,6 +190,8 @@ public class MenuActivity extends Activity {
                 _switchingActivities = true;
                 vb.vibrate(25);
                 Intent intent = new Intent(MenuActivity.this, StatisticsActivity.class);
+                String file = null;
+                intent.putExtra(StatisticsActivity.DATA_FILE, file);
                 startActivity(intent);
             }
         });

@@ -10,7 +10,7 @@ import helpers.frontend.CupButton;
 import helpers.frontend.YourMoveTextView;
 
 /**
- * Tests the different modes of play, i.e. Human vs Human; Human vs AI.
+ * Tests the first move in Human vs Human and Human vs AI modes.
  */
 public class GameActivityModesTest extends ActivityInstrumentationTestCase2<GameActivity> {
     private Bundle bundle;
@@ -32,41 +32,6 @@ public class GameActivityModesTest extends ActivityInstrumentationTestCase2<Game
         intent = new Intent();
         bundle = new Bundle();
         bundle.putString(GameActivity.PLAYER_ONE, "Player One");
-    }
-
-    private void waitForAnimations(boolean isFirstTurn) {
-        boolean animationRunning = true;
-
-        while (animationRunning) {
-            getInstrumentation().waitForIdleSync();
-            if (activity.animationFinished(isFirstTurn)) {
-                animationRunning = false;
-            }
-        }
-    }
-
-    private void waitForCountdown() {
-        boolean countingDown = true;
-
-        while(countingDown) {
-            try {
-                if (Integer.valueOf(textP1.getText().toString()) >= 0) {
-                    getInstrumentation().waitForIdleSync();
-                }
-            } catch (NumberFormatException e) {
-                try {
-                    Thread.sleep(1000, 0);
-                } catch (InterruptedException i) {
-                    countingDown = false;
-                }
-                countingDown = false;
-            }
-        }
-    }
-
-    private void initPlayerTexts() {
-        textP1 = (YourMoveTextView) activity.findViewById(R.id.moveTextPlayer1);
-        textP2 = (YourMoveTextView) activity.findViewById(R.id.moveTextPlayer2);
     }
 
     /**
@@ -165,5 +130,40 @@ public class GameActivityModesTest extends ActivityInstrumentationTestCase2<Game
 
         assertEquals("1", cup1_store.getText().toString());
         assertEquals("1", cup2_store.getText().toString());
+    }
+
+    private void waitForAnimations(boolean isFirstTurn) {
+        boolean animationRunning = true;
+
+        while (animationRunning) {
+            getInstrumentation().waitForIdleSync();
+            if (activity.animationFinished(isFirstTurn)) {
+                animationRunning = false;
+            }
+        }
+    }
+
+    private void waitForCountdown() {
+        boolean countingDown = true;
+
+        while(countingDown) {
+            try {
+                if (Integer.valueOf(textP1.getText().toString()) >= 0) {
+                    getInstrumentation().waitForIdleSync();
+                }
+            } catch (NumberFormatException e) {
+                try {
+                    Thread.sleep(1000, 0);
+                } catch (InterruptedException i) {
+                    countingDown = false;
+                }
+                countingDown = false;
+            }
+        }
+    }
+
+    private void initPlayerTexts() {
+        textP1 = (YourMoveTextView) activity.findViewById(R.id.moveTextPlayer1);
+        textP2 = (YourMoveTextView) activity.findViewById(R.id.moveTextPlayer2);
     }
 }
