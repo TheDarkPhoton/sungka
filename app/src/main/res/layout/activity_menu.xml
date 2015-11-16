@@ -559,7 +559,7 @@
                             <EditText
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:hint="@string/str_NameHolder"
+                                android:hint="@string/str_IPHolder"
                                 android:id="@+id/txtIpEntry"
                                 android:textColor="#000000"
                                 android:textSize="25sp"
