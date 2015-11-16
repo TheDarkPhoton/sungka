@@ -4,18 +4,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.TouchUtils;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
-
-import org.junit.Test;
 
 import helpers.frontend.CupButton;
 import helpers.frontend.YourMoveTextView;
 
 /**
- * Tests the different modes of play, i.e. Human vs Human; Human vs AI; Human vs Remote.
+ * Tests the different modes of play, i.e. Human vs Human; Human vs AI.
  */
 public class GameActivityModesTest extends ActivityInstrumentationTestCase2<GameActivity> {
     private Bundle bundle;
