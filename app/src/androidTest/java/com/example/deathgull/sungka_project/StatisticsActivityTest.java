@@ -22,6 +22,7 @@ import java.util.ArrayList;
 public class StatisticsActivityTest extends ActivityInstrumentationTestCase2<StatisticsActivity> {
     private static final String dummyData = "player_statistics_dummy";
     private static final String emptyData = "player_statistics_empty";
+    private static final String TAG = "StatsActivity";
 
     private View selected;
 
@@ -79,8 +80,9 @@ public class StatisticsActivityTest extends ActivityInstrumentationTestCase2<Sta
         assertEquals(1, pos);
         assertEquals("Chewie", (String) spinner.getItemAtPosition(pos));
 
-        // Chewie has the best W/L ratio, and so should be at the head of the list of stats
-        PlayerStatistic stats = activity.getStatistics(dummyData).get(0);
+        // Chewie has the best W/L ratio, and so should be at the head of the list of stats.
+        // BUT, he is the second line in the fake source data.
+        PlayerStatistic stats = activity.getStatistics(dummyData).get(1);
         TypedArray ids = activity.getResources().obtainTypedArray(R.array.statsScores);
 
 
@@ -101,10 +103,8 @@ public class StatisticsActivityTest extends ActivityInstrumentationTestCase2<Sta
         assertEquals(pctWon.getText().toString(), String.format("%d%%", stats.getWinLossRatioPercentage()));
         assertEquals(gamesPlayed.getText().toString(), String.valueOf(stats.getGamesPlayed()));
         assertEquals(rank.getText().toString(), "1");
-        assertEquals(avgMoveTime.getText().toString(), String.valueOf(stats.getAverageMoveTime()));
+        assertEquals(avgMoveTime.getText().toString(), stats.getAverageMoveTime());
         assertEquals(maxShells.getText().toString(), String.valueOf(stats.getMaxNumShellsCollected()));
         assertEquals(maxMoves.getText().toString(), String.valueOf(stats.getMaxConsecutiveMoves()));
-
-
     }
 }

@@ -841,7 +841,7 @@ public class GameActivity extends Activity {
         String path = "player_statistics_dummy";
 
         if (!(new File(path).exists())) {
-            String line1 = "Han Solo,3,0,1,1,4962.428571428572,26,12\n";
+            String line1 = "Han Solo,3,0,1,1,5062.428571428572,26,12\n";
             String line2 = "Chewie,3,1,0,1,4832.684210526316,34,3\n";
             String data = line1 + line2;
 
