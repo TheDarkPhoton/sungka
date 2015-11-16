@@ -262,6 +262,49 @@ public class GameActivityTest extends ActivityInstrumentationTestCase2<GameActiv
     }
 
     /**
+     * Make sure that when the last shell ends in an empty cup belonging to that player,
+     * it is still moved to the store (as if it were robbing) even if the opposite cup
+     * is empty.
+     */
+    public void testRobWhenEmpty() {
+        final CupButton cup1_6 = (CupButton) activity.findViewById(R.id.cup1_6);
+        final CupButton cup1_7 = (CupButton) activity.findViewById(R.id.cup1_7);
+        final CupButton cup1_4 = (CupButton) activity.findViewById(R.id.cup1_4);
+        final CupButton cup2_1 = (CupButton) activity.findViewById(R.id.cup2_1);
+        final CupButton cup2_3 = (CupButton) activity.findViewById(R.id.cup2_3);
+        final CupButton cup2_4 = (CupButton) activity.findViewById(R.id.cup2_4);
+        CupButton cup1_store = (CupButton) activity.findViewById(R.id.cup1_store);
+        CupButton cup2_store = (CupButton) activity.findViewById(R.id.cup2_store);
+
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                cup1_4.removeAllShells();
+                cup1_6.removeAllShells();
+                cup1_7.removeAllShells();
+                cup2_1.removeAllShells();
+                cup2_3.removeAllShells();
+                cup2_4.removeAllShells();
+                cup1_6.addShellImages(activity, 1);
+                cup2_3.addShellImages(activity, 1);
+            }
+        });
+        getInstrumentation().waitForIdleSync();
+
+        TouchUtils.clickView(this, cup1_6);
+        waitForAnimations();
+
+        assertEquals("1", cup1_store.getText().toString());
+        assertEquals("0", cup1_7.getText().toString());
+
+        TouchUtils.clickView(this, cup2_3);
+        waitForAnimations();
+
+        assertEquals("1", cup2_store.getText().toString());
+        assertEquals("0", cup2_4.getText().toString());
+    }
+
+    /**
      * Make sure that when all of the shell cups belonging to one player are empty, the other
      * player can keep moving.
      */
