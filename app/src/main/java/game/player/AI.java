@@ -96,20 +96,7 @@ public class AI extends Player {
             @Override
             public void run() {
                 sim.explore(_difficulty);
-                int cupIndex = sim.findBestMove(_accuracy);
-
-                if (_board.getCup(cupIndex).getCount() > 0)
-                    move(cupIndex);
-                else{
-                    int index = GameActivity.random.nextInt(7);
-                    while (_cups[index].isEmpty())
-                        index = GameActivity.random.nextInt(7);
-
-                    long delay = GameActivity.random.nextInt(1000) + 200;
-                    final int finalIndex = index;
-                    move(finalIndex + 8);
-                }
-
+                move(sim.findBestMove(_accuracy));
             }
         }, delay);
     }

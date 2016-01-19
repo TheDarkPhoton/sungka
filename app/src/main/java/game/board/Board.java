@@ -106,8 +106,8 @@ public class Board {
 
         Log.d("testing isValid", "on cup " + (index + 1));
 
-//        if (cup.getCount() == 0)
-//            return false;
+        if (!robber && cup.getCount() == 0)
+            return false;
 
         return player == null || (_validMoveExists && player.isPlayersCup(cup));
     }
