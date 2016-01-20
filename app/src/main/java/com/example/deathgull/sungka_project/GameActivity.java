@@ -375,7 +375,7 @@ public class GameActivity extends Activity {
                         player = _board.getPlayerB();
                     }
 
-                    if (player instanceof AI || player instanceof RemoteHuman || _countdownMode)
+                    if (player instanceof AI || player instanceof RemoteHuman || _countdownMode || !_board.isValid(finalIndex, false))
                         return;
 
                     player.move(finalIndex);
