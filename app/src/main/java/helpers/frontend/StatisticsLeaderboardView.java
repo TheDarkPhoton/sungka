@@ -38,8 +38,8 @@ public class StatisticsLeaderboardView extends LinearLayout {
         int ranking = 1;
         for (final PlayerStatistic playerStatistic: playerStatistics) {
             TextView textView = new TextView(context);
-            textView.setText(playerStatistic.getPlayerName());
-            textView.setTextColor(Color.WHITE);
+            textView.setText(ranking + ". " + playerStatistic.getPlayerName());
+            textView.setTextColor(Color.BLACK);
 
             int greenColor = Color.argb((int) 255 / (ranking + 1), 80, 227, 194);
 

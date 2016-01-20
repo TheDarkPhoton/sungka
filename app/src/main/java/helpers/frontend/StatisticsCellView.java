@@ -42,7 +42,7 @@ public class StatisticsCellView extends LinearLayout {
         labelTextView.setLayoutParams(labelParams);
 
         labelTextView.setTextSize(TypedValue.COMPLEX_UNIT_PT, 7);
-        labelTextView.setTextColor(Color.WHITE);
+        labelTextView.setTextColor(Color.BLACK);
         this.addView(labelTextView);
 
         // Value

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.TypedValue;
@@ -94,6 +95,9 @@ public class StatisticsActivity extends Activity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 populateDataByIndex(position);
                 previousSpinnerIndex = position;
+
+                ((TextView) parent.getChildAt(0)).setTextColor(Color.WHITE);
+                _playerSpinner.getBackground().setColorFilter(Color.argb(255, 80, 227, 194), PorterDuff.Mode.SRC_ATOP);
             }
 
             @Override
