@@ -56,5 +56,6 @@
         \nAt the start of the game, press a cup on your side after the countdown finishes. The first player to distribute their shells gets the first move.
         \nIf the last shell to be distributed lands in your store, you get another move.
         \nIf the last shell to be distributed lands in one of your empty cups, the shells from the opposite cup are moved to your store.
-        \nThe game ends when no shells exist in the cups, and the player with the most shells in their store wins.</string>
+        \nThe game ends when no shells exist in the cups, and the player with the most shells in their store wins.
+        \n\nMade by Tim Beswick, Oliver Philip Höhn, Max Karasiński, Martin Kubat and Dovydas Rupšys.</string>
 </resources>
