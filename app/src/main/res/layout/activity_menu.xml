@@ -54,6 +54,20 @@
                 <Button
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
+                    android:id="@+id/btnTutorial"
+                    android:background="@drawable/roundedbuttonblack"
+                    android:layout_margin="2dp"
+                    android:layout_gravity="center"
+                    android:text="@string/str_Tutorial"
+                    android:textColor="#ffffff"
+                    android:textSize="20sp"
+                    android:textAllCaps="false"
+                    android:paddingRight="20dp"
+                    android:paddingLeft="20dp" />
+
+                <Button
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
                     android:id="@+id/btnLeaderboard"
                     android:background="@drawable/roundedbuttonblack"
                     android:layout_margin="2dp"

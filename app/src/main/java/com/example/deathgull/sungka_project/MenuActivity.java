@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.wifi.WifiManager;
@@ -18,12 +17,10 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.text.format.Formatter;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,7 +30,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import helpers.frontend.CupButton;
 import helpers.frontend.MusicService;
 
 public class MenuActivity extends Activity {
@@ -46,7 +42,7 @@ public class MenuActivity extends Activity {
     
     //Main menu elements
     private RelativeLayout _mainMenu;
-    private Button _play, _leaderboard, _mute, _help;
+    private Button _play, _tutorial, _leaderboard, _mute, _help;
 
     //Sub menu elements
     private RelativeLayout _alpha;
@@ -133,6 +129,7 @@ public class MenuActivity extends Activity {
     private void getElements() {
         _mainMenu = (RelativeLayout) findViewById(R.id.mainMenu);
         _play = (Button) findViewById(R.id.btnPlay);
+        _tutorial = (Button) findViewById(R.id.btnTutorial);
         _leaderboard = (Button) findViewById(R.id.btnLeaderboard);
         _mute = (Button) findViewById(R.id.btnMute);
         _help = (Button) findViewById(R.id.btnHelp);
@@ -211,6 +208,22 @@ public class MenuActivity extends Activity {
                 _prevIndex = 0;
                 vb.vibrate(25);
                 updateView();
+            }
+        });
+
+        _tutorial.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                vb.vibrate(25);
+
+                Intent intent = new Intent(v.getContext(), GameActivity.class);
+
+                bundle.putString(GameActivity.IS_TUTORIAL, "ExtraMoves");
+                intent.putExtras(bundle);
+
+                System.out.println("ExtraMove Tutorial");
+                _switchingActivities = true;
+
+                startActivity(intent);
             }
         });
 

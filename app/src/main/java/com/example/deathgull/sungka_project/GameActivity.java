@@ -58,6 +58,7 @@ import game.player.Player;
 import game.player.PlayerActionAdapter;
 import game.player.PlayerStatistic;
 import game.player.RemoteHuman;
+import game.tutorial.ExtraMoves;
 import helpers.backend.PauseThreadFor;
 import helpers.backend.PauseThreadWhile;
 import helpers.frontend.CupButton;
@@ -71,6 +72,8 @@ public class GameActivity extends Activity {
     public static final String PLAYER_TWO = "playerTwoName";
     public static final String IS_ONLINE = "is_online_game";
     public static final String AI_DIFF = "ai_difficulty";
+    public static final String IS_TUTORIAL = "is_tutorial";
+
     public static boolean IS_TEST;
 
     private static final String TAG = "GameActivity";
@@ -208,20 +211,25 @@ public class GameActivity extends Activity {
         _soundStore = _soundPool.load(this, R.raw.cash, 1);
 
         Bundle bundle = getIntent().getExtras();
-        String firstName = bundle.getString(PLAYER_ONE);
-        String secondName = bundle.getString(PLAYER_TWO);
-        int aiDiff = bundle.getInt(AI_DIFF, 0);
-        boolean isOnlineGame = bundle.getBoolean(IS_ONLINE, false);
-        IS_TEST = bundle.getBoolean("is_test", false);
-        Log.v(TAG,"Its an online game? "+isOnlineGame);
+        if (bundle.getString(IS_TUTORIAL).equals("ExtraMoves")){
+            Game game = new Game(new ExtraMoves());
+            _board = game.getBoard();
+            _countdownMode = false;
+        } else {
+            String firstName = bundle.getString(PLAYER_ONE);
+            String secondName = bundle.getString(PLAYER_TWO);
+            int aiDiff = bundle.getInt(AI_DIFF, 0);
+            boolean isOnlineGame = bundle.getBoolean(IS_ONLINE, false);
+            IS_TEST = bundle.getBoolean("is_test", false);
+            Log.v(TAG, "Its an online game? " + isOnlineGame);
 
-        if(isOnlineGame){
-            usersConnection.setActivity(this);
+            if(isOnlineGame){
+                usersConnection.setActivity(this);
+            }
+
+            Game game = new Game(_playerActionListener, isOnlineGame, firstName, secondName, aiDiff);
+            _board = game.getBoard();
         }
-
-        Game _game = new Game(_playerActionListener, isOnlineGame, firstName, secondName, aiDiff);
-
-        _board = _game.getBoard();
 
         hideNav();                                                  //Hide navigation bar and system bar
         setScreenSize();                                            //Set screen size
