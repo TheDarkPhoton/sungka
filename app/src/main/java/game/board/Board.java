@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import game.cup.Cup;
 import game.cup.PlayerCup;
 import game.cup.ShellCup;
-import game.player.AI;
 import game.player.Player;
 import helpers.backend.Node;
 import helpers.backend.State;
@@ -95,21 +94,26 @@ public class Board {
     }
 
     /**
+     * This is here only to allow the overwriting isValid method to still use standard rules in some cases.
+     */
+    protected boolean superIsValid(int index, boolean robber){
+        Player player = robber ? getOpponent() : getCurrentPlayer();
+        Cup cup = _cups[index];
+
+        if (!robber && cup.getCount() == 0)
+            return false;
+
+        return player == null || (_validMoveExists && player.isPlayersCup(cup));
+    }
+
+    /**
      * Checks whether a cup can be selected.
      * @param index of the cup
      * @param robber if set to true the opponents cups are valid instead of current players.
      * @return if the move is valid
      */
     public boolean isValid(int index, boolean robber) {
-        Player player = robber ? getOpponent() : getCurrentPlayer();
-        Cup cup = _cups[index];
-
-        Log.d("testing isValid", "on cup " + (index + 1));
-
-        if (!robber && cup.getCount() == 0)
-            return false;
-
-        return player == null || (_validMoveExists && player.isPlayersCup(cup));
+        return superIsValid(index, robber);
     }
 
     /**
