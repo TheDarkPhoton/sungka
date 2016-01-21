@@ -59,8 +59,10 @@ import game.player.PlayerActionAdapter;
 import game.player.PlayerStatistic;
 import game.player.RemoteHuman;
 import game.tutorial.ExtraMoves;
+import game.tutorial.Tutorial;
 import helpers.backend.PauseThreadFor;
 import helpers.backend.PauseThreadWhile;
+import helpers.backend.Simulator;
 import helpers.frontend.CupButton;
 import helpers.frontend.MessageManager;
 import helpers.frontend.MusicService;
@@ -97,6 +99,7 @@ public class GameActivity extends Activity {
     private float _animationDurationFactor = 1.0f;
 
     private boolean _countdownMode = true;
+    private boolean _tutorialMode = false;
 
     private boolean isPlayerAReady = false;
     private boolean isPlayerBReady = false;
@@ -212,9 +215,9 @@ public class GameActivity extends Activity {
 
         Bundle bundle = getIntent().getExtras();
         if (bundle.getString(IS_TUTORIAL).equals("ExtraMoves")){
-            Game game = new Game(new ExtraMoves());
+            Game game = new Game(new ExtraMoves(), _playerActionListener);
             _board = game.getBoard();
-            _countdownMode = false;
+            _tutorialMode = true;
         } else {
             String firstName = bundle.getString(PLAYER_ONE);
             String secondName = bundle.getString(PLAYER_TWO);
@@ -340,7 +343,7 @@ public class GameActivity extends Activity {
 
                 initReturnButtonLocation();
 
-                if (IS_TEST) {
+                if (IS_TEST || _tutorialMode) {
                     _countdownMode = false;
                     _board.getPlayerA().moveStart();
                 } else {
@@ -692,6 +695,11 @@ public class GameActivity extends Activity {
         }
 
         msgs.clear();
+
+        if (_tutorialMode){
+            Tutorial t = ((Tutorial) _board);
+            t.nextStep();
+        }
     }
 
     private void checkGameOver() {

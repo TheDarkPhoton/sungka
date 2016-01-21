@@ -11,6 +11,7 @@ public class ExtraMoves extends Tutorial {
     };
 
     public ExtraMoves(){
+        super();
         setCurrentPlayerA();
         setState(_state);
 

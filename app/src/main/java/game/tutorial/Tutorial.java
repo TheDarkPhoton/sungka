@@ -28,7 +28,7 @@ public abstract class Tutorial extends Board {
     }
 
     public boolean isActionPresent(){
-        return _moves.get(_current_step).first != null;
+        return _current_step < _moves.size() && _moves.get(_current_step).first != null;
     }
 
     public Integer getCurrentAction(){
@@ -36,7 +36,7 @@ public abstract class Tutorial extends Board {
     }
 
     public boolean isMessagePressent(){
-        return _moves.get(_current_step).second != null;
+        return _current_step < _moves.size() && _moves.get(_current_step).second != null;
     }
 
     public String getCurrentMessage(){

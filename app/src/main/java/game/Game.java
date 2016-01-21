@@ -23,7 +23,8 @@ public class Game {
     private String firstPlayer;
     private String secondPlayer;
 
-    public Game(Tutorial tutorial){
+    public Game(Tutorial tutorial, PlayerActionListener listener){
+        playerActionListener = listener;
         playerOne = tutorial.getPlayerA();
         playerOne.setPlayerActionListener(playerActionListener);
         playerTwo = tutorial.getPlayerB();
