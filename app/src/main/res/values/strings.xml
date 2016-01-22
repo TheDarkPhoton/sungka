@@ -20,6 +20,9 @@
     <string name="str_Play">Play</string>
     <string name="str_Leaderboard">Leaderboard</string>
     <string name="str_Tutorial">Tutorial</string>
+    <string name="str_FirstMoveTutorial">First Move</string>
+    <string name="str_ExtraMovesTutorial">Extra Moves</string>
+    <string name="str_RobbingMechanicTutorial">Robbing Mechanic</string>
     <string name="str_Options">Options</string>
     <string name="str_playerDisconnectedTitle">Player Disconnected</string>
     <string name="str_playerDisconnected">It seems the other player left (rage quit).</string>
