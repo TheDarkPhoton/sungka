@@ -195,6 +195,8 @@ public class GameActivity extends Activity {
         vb  = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         super.onCreate(savedInstanceState);
 
+        PlayerActionAdapter.setAnimationInProgress(false);
+
         setContentView(
                 _layoutMaster = new FrameLayout(this),
                 new FrameLayout.LayoutParams(
