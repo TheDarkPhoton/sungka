@@ -262,7 +262,8 @@ public class MenuActivity extends Activity {
         });
 
         _btnJoin.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
+            @Override
+            public void onClick(View v) {
                 _index = 6;
                 _prevIndex = 4;
                 vb.vibrate(25);
@@ -322,7 +323,7 @@ public class MenuActivity extends Activity {
 
                 if (player1Name.equals(placeHolder) || player1Name.equals("")) {
                     makeDialog(R.string.msg_Player1Name, Gravity.CENTER, 25, false);
-                } else if(player2Name.equals(placeHolder) || player2Name.equals("")) {
+                } else if (player2Name.equals(placeHolder) || player2Name.equals("")) {
                     makeDialog(R.string.msg_Player2Name, Gravity.CENTER, 25, false);
                 } else {
                     //do 2 player play method
@@ -330,6 +331,7 @@ public class MenuActivity extends Activity {
                     Intent intent = new Intent(v.getContext(), GameActivity.class);
                     bundle.putString(GameActivity.PLAYER_ONE, player1Name);
                     bundle.putString(GameActivity.PLAYER_TWO, player2Name);
+                    bundle.putInt(GameActivity.AI_DIFF,0);
                     intent.putExtras(bundle);
 
                     System.out.println("2 player play");
@@ -342,7 +344,8 @@ public class MenuActivity extends Activity {
 
         // starts a human vs AI game
         _btnAiPlay.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
+            @Override
+            public void onClick(View v) {
                 vb.vibrate(25);
                 int difficulty = _aiDiff.getProgress() + 50;
                 String player1Name = _player1Name.getText().toString();
@@ -368,13 +371,14 @@ public class MenuActivity extends Activity {
         });
 
         _btnJoinIpAddress.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
+            @Override
+            public void onClick(View v) {
                 vb.vibrate(25);
                 String firstPlayerName = _player1Name.getText().toString();
                 String ipAddress = _ipAddressToJoin.getText().toString();
                 if (firstPlayerName.equals(placeHolder) || firstPlayerName.equals("")) {
                     makeDialog(R.string.msg_PlayerName, Gravity.CENTER, 25, false);
-                } else if(ipAddress.equals(placeHolder) || ipAddress.equals("")) {
+                } else if (ipAddress.equals(placeHolder) || ipAddress.equals("")) {
                     makeDialog(R.string.msg_IPAddress, Gravity.CENTER, 25, false);
                 } else {
                     //do remote play method
@@ -408,7 +412,8 @@ public class MenuActivity extends Activity {
         });
 
         _help.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
+            @Override
+            public void onClick(View v) {
                 vb.vibrate(25);
                 makeDialog(R.string.msg_Help, Gravity.LEFT, 15, true);
             }
@@ -491,8 +496,12 @@ public class MenuActivity extends Activity {
             _prevIndex = 1;
         }
         //if its hosting
+        Log.v(TAG,"inb4 canceling connection");
         if (GameActivity.getUsersConnection() != null) {
+            Log.v(TAG,"connection was established and its being removed");
             GameActivity.getUsersConnection().cancel(true);//if its hosting a game and you press back, cancel it
+            GameActivity.setConnection(null);
+            bundle.putBoolean(GameActivity.IS_ONLINE,false);
             _waiting.setText(R.string.str_Waiting);//set the text back to its original state
         }
     }
