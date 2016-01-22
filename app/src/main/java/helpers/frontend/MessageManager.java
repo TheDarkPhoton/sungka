@@ -155,4 +155,8 @@ public class MessageManager {
         _bottom.displayPermanentMessage(String.valueOf(number));
     }
 
+    public void clearOpponent() {
+        _top.setText("");
+    }
+
 }

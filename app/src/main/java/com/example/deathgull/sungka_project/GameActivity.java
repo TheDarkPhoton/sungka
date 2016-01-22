@@ -103,6 +103,7 @@ public class GameActivity extends Activity {
 
     private boolean _countdownMode = true;
     private boolean _tutorialMode = false;
+    private boolean _clearOpponentsText = false;
 
     private boolean isPlayerAReady = false;
     private boolean isPlayerBReady = false;
@@ -246,10 +247,12 @@ public class GameActivity extends Activity {
                 Game game = new Game(new TutExtraMoves(this), _playerActionListener);
                 _board = game.getBoard();
                 _tutorialMode = true;
+                _clearOpponentsText = true;
             } else if (bundle.getString(IS_TUTORIAL).equals("Robbing")){
                 Game game = new Game(new TutRobbing(this), _playerActionListener);
                 _board = game.getBoard();
                 _tutorialMode = true;
+                _clearOpponentsText = true;
             }
         } else {
             String firstName = bundle.getString(PLAYER_ONE);
@@ -502,6 +505,9 @@ public class GameActivity extends Activity {
         initReturnButton();
 
         _messageManager = new MessageManager(this, _layoutMaster);
+        if (_clearOpponentsText) {
+            _messageManager.clearOpponent();
+        }
 
         // Setup Player views
         PlayerNameTextView[] _playerTextViews = new PlayerNameTextView[2];
