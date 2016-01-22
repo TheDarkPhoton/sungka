@@ -39,10 +39,11 @@ public class MenuActivity extends Activity {
     public static Vibrator vb;
     private Drawable[] _muteIcons;
     private int _muteIndex;
-    
+    private boolean _isTutorialScreenOpen = false;
+
     //Main menu elements
     private RelativeLayout _mainMenu;
-    private Button _play, _tutorial, _leaderboard, _mute, _help;
+    private Button _firstButton, _secondButton, _thirdButton, _mute, _help;
 
     //Sub menu elements
     private RelativeLayout _alpha;
@@ -128,9 +129,9 @@ public class MenuActivity extends Activity {
      */
     private void getElements() {
         _mainMenu = (RelativeLayout) findViewById(R.id.mainMenu);
-        _play = (Button) findViewById(R.id.btnPlay);
-        _tutorial = (Button) findViewById(R.id.btnTutorial);
-        _leaderboard = (Button) findViewById(R.id.btnLeaderboard);
+        _firstButton = (Button) findViewById(R.id.btnPlay);
+        _secondButton = (Button) findViewById(R.id.btnTutorial);
+        _thirdButton = (Button) findViewById(R.id.btnLeaderboard);
         _mute = (Button) findViewById(R.id.btnMute);
         _help = (Button) findViewById(R.id.btnHelp);
 
@@ -191,41 +192,7 @@ public class MenuActivity extends Activity {
 
         final String placeHolder = getResources().getString(R.string.str_NameHolder);
 
-        _leaderboard.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                _switchingActivities = true;
-                vb.vibrate(25);
-                Intent intent = new Intent(MenuActivity.this, StatisticsActivity.class);
-                String file = null;
-                intent.putExtra(StatisticsActivity.DATA_FILE, file);
-                startActivity(intent);
-            }
-        });
-
-        _play.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                _index = 1;
-                _prevIndex = 0;
-                vb.vibrate(25);
-                updateView();
-            }
-        });
-
-        _tutorial.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                vb.vibrate(25);
-
-                Intent intent = new Intent(v.getContext(), GameActivity.class);
-
-                bundle.putString(GameActivity.IS_TUTORIAL, "ExtraMoves");
-                intent.putExtras(bundle);
-
-                System.out.println("ExtraMove Tutorial");
-                _switchingActivities = true;
-
-                startActivity(intent);
-            }
-        });
+        setupHomescreen();
 
         _btnPlayer.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
@@ -301,20 +268,7 @@ public class MenuActivity extends Activity {
         _previous.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                _index = _prevIndex;
-                vb.vibrate(25);
-                updateView();
-                if (_index == 1) {
-                    _prevIndex = 0;
-                }
-                if (_index == 4) {
-                    _prevIndex = 1;
-                }
-                //if its hosting
-                if (GameActivity.getUsersConnection() != null) {
-                    GameActivity.getUsersConnection().cancel(true);//if its hosting a game and you press back, cancel it
-                    _waiting.setText(R.string.str_Waiting);//set the text back to its original state
-                }
+                back();
             }
         });
 
@@ -452,6 +406,131 @@ public class MenuActivity extends Activity {
             @Override public void onClick(View v) {
                 vb.vibrate(25);
                 makeDialog(R.string.msg_Help, Gravity.LEFT, 15, true);
+            }
+        });
+    }
+
+    private void setupTutorialScreen() {
+        _isTutorialScreenOpen = true;
+
+        _firstButton.setText(R.string.str_FirstMoveTutorial);
+        _secondButton.setText(R.string.str_ExtraMovesTutorial);
+        _thirdButton.setText(R.string.str_RobbingMechanicTutorial);
+
+        _firstButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                launchTutorial(v, "FirstMove");
+            }
+        });
+
+        _secondButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                launchTutorial(v, "ExtraMoves");
+            }
+        });
+
+        _thirdButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setupHomescreen();
+
+//                launchTutorial(v, "RobbingMechanic");
+            }
+        });
+    }
+
+    /**
+     * Launches the tutorial selection screen
+     * @param v the view
+     * @param id the id of the tutorial
+     */
+    private void launchTutorial(View v, String id) {
+        vb.vibrate(25);
+        Intent intent = new Intent(v.getContext(), GameActivity.class);
+
+        bundle.putString(GameActivity.IS_TUTORIAL, id);
+        intent.putExtras(bundle);
+
+        _switchingActivities = true;
+
+        startActivity(intent);
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        if (_isTutorialScreenOpen) {
+            // If tutorial screen is open, go to homescreen
+            setupHomescreen();
+        } else if (_index != 0) {
+            // If not in home screen or tutorial screen, activate back in config screen
+            back();
+        } else {
+            // If in home screen, exit the app
+            super.onBackPressed();
+        }
+    }
+
+    /**
+     * What happens when you go back one level in the configuration screen
+     */
+    private void back() {
+        _index = _prevIndex;
+        vb.vibrate(25);
+        updateView();
+        if (_index == 1) {
+            _prevIndex = 0;
+        }
+        if (_index == 4) {
+            _prevIndex = 1;
+        }
+        //if its hosting
+        if (GameActivity.getUsersConnection() != null) {
+            GameActivity.getUsersConnection().cancel(true);//if its hosting a game and you press back, cancel it
+            _waiting.setText(R.string.str_Waiting);//set the text back to its original state
+        }
+    }
+
+    private void setupHomescreen() {
+        _isTutorialScreenOpen = false;
+
+        _firstButton.setText(R.string.str_Play);
+        _secondButton.setText(R.string.str_Tutorial);
+        _thirdButton.setText(R.string.str_Leaderboard);
+
+
+        _firstButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                _index = 1;
+                _prevIndex = 0;
+                vb.vibrate(25);
+                updateView();
+            }
+        });
+
+        _secondButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                vb.vibrate(25);
+
+                setupTutorialScreen();
+
+            }
+        });
+
+
+        _thirdButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                _switchingActivities = true;
+                vb.vibrate(25);
+                Intent intent = new Intent(MenuActivity.this, StatisticsActivity.class);
+                String file = null;
+                intent.putExtra(StatisticsActivity.DATA_FILE, file);
+                startActivity(intent);
             }
         });
     }
