@@ -195,6 +195,8 @@ public class GameActivity extends Activity {
         vb  = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         super.onCreate(savedInstanceState);
 
+        PlayerActionAdapter.setAnimationInProgress(false);
+
         setContentView(
                 _layoutMaster = new FrameLayout(this),
                 new FrameLayout.LayoutParams(
@@ -860,6 +862,7 @@ public class GameActivity extends Activity {
      */
     public static void setUpHostConnection(MenuActivity menuActivity,String playerName){
         SungkaServer sungkaServer = new SungkaServer(4000,menuActivity,playerName);
+        usersConnection = sungkaServer;
         sungkaServer.execute();
 
     }
@@ -874,6 +877,7 @@ public class GameActivity extends Activity {
     public static void setUpJoinConnection(MenuActivity menuActivity,String ip,String playerName){
         // In the case of a client connecting to the server, the server needs to be set up before
         SungkaClient sungkaClient = new SungkaClient(ip,4000,playerName,menuActivity);//server ip and port need to be inserted by the user
+        usersConnection = sungkaClient;
         sungkaClient.execute();                 //this is a test one
 
     }

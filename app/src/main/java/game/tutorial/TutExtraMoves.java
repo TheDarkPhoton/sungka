@@ -4,13 +4,13 @@ import android.content.Context;
 import android.util.Pair;
 
 public class TutExtraMoves extends Tutorial {
-    private final static Integer[] _state = {
-        7, 5, 18, 6, 1, 1, 0, 0,
-        7, 7, 7, 7, 7, 7, 7, 0
-    };
-
     public TutExtraMoves(Context context) {
         super(context);
+
+        Integer[] _state = {
+                7, 5, 18, 6, 1, 1, 0, 0,
+                7, 7, 7, 7, 7, 7, 7, 0
+        };
 
         setCurrentPlayerA();
         setState(_state);

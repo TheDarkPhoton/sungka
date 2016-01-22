@@ -4,13 +4,14 @@ import android.content.Context;
 import android.util.Pair;
 
 public class TutRobbing extends Tutorial {
-    private final static Integer[] _state = {
-            14, 0, 18, 2, 1, 0, 10, 0,
-            4, 7, 7, 7, 0, 7, 7, 0
-    };
 
     public TutRobbing(Context context){
         super(context);
+
+        Integer[] _state = {
+                14, 0, 18, 2, 1, 0, 10, 0,
+                4, 7, 7, 7, 0, 7, 7, 0
+        };
 
         setCurrentPlayerA();
         setState(_state);
