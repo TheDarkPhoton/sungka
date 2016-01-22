@@ -434,9 +434,7 @@ public class MenuActivity extends Activity {
         _thirdButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setupHomescreen();
-
-//                launchTutorial(v, "RobbingMechanic");
+                launchTutorial(v, "RobbingMechanic");
             }
         });
     }
