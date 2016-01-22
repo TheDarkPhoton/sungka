@@ -65,7 +65,7 @@
 
     <string name="msg_TutorialFirstMove"><b>First Move:</b>
         \nThe game of Sungka begins in a simultaneous move mode. After the countdown finishes, both players make their first moves as fast as possible. This is because the player that finishes their move first mode gets to start in the next round.
-        \nNote that choosing your left most cup will grant you an extra move, which means you would have to finish that in addition to exhaust all of your moves.
+        \nNote that choosing your left most cup will grant you an extra move, which means you would have to finish that in addition to exhausting all of your moves.
         \nYour cups are at the bottom of the screen. Tap on the screen to begin the countdown!</string>
 
     <string name="msg_TutorialFirstMoveEnd"><b>First Move Tutorial End:</b>
