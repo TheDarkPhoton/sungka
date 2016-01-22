@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.wifi.WifiManager;
@@ -30,6 +31,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 import helpers.frontend.MusicService;
 
 public class MenuActivity extends Activity {
@@ -44,6 +47,7 @@ public class MenuActivity extends Activity {
     //Main menu elements
     private RelativeLayout _mainMenu;
     private Button _firstButton, _secondButton, _thirdButton, _mute, _help;
+    private TextView _titleView;
 
     //Sub menu elements
     private RelativeLayout _alpha;
@@ -134,6 +138,7 @@ public class MenuActivity extends Activity {
         _thirdButton = (Button) findViewById(R.id.btnLeaderboard);
         _mute = (Button) findViewById(R.id.btnMute);
         _help = (Button) findViewById(R.id.btnHelp);
+        _titleView = (TextView) findViewById(R.id.title);
 
         _alpha = (RelativeLayout) findViewById(R.id.alphaLayer);
         _subMenu = (RelativeLayout) findViewById(R.id.playSub);
@@ -412,6 +417,7 @@ public class MenuActivity extends Activity {
 
     private void setupTutorialScreen() {
         _isTutorialScreenOpen = true;
+        _titleView.setBackground(getResources().getDrawable(R.drawable.tutorials));
 
         _firstButton.setText(R.string.str_FirstMoveTutorial);
         _secondButton.setText(R.string.str_ExtraMovesTutorial);
@@ -493,6 +499,7 @@ public class MenuActivity extends Activity {
 
     private void setupHomescreen() {
         _isTutorialScreenOpen = false;
+        _titleView.setBackground(getResources().getDrawable(R.drawable.title));
 
         _firstButton.setText(R.string.str_Play);
         _secondButton.setText(R.string.str_Tutorial);
