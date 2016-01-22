@@ -27,7 +27,10 @@ public abstract class Tutorial extends Board {
         if (_tutorial_finished)
             return false;
 
-        if (getCurrentPlayer() != null && isActionPresent()){
+        if (robber)
+            nextStep();
+
+        if (getCurrentPlayer() != null && isActionPresent() && !robber){
             return index == getCurrentAction();
         } else {
             return superIsValid(index, robber);
