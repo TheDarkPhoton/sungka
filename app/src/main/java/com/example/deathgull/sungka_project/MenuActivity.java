@@ -491,8 +491,11 @@ public class MenuActivity extends Activity {
             _prevIndex = 1;
         }
         //if its hosting
+        Log.v(TAG,"inb4 canceling connection");
         if (GameActivity.getUsersConnection() != null) {
+            Log.v(TAG,"connection was established and its being removed");
             GameActivity.getUsersConnection().cancel(true);//if its hosting a game and you press back, cancel it
+            GameActivity.setConnection(null);
             _waiting.setText(R.string.str_Waiting);//set the text back to its original state
         }
     }
