@@ -217,7 +217,7 @@ public class MenuActivity extends Activity {
 
                 Intent intent = new Intent(v.getContext(), GameActivity.class);
 
-                bundle.putString(GameActivity.IS_TUTORIAL, "ExtraMoves");
+                bundle.putString(GameActivity.IS_TUTORIAL, "Robbing");
                 intent.putExtras(bundle);
 
                 System.out.println("ExtraMove Tutorial");

@@ -62,6 +62,7 @@ import game.player.PlayerStatistic;
 import game.player.RemoteHuman;
 import game.tutorial.TutExtraMoves;
 import game.tutorial.TutFirstMove;
+import game.tutorial.TutRobbing;
 import game.tutorial.Tutorial;
 import helpers.backend.PauseThreadFor;
 import helpers.backend.PauseThreadWhile;
@@ -243,6 +244,10 @@ public class GameActivity extends Activity {
                 makeDialog(R.string.msg_TutorialFirstMove, Gravity.LEFT, 15, true);
             } else if (bundle.getString(IS_TUTORIAL).equals("ExtraMoves")){
                 Game game = new Game(new TutExtraMoves(this), _playerActionListener);
+                _board = game.getBoard();
+                _tutorialMode = true;
+            } else if (bundle.getString(IS_TUTORIAL).equals("Robbing")){
+                Game game = new Game(new TutRobbing(this), _playerActionListener);
                 _board = game.getBoard();
                 _tutorialMode = true;
             }
