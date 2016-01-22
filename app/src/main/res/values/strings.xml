@@ -86,9 +86,6 @@
     <string name="msg_TutorialExtraMoves4"><b>Extra Moves:</b>
         \nFinally you may have noticed that massive pile of shells in one of you cups. Tap on this cup, observe what happens and remember the rule of an extra move, if the last shell lands in your store you will get an extra move and it doesn\'t matter how.</string>
 
-    <string name="msg_TutorialEnd"><b>End of Tutorial:</b>
-        \nYou can continue playing or you can quit by swiping from the right and using the back button.</string>
-
     <string name="msg_TutorialRobbing1"><b>Robbing Mechanic:</b>
         \nOne of the rules in the game of Sungka allows the player to steal all shells from the opponents cup. The rule says that if the last shell of the move lands in an empty cup of yours, except your store, then the last shell and all shell from the cup on the opposite side of the board are moved to your store.
         \nTry this out yourself, select the highlighted cup and see what happens.</string>
@@ -99,5 +96,8 @@
 
     <string name="msg_TutorialRobbing3"><b>Robbing Mechanic:</b>
         \nWhenever you have 15 shells in one of your cups performing an action on that cup will always result in a steal. Press on your leftmost cup and see what happens.</string>
+
+    <string name="msg_TutorialEnd"><b>End of Tutorial:</b>
+        \nYou can continue playing or you can quit by swiping from the right and using the back button. The player with the most amount of shells in the players store wins the game.</string>
 
 </resources>
