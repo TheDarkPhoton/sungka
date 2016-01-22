@@ -1,5 +1,6 @@
 package game.tutorial;
 
+import android.content.Context;
 import android.util.Pair;
 
 import java.util.ArrayList;
@@ -9,18 +10,24 @@ import game.player.AI;
 import game.player.Human;
 
 public abstract class Tutorial extends Board {
-    protected ArrayList<Pair<Integer, String>> _moves = new ArrayList<>();
+    protected ArrayList<Pair<Integer, Integer>> _moves = new ArrayList<>();
     protected int _current_step = 0;
+    protected boolean _tutorial_finished = false;
+    protected Context _context;
 
     /**
      * Constructs board with default attributes.
      */
-    public Tutorial() {
+    public Tutorial(Context context) {
         super(new Human("Student"), new AI(100,100, "SenseiSato"));
+        _context = context;
     }
 
     public boolean isValid(int index, boolean robber){
-        if (isActionPresent()){
+        if (_tutorial_finished)
+            return false;
+
+        if (getCurrentPlayer() != null && isActionPresent()){
             return index == getCurrentAction();
         } else {
             return superIsValid(index, robber);
@@ -39,8 +46,12 @@ public abstract class Tutorial extends Board {
         return _current_step < _moves.size() && _moves.get(_current_step).second != null;
     }
 
-    public String getCurrentMessage(){
+    public int getCurrentMessage(){
         return _moves.get(_current_step).second;
+    }
+
+    public void endTutorial(){
+        _tutorial_finished = true;
     }
 
     public void nextStep(){
@@ -51,5 +62,10 @@ public abstract class Tutorial extends Board {
         for (int i = 0; i < board.length; i++) {
             _cups[i].setShells(board[i]);
         }
+    }
+
+    protected int getStringResourceId(String name){
+        String packageName = _context.getPackageName();
+        return _context.getResources().getIdentifier(name, "string", packageName);
     }
 }

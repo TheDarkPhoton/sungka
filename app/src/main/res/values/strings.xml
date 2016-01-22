@@ -59,4 +59,31 @@
         \nIf the last shell to be distributed lands in one of your empty cups, the shells from the opposite cup are moved to your store.
         \nThe game ends when no shells exist in the cups, and the player with the most shells in their store wins.
         \n\nMade by Tim Beswick, Oliver Philip Höhn, Max Karasiński, Martin Kubat and Dovydas Rupšys.</string>
+
+    <string name="msg_TutorialFirstMove"><b>First Move:</b>
+        \nThe game of Sungka begins in a simultaneous move mode. In this mode both players make their moves at the same time, the player that exhausts his move first will have the first move in the standard game mode.
+        \nNote that choosing your left most cup will grant you an extra move therefore you would have to exhaust that as well to exhaust all of your moves.
+        \nYour cups are at the bottom of the screen, tap on the screen to begin the first move count down.</string>
+
+    <string name="msg_TutorialFirstMoveEnd"><b>First Move Tutorial End:</b>
+        \nThis is the end of the tutorial, go back to the main menu by pressing the button in the center of the screen.</string>
+
+    <string name="msg_TutorialExtraMoves1"><b>Extra Moves:</b>
+        \nThis tutorial will explain the mechanics of extra moves. An extra move in a game of Sungka is gained when the last shell of the move is dropped in the players store.
+        \nTap on your the left most cup, notice that the last shell ends in your store. This means that you will get an extra turn.</string>
+
+    <string name="msg_TutorialExtraMoves2"><b>Extra Moves:</b>
+        \nThe two right most cups on your side of the board would both lead to an extra move however the order of execution matters.
+        \nFor the purpose of this tutorial select the second cup from the right, notice that the right most cup will no longer give you an extra move.
+        \nBoth of these cups can give you an extra move if executed in the proper order.</string>
+
+    <string name="msg_TutorialExtraMoves3"><b>Extra Moves:</b>
+        \nFollow the next couple of moves and notice how multiple extra moves can be chained one after another.</string>
+
+    <string name="msg_TutorialExtraMoves4"><b>Extra Moves:</b>
+        \nFinally you may have noticed that massive pile of shells in one of you cups. Tap on this cup, observe what happens and remember the rule of an extra move, if the last shell lands in your store you will get an extra move and it doesn\'t matter how.</string>
+
+    <string name="msg_TutorialEnd"><b>End of Tutorial:</b>
+        \nYou can continue playing or you can quit by swiping from the right and using the back button.</string>
+
 </resources>

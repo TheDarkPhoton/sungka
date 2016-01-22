@@ -485,7 +485,8 @@ public class MenuActivity extends Activity {
             dialog.getWindow().setAttributes(params);
         }
         TextView msg = (TextView) dialog.findViewById(android.R.id.message);
-        msg.setGravity(gravity); msg.setTextColor(Color.BLACK); msg.setTextSize(textSize);    }
+        msg.setGravity(gravity); msg.setTextColor(Color.BLACK); msg.setTextSize(textSize);
+    }
 
     /**
      * updates the menu to show and hide elements

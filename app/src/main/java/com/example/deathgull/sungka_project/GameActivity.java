@@ -23,6 +23,7 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -36,6 +37,7 @@ import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -58,11 +60,11 @@ import game.player.Player;
 import game.player.PlayerActionAdapter;
 import game.player.PlayerStatistic;
 import game.player.RemoteHuman;
-import game.tutorial.ExtraMoves;
+import game.tutorial.TutExtraMoves;
+import game.tutorial.TutFirstMove;
 import game.tutorial.Tutorial;
 import helpers.backend.PauseThreadFor;
 import helpers.backend.PauseThreadWhile;
-import helpers.backend.Simulator;
 import helpers.frontend.CupButton;
 import helpers.frontend.MessageManager;
 import helpers.frontend.MusicService;
@@ -109,14 +111,26 @@ public class GameActivity extends Activity {
     private int _soundShell, _soundStore;
     private boolean _soundsLoaded;
 
+    private int _sWidth, _sHeight;
+
     private PlayerActionAdapter _playerActionListener = new PlayerActionAdapter() {
         @Override
         public void onMoveStart(Player player) {
             Log.i(TAG, player.getName() + " started his turn");
             _messageManager.onMoveStart(player);
 
-            if (player instanceof Human && _board.getCurrentPlayer() != null) {
+            if (_board.getCurrentPlayer() != null && player instanceof Human) {
                 setupMove(player);
+            }
+
+            if (_board.getCurrentPlayer() != null && _board instanceof TutFirstMove) {
+                _board.addStateMessage(BoardState.TUTORIAL_FIRSTMOVE_END);
+            }
+
+            if (_board.getCurrentPlayer() != null && _tutorialMode){
+                Tutorial t = ((Tutorial) _board);
+                if (t.isMessagePressent())
+                    makeDialog(t.getCurrentMessage(), Gravity.LEFT, 15, true);
             }
         }
 
@@ -166,6 +180,11 @@ public class GameActivity extends Activity {
         public void onMoveEnd(Player player) {
             _messageManager.onMoveEnd(player);
             Log.i(TAG, player.getName() + " ended his turn");
+
+            if (_board.getCurrentPlayer() != null && _tutorialMode){
+                Tutorial t = ((Tutorial) _board);
+                t.nextStep();
+            }
         }
     };
 
@@ -213,11 +232,20 @@ public class GameActivity extends Activity {
         _soundShell = _soundPool.load(this, R.raw.shell, 1);
         _soundStore = _soundPool.load(this, R.raw.cash, 1);
 
+        getScreenSize();
+
         Bundle bundle = getIntent().getExtras();
-        if (bundle.getString(IS_TUTORIAL).equals("ExtraMoves")){
-            Game game = new Game(new ExtraMoves(), _playerActionListener);
-            _board = game.getBoard();
-            _tutorialMode = true;
+        if (bundle.getString(IS_TUTORIAL) != null){
+            if (bundle.getString(IS_TUTORIAL).equals("FirstMove")) {
+                Game game = new Game(new TutFirstMove(this), _playerActionListener);
+                _board = game.getBoard();
+                _tutorialMode = true;
+                makeDialog(R.string.msg_TutorialFirstMove, Gravity.LEFT, 15, true);
+            } else if (bundle.getString(IS_TUTORIAL).equals("ExtraMoves")){
+                Game game = new Game(new TutExtraMoves(this), _playerActionListener);
+                _board = game.getBoard();
+                _tutorialMode = true;
+            }
         } else {
             String firstName = bundle.getString(PLAYER_ONE);
             String secondName = bundle.getString(PLAYER_TWO);
@@ -240,6 +268,38 @@ public class GameActivity extends Activity {
         initView();                                                 //Programmatically create and lay out elements
 
         doBindService();
+    }
+
+    private void getScreenSize() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        WindowManager wm = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
+        wm.getDefaultDisplay().getMetrics(displayMetrics);
+        _sWidth = displayMetrics.widthPixels;
+        _sHeight = displayMetrics.heightPixels;
+    }
+
+    private void makeDialog(int message, int gravity, float textSize, boolean changeSize) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this).setMessage(message);
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                vb.vibrate(25);
+                dialog.cancel();
+            }
+        });
+        AlertDialog dialog = builder.show();
+        Button button = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        button.setBackgroundResource(R.drawable.roundedbuttonblack);
+        button.setTextColor(Color.WHITE);
+        if(changeSize) {
+            WindowManager.LayoutParams params = new WindowManager.LayoutParams();
+            params.copyFrom(dialog.getWindow().getAttributes());
+            params.width = (int)(_sWidth/1.1);
+            params.height = WindowManager.LayoutParams.WRAP_CONTENT;
+            dialog.getWindow().setAttributes(params);
+        }
+        TextView msg = (TextView) dialog.findViewById(android.R.id.message);
+        msg.setGravity(gravity); msg.setTextColor(Color.BLACK); msg.setTextSize(textSize);
     }
 
     /**
@@ -343,7 +403,7 @@ public class GameActivity extends Activity {
 
                 initReturnButtonLocation();
 
-                if (IS_TEST || _tutorialMode) {
+                if (IS_TEST || (_tutorialMode && !(_board instanceof TutFirstMove))) {
                     _countdownMode = false;
                     _board.getPlayerA().moveStart();
                 } else {
@@ -691,15 +751,15 @@ public class GameActivity extends Activity {
                 case GAME_OVER:
                     doGameOver();
                     break;
+                case TUTORIAL_FIRSTMOVE_END:
+                    makeDialog(R.string.msg_TutorialFirstMoveEnd, Gravity.LEFT, 15, true);
+                    ((Button) findViewById(R.id.btn_ReturnToMenu)).setVisibility(View.VISIBLE);
+                    ((Tutorial) _board).endTutorial();
+                    break;
             }
         }
 
         msgs.clear();
-
-        if (_tutorialMode){
-            Tutorial t = ((Tutorial) _board);
-            t.nextStep();
-        }
     }
 
     private void checkGameOver() {
@@ -719,11 +779,13 @@ public class GameActivity extends Activity {
         ArrayList<PlayerStatistic> playerStatistics = readStats(getApplicationContext(), null);//read the stats
         //store the leaderboard data for non online games
         if(!(_board.getPlayerA() instanceof RemoteHuman)){//if the first player isnt a remote human than store data for them
-            updateList(_board.getPlayerA(),playerStatistics);
+            updateList(_board.getPlayerA(), playerStatistics);
         }
+
         if(!(_board.getPlayerB() instanceof RemoteHuman)){//if the second player isnt a remote human than store data for them
-            updateList(_board.getPlayerB(),playerStatistics);
+            updateList(_board.getPlayerB(), playerStatistics);
         }
+
         try {
             storeStats(playerStatistics);
         } catch (IOException e) {
@@ -731,7 +793,6 @@ public class GameActivity extends Activity {
         }
 
         ((Button) findViewById(R.id.btn_ReturnToMenu)).setVisibility(View.VISIBLE);
-
     }
 
 
