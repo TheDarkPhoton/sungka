@@ -11,7 +11,7 @@
     <string name="str_HighestNumberOfConsecutiveTurns">Highest Number of Consecutive Turns</string>
     <string name="str_YouWon">YOU WON</string>
     <string name="str_YouLost">YOU LOST</string>
-    <string name="str_ItsADraw">ITS A DRAW</string>
+    <string name="str_ItsADraw">IT\'S A DRAW</string>
     <string name="str_AnotherTurn">YOU GET ANOTHER TURN</string>
     <string name="str_YouWereRobbed">YOU WERE ROBBED</string>
     <string name="str_YouRobbedOtherPlayer">YOU ROBBED THE OTHER PLAYER</string>
@@ -19,6 +19,10 @@
     <string name="str_YouRobbedOtherPlayersFinalMove">YOU ROBBED OTHER PLAYER\'S FINAL MOVE</string>
     <string name="str_Play">Play</string>
     <string name="str_Leaderboard">Leaderboard</string>
+    <string name="str_Tutorial">Tutorial</string>
+    <string name="str_FirstMoveTutorial">First Move</string>
+    <string name="str_ExtraMovesTutorial">Extra Moves</string>
+    <string name="str_RobbingMechanicTutorial">Robbing Mechanic</string>
     <string name="str_Options">Options</string>
     <string name="str_playerDisconnectedTitle">Player Disconnected</string>
     <string name="str_playerDisconnected">It seems the other player left (rage quit).</string>
@@ -40,22 +44,61 @@
     <string name="msg_Player1Name">Please enter player 1 name!</string>
     <string name="msg_Player2Name">Please enter player 2 name!</string>
     <string name="msg_IPAddress">Please enter an IP address!</string>
-    <string name="msg_ReturnToMenu">Return to main menu</string>
-    <string name="str_no_stats_data">There are no statistics data. Try playing more games!</string>
+    <string name="msg_ReturnToMenu">Return to Main Menu</string>
+    <string name="str_no_stats_data">There are no data available. Try playing more games!</string>
     <string name="str_Mute">Mute\nMusic</string>
     <string-array name="ai_names">
         <item>Easy Pete</item>
         <item>Average Alan</item>
         <item>TrollMaster 9000</item>
     </string-array>
-    <string name="str_tapWhenYourReady">Tap when you\'re ready for countdown\!</string>
-    <string name="str_tapAShells">Choose your starting shell</string>
+    <string name="str_tapWhenYourReady">TAP WHEN YOU\'RE READY FOR COUNTDOWN!</string>
+    <string name="str_tapAShells">CHOOSE YOUR STARTING SHELL</string>
     <string name="str_ConnectionEst">Connection Established</string>
     <string name="msg_Help"><b>How to play:</b>
-        \nYour cups are the 7 facing you and your store is the larger cup on your right.
-        \nAt the start of the game, press a cup on your side after the countdown finishes. The first player to distribute their shells gets the first move.
+        \nYou own the seven cups on your side and your store is the larger cup on your right.
+        \nAt the start of the game, tap a cup on your side after the countdown finishes. The first player to distribute their shells gets the first move.
         \nIf the last shell to be distributed lands in your store, you get another move.
         \nIf the last shell to be distributed lands in one of your empty cups, the shells from the opposite cup are moved to your store.
-        \nThe game ends when no shells exist in the cups, and the player with the most shells in their store wins.
+        \nThe game ends when no shells exist in the small cups, and the player with the most shells in their store wins.
         \n\nMade by Tim Beswick, Oliver Philip Höhn, Max Karasiński, Martin Kubat and Dovydas Rupšys.</string>
+
+    <string name="msg_TutorialFirstMove"><b>First Move:</b>
+        \nThe game of Sungka begins in a simultaneous move mode. After the countdown finishes, both players make their first moves as fast as possible. This is because the player that finishes their move first mode gets to start in the next round.
+        \nNote that choosing your left most cup will grant you an extra move, which means you would have to finish that in addition to exhausting all of your moves.
+        \nYour cups are at the bottom of the screen. Tap on the screen to begin the countdown!</string>
+
+    <string name="msg_TutorialFirstMoveEnd"><b>First Move Tutorial End:</b>
+        \nThis is the end of the tutorial, go back to the main menu by pressing the button in the center of the screen.</string>
+
+    <string name="msg_TutorialExtraMoves1"><b>Extra Moves:</b>
+        \nThis tutorial will explain the mechanics of extra moves. An extra move allows you to play for a second time in a row before the opponent gets to play. This is gained if the last shell of the move is dropped in the players store.
+        \nTap on the left most cup, notice that the last shell distributed ends up in your store. This means that you will get an extra turn.</string>
+
+    <string name="msg_TutorialExtraMoves2"><b>Extra Moves:</b>
+        \nThe two right most cups on your side of the board would both lead to an extra move however the order in which you tap them matters.
+        \nFor the purpose of this tutorial, select the second cup from the right. Notice that the right most cup will no longer give you an extra move.
+        \nBoth of these cups can give you an extra move if tapped in the proper order.</string>
+
+    <string name="msg_TutorialExtraMoves3"><b>Extra Moves:</b>
+        \nFollow the next couple of moves and notice how multiple extra moves can be chained one after another.</string>
+
+    <string name="msg_TutorialExtraMoves4"><b>Extra Moves:</b>
+        \nFinally you may have noticed that massive pile of shells in one of your cups. Tap on this cup, observe what happens and remember the rule of an extra move (if the last shell lands in your store you will get an extra move).</string>
+
+    <string name="msg_TutorialRobbing1"><b>Robbing Mechanic:</b>
+        \nOne of the rules in the game of Sungka allows the player to steal all shells from the opponent’s cup. This rule says that if the last shell of the move lands in one of your empty cups (except your store!), then the last shell and all the shells from the cup on the opposite side of the board are moved to your store.
+        \nTry this out yourself, select the highlighted cup and see what happens.</string>
+
+    <string name="msg_TutorialRobbing2"><b>Robbing Mechanic:</b>
+        \nIt is very easy to notice obvious moves that lead to robbing. However, you should be careful as it is very easy to focus too much on these moves and in the process miss negative effects of them.
+        \nTry it one more time. Notice that the same rule applies even when it goes through your opponents cups, as long as it ends in your empty cup.</string>
+
+    <string name="msg_TutorialRobbing3"><b>Robbing Mechanic:</b>
+        \nWhenever you have 15 shells in one of your cups, tapping on that cup will always result in robbing the opposite cup. Press on your leftmost cup and see what happens.</string>
+
+    <string name="msg_TutorialEnd"><b>End of Tutorial:</b>
+        \nYou can continue playing or you can exit by using the back button. The player with the most amount of shells in the players store wins the game.</string>
+
+
 </resources>
