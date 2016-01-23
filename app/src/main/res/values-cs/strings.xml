@@ -2,7 +2,6 @@
 <resources>
     <string name="app_name">Sungka</string>
     <string name="action_settings">Nastavení</string>
-    <string name="msg_Help"></string>
     <string name="msg_IPAddress">Prosím zadejte IP adresu!</string>
     <string name="msg_Player1Name">Prosím zadejte jméno prvního hráče!</string>
     <string name="msg_Player2Name">Prosím zadejte jméno druhého hráče!</string>
@@ -48,4 +47,76 @@
     <string name="str_YouWon">VYHRÁL JSTE</string>
     <string name="str_YourTurn">TVOJE KOLO</string>
     <string name="str_playerDisconnected">Vypadá to, že druhý hráč odešel.</string>
+    <string name="str_Tutorial">Cvičení</string>
+
+    <string name="msg_TutorialFirstMove">
+        <b> První tah:</b>\nHra Sungka začíná v režimu současného pohybu. Když odpočítávání skončí, oba hráči udělají svoje první tahy co nejrychleji, jak je to možné. Důvodem je, že hráč, který dokončí svůj tah první, začíná první v příštím kole., že výběr pomocí levé nejvíce šálek vám poskytne další krok, který znamená, že budete muset dokončit, že kromě vyčerpání všech vašich pohybů. \ Vaše poháry, jsou v dolní části obrazovky. Klepněte na obrazovce začne odpočítávání!
+
+        <b>First Move:</b>
+        \nThe game of Sungka begins in a simultaneous move mode. After the countdown finishes, both players make their first moves as fast as possible. This is because the player that finishes their move first mode gets to start in the next round.
+        \nNote that choosing your left most cup will grant you an extra move, which means you would have to finish that in addition to exhausting all of your moves.
+        \nYour cups are at the bottom of the screen. Tap on the screen to begin the countdown!</string>
+
+    <string name="msg_TutorialFirstMoveEnd">
+        <b> První Přesunout Tutorial Konec: </b> To je konec tutoriálu, vraťte se do hlavního menu stiskem tlačítka ve středu obrazovky.
+
+        <b>First Move Tutorial End:</b>
+        \nThis is the end of the tutorial, go back to the main menu by pressing the button in the center of the screen.</string>
+
+    <string name="msg_TutorialExtraMoves1">
+        <b> Extra Moves: </b> V tomto kurzu vysvětlí mechaniku navíc tahů. Extra krok umožňuje hrát podruhé za sebou, než soupeř dostane do hry. To je získala v případě, že poslední plášť pohybu je spadl do hráčů obchodě. \ NTAP na nejvíce vlevo pohár, Všimněte si, že poslední shell distribuován skončí ve vašem obchodě. To znamená, že dostanete další obrat.
+
+        <b>Extra Moves:</b>
+        \nThis tutorial will explain the mechanics of extra moves. An extra move allows you to play for a second time in a row before the opponent gets to play. This is gained if the last shell of the move is dropped in the players store.
+        \nTap on the left most cup, notice that the last shell distributed ends up in your store. This means that you will get an extra turn.</string>
+
+    <string name="msg_TutorialExtraMoves2">
+        <b> Extra Moves: </ b> \ n dva nejvíce vpravo šálky na vaší straně desky by oba vedou k extra tah však pořadí, ve kterém jste je klepnutím na čem záleží. \ Pro účely tohoto výukového programu, vyberte druhý šálek zprava. Všimněte si, že nejvíce vpravo pohár nebudete již dát další tah. \ Obě tyto poháry vám může dát další tah, pokud využit ve správném pořadí.
+
+        <b>Extra Moves:</b>
+        \nThe two right most cups on your side of the board would both lead to an extra move however the order in which you tap them matters.
+        \nFor the purpose of this tutorial, select the second cup from the right. Notice that the right most cup will no longer give you an extra move.
+        \nBoth of these cups can give you an extra move if tapped in the proper order.</string>
+
+    <string name="msg_TutorialExtraMoves3">
+        <b> Extra Moves: </b> Sledujte další pár pohybů a všimněte si, jak vícenásobné zvláštní pohyby mohou být připoutaný jeden po druhém.
+
+        <b>Extra Moves:</b>
+        \nFollow the next couple of moves and notice how multiple extra moves can be chained one after another.</string>
+
+    <string name="msg_TutorialExtraMoves4">
+        <b> Extra Moves: </b> tím, že konečně jste si možná všimli, že masivní hromadu skořápek v jednom z vašich šálků. Klepněte na tento kalich, pozorovat, co se děje a zapamatujte pravidlo extra pohybu (v případě, že poslední shell přistane ve vašem obchodě dostanete další tah).
+
+        <b>Extra Moves:</b>
+        \nFinally you may have noticed that massive pile of shells in one of your cups. Tap on this cup, observe what happens and remember the rule of an extra move (if the last shell lands in your store you will get an extra move).</string>
+
+    <string name="msg_TutorialRobbing1">
+        <b> Robbing Mechanik: </ b> \ Žádný z pravidel ve hře Sungka umožňuje hráči ukrást všechny skořápky od soupeřova pohár. Toto pravidlo říká, že v případě, že poslední plášť pohybu objevil v jedné ze svých prázdných šálků (s výjimkou úložiště!), Pak poslední nádrž a všechny skořápky z pohárku na opačné straně desky jsou přesunuty do obchodu. \ Zkuste to sami, vyberte zvýrazněnou pohár a uvidíme, co se stane.
+
+        <b>Robbing Mechanic:</b>
+        \nOne of the rules in the game of Sungka allows the player to steal all shells from the opponent’s cup. This rule says that if the last shell of the move lands in one of your empty cups (except your store!), then the last shell and all the shells from the cup on the opposite side of the board are moved to your store.
+        \nTry this out yourself, select the highlighted cup and see what happens.</string>
+
+    <string name="msg_TutorialRobbing2">
+        <b> Robbing Mechanik: </ b> \ nJe je velmi snadné, aby oznámení zjevné pohyby, které vedou k okrádání. Nicméně, měli byste být opatrní, protože je velmi snadné soustředit se příliš na tyto pohyby av procesu miss negativních vlivů z nich. \ Zkuste si to ještě jednou. Všimněte si, že stejné pravidlo platí iv případě, že jde přes své soupeře poháry, tak dlouho, jak to skončí ve vaší prázdný šálek.
+
+        <b>Robbing Mechanic:</b>
+        \nIt is very easy to notice obvious moves that lead to robbing. However, you should be careful as it is very easy to focus too much on these moves and in the process miss negative effects of them.
+        \nTry it one more time. Notice that the same rule applies even when it goes through your opponents cups, as long as it ends in your empty cup.</string>
+
+    <string name="msg_TutorialRobbing3">
+        <b> Robbing Mechanik: </ b> \ Kdykoli máte 15 skořápky v jedné ze svých pohárů a poklepal na tomto pohár bude vždy mít za následek okrádání opačný pohár. Stiskněte tlačítko na levé krajní poháru a uvidíme, co se stane.
+
+        <b>Robbing Mechanic:</b>
+        \nWhenever you have 15 shells in one of your cups, tapping on that cup will always result in robbing the opposite cup. Press on your leftmost cup and see what happens.</string>
+
+    <string name="msg_TutorialEnd">
+        <b> Konec Cvičení: </b>Můžete pokračovat ve hře nebo můžete opustit pomocí tlačítka zpět. Hráč s nejvíce množstvím skořápek v obchodě hráčů vyhrává hru.
+
+        <b>End of Tutorial:</b>
+        \nYou can continue playing or you can exit by using the back button. The player with the most amount of shells in the players store wins the game.</string>
+    <string name="str_ExtraMovesTutorial">Extra Tahy</string>
+    <string name="str_FirstMoveTutorial">První Kolo</string>
+    <string name="str_RobbingMechanicTutorial">Jak Okrádnout Hrače</string>
+
 </resources>

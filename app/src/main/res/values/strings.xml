@@ -55,16 +55,9 @@
     <string name="str_tapWhenYourReady">TAP WHEN YOU\'RE READY FOR COUNTDOWN!</string>
     <string name="str_tapAShells">CHOOSE YOUR STARTING SHELL</string>
     <string name="str_ConnectionEst">Connection Established</string>
-    <string name="msg_Help"><b>How to play:</b>
-        \nYou own the seven cups on your side and your store is the larger cup on your right.
-        \nAt the start of the game, tap a cup on your side after the countdown finishes. The first player to distribute their shells gets the first move.
-        \nIf the last shell to be distributed lands in your store, you get another move.
-        \nIf the last shell to be distributed lands in one of your empty cups, the shells from the opposite cup are moved to your store.
-        \nThe game ends when no shells exist in the small cups, and the player with the most shells in their store wins.
-        \n\nMade by Tim Beswick, Oliver Philip Höhn, Max Karasiński, Martin Kubat and Dovydas Rupšys.</string>
 
     <string name="msg_TutorialFirstMove"><b>First Move:</b>
-        \nThe game of Sungka begins in a simultaneous move mode. After the countdown finishes, both players make their first moves as fast as possible. This is because the player that finishes their move first mode gets to start in the next round.
+        \nThe game of Sungka begins in a simultaneous move mode. After the countdown finishes, both players make their first moves as fast as possible. This is because the player that finishes their move first gets to start in the next round.
         \nNote that choosing your left most cup will grant you an extra move, which means you would have to finish that in addition to exhausting all of your moves.
         \nYour cups are at the bottom of the screen. Tap on the screen to begin the countdown!</string>
 
