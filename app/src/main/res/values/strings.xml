@@ -101,6 +101,4 @@
 
     <string name="msg_TutorialEnd"><b>End of Tutorial:</b>
         \nYou can continue playing or you can exit by using the back button. The player with the most amount of shells in the players store wins the game.</string>
-
-
 </resources>
