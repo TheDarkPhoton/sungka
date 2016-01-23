@@ -29,13 +29,13 @@
     <string name="str_Player">Žaidėjas</string>
     <string name="str_NameHolder">Vardas</string>
     <string name="str_IPHolder">IP Adresas</string>
-    <string name="str_VS">Prieš</string>
-    <string name="str_Ai">Kompiuteris</string>
+    <string name="str_VS">=</string>
+    <string name="str_Ai">Kompiu...</string>
     <string name="str_Remote">LAN</string>
     <string name="str_AiDiff">AI Sunkumas</string>
     <string name="str_Name">Vardas:</string>
     <string name="str_Join">Prisijungti</string>
-    <string name="str_Host">Šeimininkas</string>
+    <string name="str_Host">Savininkas</string>
     <string name="str_IP">IP:</string>
     <string name="str_Waiting">Laukiama Priešininko</string>
     <string name="str_Select">Pasirinkti</string>
