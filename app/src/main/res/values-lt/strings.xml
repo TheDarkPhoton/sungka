@@ -1,0 +1,106 @@
+<resources>
+    <string name="app_name">Sungka</string>
+    <string name="action_settings">Nustatymai</string>
+    <string name="str_Zero">0</string>
+    <string name="str_SinglePlayer">Vienas Žaidėjas</string>
+    <string name="str_YourTurn">JŪSŲ ĖJIMAS</string>
+    <string name="str_Statistics">STATISTIKA</string>
+    <string name="str_AverageMoveTime">Vidutinė Ėjimo Trukmė</string>
+    <string name="str_HighestCaptureInOneTurn">Daugiausia Taškų per Vieną Ejimą</string>
+    <string name="str_AverageScorePerGame">Vidutinis Taškų Kiekis per Žaidimą</string>
+    <string name="str_HighestNumberOfConsecutiveTurns">Didžiausias Skaičius Ėjimų iš Eilės</string>
+    <string name="str_YouWon">JŪS LAIMĖJOTE</string>
+    <string name="str_YouLost">JŪS PRALAIMĖJOTE</string>
+    <string name="str_ItsADraw">LYGIOSIOS</string>
+    <string name="str_AnotherTurn">JŪS GAVOTE PAPILDIMĄ ĖJIMĄ</string>
+    <string name="str_YouWereRobbed">JUS APVOGĖ</string>
+    <string name="str_YouRobbedOtherPlayer">JŪS APVOGĖTE SAVO PRIEŠININKĄ</string>
+    <string name="str_YouWereRobbedOfFinalMove">PRIEŠININKAS PAVOGĖ TAVO PASKUTINĮ ĖJIMĄ</string>
+    <string name="str_YouRobbedOtherPlayersFinalMove">JŪS PAVOGĖTE PASKITINĮ ĖJIMĄ IŠ PRIEŠININKO</string>
+    <string name="str_Play">Žaisti</string>
+    <string name="str_Leaderboard">TOP Žaidėjai</string>
+    <string name="str_Tutorial">Instrukcijos</string>
+    <string name="str_FirstMoveTutorial">Pirmas Ėjimas</string>
+    <string name="str_ExtraMovesTutorial">Papildomi Ėjimai</string>
+    <string name="str_RobbingMechanicTutorial">Vogimo Taisykle</string>
+    <string name="str_Options">Pasirinkimai</string>
+    <string name="str_playerDisconnectedTitle">Žaidėjas Atsijungė</string>
+    <string name="str_playerDisconnected">Priešininkas paliko žaidimą.</string>
+    <string name="str_Player">Žaidėjas</string>
+    <string name="str_NameHolder">Vardas</string>
+    <string name="str_IPHolder">IP Adresas</string>
+    <string name="str_VS">=</string>
+    <string name="str_Ai">Kompiu...</string>
+    <string name="str_Remote">LAN</string>
+    <string name="str_AiDiff">AI Sunkumas</string>
+    <string name="str_Name">Vardas:</string>
+    <string name="str_Join">Prisijungti</string>
+    <string name="str_Host">Savininkas</string>
+    <string name="str_IP">IP:</string>
+    <string name="str_Waiting">Laukiama Priešininko</string>
+    <string name="str_Select">Pasirinkti</string>
+    <string name="str_Back">Atgal</string>
+    <string name="msg_PlayerName">Įveskite žaidejo vardą!</string>
+    <string name="msg_Player1Name">Įveskite Pirmo žaidejo vardą!</string>
+    <string name="msg_Player2Name">Įveskite Antro žaidejo vardą!</string>
+    <string name="msg_IPAddress">Įveskite IP adresą!</string>
+    <string name="msg_ReturnToMenu">Sugrišti į Meniu</string>
+    <string name="str_no_stats_data">Statistikos nerasta. Sužaiskite daugiau žaidimų.</string>
+    <string name="str_Mute">Nutildyti\nMuziką</string>
+    <string-array name="ai_names">
+        <item>Kaimo Juzė</item>
+        <item>Vidutinis Vudis</item>
+        <item>OptimusPranas 9000</item>
+    </string-array>
+    <string name="ai_sensei">Mokytojas Pranas</string>
+    <string name="student">Mokinys</string>
+    <string name="str_tapWhenYourReady">PALIESKITE EKRANĄ KAI BŪSITE PASIREGĘ PRADĖTI!</string>
+    <string name="str_tapAShells">PASIRINKITE SAVO PRADINĮ DUBENĖLĮ</string>
+    <string name="str_ConnectionEst">Prisijungta sėkmingai</string>
+    <string name="msg_Help"><b>How to play:</b>
+        \nYou own the seven cups on your side and your store is the larger cup on your right.
+        \nAt the start of the game, tap a cup on your side after the countdown finishes. The first player to distribute their shells gets the first move.
+        \nIf the last shell to be distributed lands in your store, you get another move.
+        \nIf the last shell to be distributed lands in one of your empty cups, the shells from the opposite cup are moved to your store.
+        \nThe game ends when no shells exist in the small cups, and the player with the most shells in their store wins.
+        \n\nMade by Tim Beswick, Oliver Philip Höhn, Max Karasiński, Martin Kubat and Dovydas Rupšys.</string>
+
+    <string name="msg_TutorialFirstMove"><b>Primo ėjimo etapas:</b>
+        \nSungkos žaidimas prasida abiems žaidėjams vienu metu. Žaidimo pradžioje po trijų sekundžių pauzės abu žaidejai bando išnaudoti savo ėjimą kiek įmanoma greičiau. Žaidėjas kuris užbaigs savo ėjimą pirmas pradės kitą etapą.
+        \nAtkreipkite dėmesį į tai, kad pasirinkus kairįjį dubenėlį jūs gausite papildomą ėjimą. Šis ėjimas turės būti išnaudotas, kad jūs užbaigtumėte savo pirmąjį ėjimą.
+        \nJūsų puodeliai yra ekrano apačioje. Palieskite ekraną kai būsite pasirengę!</string>
+
+    <string name="msg_TutorialFirstMoveEnd"><b>Pirmo ėjimo instrukcijų pabaiga:</b>
+        \nApmokymo pabaiga. Grįškite į pagrindinį meniu spausdami mygtuką ekrano viduryje.</string>
+
+    <string name="msg_TutorialExtraMoves1"><b>Papildomi ėjimai:</b>
+        \nŠis apmokymas paaiškins papildomų ėjimų veikimą. Papildomi ėjimai leidžia eiti kelis kartus iš eilės. Norint gauti papildomą ėjimą jūsų ėjimas turi pasibaigti ant žaidėjo saugyklos (dubenėlio). Jūsų saugykla yra didelis rutulys dešinėje pusėje.
+        \nPaspauskite ant pažymėto dubenėlio ir stebėkite kur baigsis jūsų ėjimas.</string>
+
+    <string name="msg_TutorialExtraMoves2"><b>Papildomi ėjimai:</b>
+        \nDu dešiniausi dubeneliai jūsų lentos pusėje gali suteikti jums papildomus ėjimus, bet, norint gauti šiuos ėjimus, jūs turite atlikti juos teisinga tvarka.
+        \nŠio apmokymo tikslui pasirinkite antrą puodelį iš dešinės. Pastebėkite, kad dešiniausias puodelis nebeduos jums pabildomo ėjimo.
+        \nAbu šie puodeliai papildomą ėjimą suteikia tada, kai yra pasirinkti teisinga tvarka.</string>
+
+    <string name="msg_TutorialExtraMoves3"><b>Papildomi ėjimai:</b>
+        \nSekite kelis kitus ėjimus ir stebėkite, kaip galima gauti keletą papildomų ėjimų iš eilės.</string>
+
+    <string name="msg_TutorialExtraMoves4"><b>Papildomi ėjimai:</b>
+        \nPastebėkite, kad vienas iš jūsų dubenėlių turi nemažą krūvelę kamuoliukų. Paspauskite ant šio dubenėlio ir stebėkite kas nutinka (jeigu paskutinis kamuoliukas pasilieka jūsų saugykloje, jūs gaunate papildomą ėjimą).</string>
+
+    <string name="msg_TutorialRobbing1"><b>Vogimo Taisykle:</b>
+        \nViena iš taisykių Sungkos žaidime leidžia pavogti kamuoliukus iš priešininko pusėje esančių dubenėlių. Jeigu paskutinis jūsų ėjimo kamuolikas pasilieka viename iš jums priklausančių tuščių dubenėlių, tas kamiuoliukas ir visi kamuoliukai iš priešiniko pusėje esančio dubenėlio yra perkeliami į tavo saugyklą.
+        \nIšbandykite šią taisyklę pasirinkdami pažymėtą dubenėlį.</string>
+
+    <string name="msg_TutorialRobbing2"><b>Vogimo Taisykle:</b>
+        \nApiplėšti priešininka nėra labai sunku, tačiau reikia atkreipti dėmesį į tai kiek naudos jums tai atneš.
+        \nPabandikite dar karta, si karta jusu ejimas praeis per priesininko lenta bet tai nera svarbu nes paskutinis kamuoliukas vistiek pasilieka viename is jusu tusciu dubeneliu.
+        \nPabandykite dar kartą, šį kartą jūsų ėjimo metu kamuoliukai bus metami į priešininko dubenėlius, bet tai nėra svarbu jeigu ejimas baigsis jūsų lentos pusėje, tuščiame dubenėlyje.</string>
+
+    <string name="msg_TutorialRobbing3"><b>Vogimo Taisykle:</b>
+        \nJeigu vienas iš jūsų dubenėlių turi lygiai 15 kamuoliukų, pasirinkus šitą ėjimą jūs visada pavogsite iš priešiniko. Pasirinkite kairiausią dubenėlį ir stebėkite kas vyksta.</string>
+
+    <string name="msg_TutorialEnd"><b>Instructazo Pabaiga:</b>
+        \nŽaidėjęs surinkęs daugiau kamuoliukų savo saugykloje, žaidimo pabaigoje, laimi. Galite tęsti šį žaidimą arba išeikite paspaudus mygtuką atgal.</string>
+
+</resources>

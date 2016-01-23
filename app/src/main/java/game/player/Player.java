@@ -158,6 +158,10 @@ public abstract class Player {
         return _name;
     }
 
+    public void setName(String name){
+        _name = name;
+    }
+
     /**
      * Checks if player has any valid moves.
      * @return true if there are moves that this player can make.
