@@ -92,9 +92,9 @@
         \nOne of the rules in the game of Sungka allows the player to steal all shells from the opponent’s cup. This rule says that if the last shell of the move lands in one of your empty cups (except your store!), then the last shell and all the shells from the cup on the opposite side of the board are moved to your store.
         \nTry this out yourself, select the highlighted cup and see what happens.</string>
 
-    <string name="msg_TutorialRobbing2"><b>Robbing Rule:</b>
-        \nIt is very easy to notice obvious moves that lead to robbing. However, you should be careful as it is very easy to focus too much on these moves and in the process miss negative effects of them.
-        \nTry it one more time. Notice that the same rule applies even when it goes through your opponents cups, as long as it ends in your empty cup.</string>
+        <string name="msg_TutorialRobbing2"><b>Robbing Rule:</b>
+            \nIt is very easy to notice obvious moves that lead to robbing. However, you should be careful as it is very easy to focus too much on these moves and in the process miss negative effects of them.
+            \nTry it one more time. Notice that the same rule applies even when it goes through your opponents cups, as long as it ends in your empty cup.</string>
 
     <string name="msg_TutorialRobbing3"><b>Robbing Rule:</b>
         \nWhenever you have 15 shells in one of your cups, tapping on that cup will always result in robbing the opposite cup. Press on your leftmost cup and see what happens.</string>
