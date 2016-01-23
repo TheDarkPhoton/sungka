@@ -19,8 +19,10 @@ public abstract class Tutorial extends Board {
      * Constructs board with default attributes.
      */
     public Tutorial(Context context) {
-        super(new Human("Student"), new AI(100,100, "SenseiSato"));
+        super(new Human(""), new AI(100, 100, ""));
         _context = context;
+        getPlayerA().setName(getStringResource("student"));
+        getPlayerB().setName(getStringResource("ai_sensei"));
     }
 
     public boolean isValid(int index, boolean robber){
@@ -70,5 +72,9 @@ public abstract class Tutorial extends Board {
     protected int getStringResourceId(String name){
         String packageName = _context.getPackageName();
         return _context.getResources().getIdentifier(name, "string", packageName);
+    }
+
+    protected String getStringResource(String name){
+        return _context.getResources().getString(getStringResourceId(name));
     }
 }
