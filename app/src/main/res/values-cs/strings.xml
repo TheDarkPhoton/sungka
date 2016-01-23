@@ -118,5 +118,7 @@
     <string name="str_ExtraMovesTutorial">Extra Tahy</string>
     <string name="str_FirstMoveTutorial">První Kolo</string>
     <string name="str_RobbingMechanicTutorial">Jak Okrádnout Hrače</string>
+    <string name="ai_sensei">Sensei Sato</string>
+    <string name="student">Student</string>
 
 </resources>
