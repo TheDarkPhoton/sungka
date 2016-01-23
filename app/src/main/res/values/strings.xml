@@ -100,5 +100,5 @@
         \nWhenever you have 15 shells in one of your cups, tapping on that cup will always result in robbing the opposite cup. Press on your leftmost cup and see what happens.</string>
 
     <string name="msg_TutorialEnd"><b>End of Tutorial:</b>
-        \nYou can continue playing or you can exit by using the back button. The player with the most amount of shells in the players store wins the game.</string>
+        \nThe player with the most amount of shells in the players store wins the game. You can continue playing or you can exit by using the back button.</string>
 </resources>
