@@ -619,7 +619,7 @@ public class GameActivity extends Activity {
                             moveShellsRec(hand, images, duration);
                         } else if (robbersHand != null) {
                             moveRobOpponent(_board.pickUpShells(hand.currentCupIndex()), robbersHand, duration * 2);
-                            processBoardMessages();
+                            //processBoardMessages();
                         } else {
                             processEndOfAnimation(hand.belongsToPlayer());
                         }
