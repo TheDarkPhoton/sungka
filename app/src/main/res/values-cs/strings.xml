@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Sungka</string>
+    <string name="action_settings">Nastavení</string>
+    <string name="msg_IPAddress">Prosím zadej IP adresu!</string>
+    <string name="msg_Player1Name">Prosím zadej jméno prvního hráče!</string>
+    <string name="msg_Player2Name">Prosím zadej jméno druhého hráče!</string>
+    <string name="msg_PlayerName">Prosím zadej jméno hráče!</string>
+    <string name="msg_ReturnToMenu">Návrat na hlavní stránku</string>
+    <string name="str_Ai">AI</string>
+    <string name="str_AiDiff">Obtížnost</string>
+    <string name="str_AnotherTurn">MÁŠ DALŠÍ TAH</string>
+    <string name="str_AverageMoveTime">Průměrný čas tahu</string>
+    <string name="str_AverageScorePerGame">Průměrný počet bodů ve hře</string>
+    <string name="str_Back">Zpátky</string>
+    <string name="str_HighestCaptureInOneTurn">Nejvyšší počet zásahů v jednom kole</string>
+    <string name="str_ConnectionEst">Spojení navázáno</string>
+    <string name="str_HighestNumberOfConsecutiveTurns">Nejvyšší počet následných kol</string>
+    <string name="str_Host">Hostitel</string>
+    <string name="str_IP">IP:</string>
+    <string name="str_IPHolder">IP Adresa</string>
+    <string name="str_ItsADraw">JE TO REMÍZA</string>
+    <string name="str_Join">Připojit se</string>
+    <string name="str_Leaderboard">Tabulka vítězů</string>
+    <string name="str_Mute">Ztlumení\nHudby</string>
+    <string name="str_Name">Jméno:</string>
+    <string name="str_NameHolder">Jméno</string>
+    <string name="str_Options">Nastavení</string>
+    <string name="str_Play">Hrát</string>
+    <string name="str_Player">Místní</string>
+    <string name="str_Remote">Vzdálený</string>
+    <string name="str_Select">Zvolit Protihráče</string>
+    <string name="str_SinglePlayer">Jeden hráč</string>
+    <string name="str_Statistics">Statistiky</string>
+    <string name="str_VS">VS</string>
+    <string name="str_Waiting">Čekání na hráče</string>
+    <string name="str_YouLost">PROHRÁL JSTE</string>
+    <string name="str_Zero">0</string>
+    <string name="str_playerDisconnectedTitle">Protihráč se odpojil</string>
+    <string name="str_tapAShells">Vyberte svojí první mušli</string>
+    <string name="str_tapWhenYourReady">Klepni na obrazovku když budete připravený</string>
+    <string name="str_no_stats_data">Nejsou k dizpozici žádná data. Zkus hrát více her!</string>
+    <string name="str_YouRobbedOtherPlayer">OKRADL JSI PROTIHRÁČE</string>
+    <string name="str_YouRobbedOtherPlayersFinalMove">OKRADL JSI PROTIHRÁČŮV POSLEDNI TAH</string>
+    <string name="str_YouWereRobbed">BYL JSI OKRAZENÍ</string>
+    <string name="str_YouWereRobbedOfFinalMove">BYL JSI OKRAZEN O SVŮJ POSLEDNÍ TAH</string>
+    <string name="str_YouWon">VYHRÁL JSI</string>
+    <string name="str_YourTurn">TY HRAJEŠ</string>
+    <string name="str_playerDisconnected">Vypadá to, že druhý hráč odešel.</string>
+    <string name="str_Tutorial">Cvičení</string>
+    <string name="msg_Help">
+        \n|<b>Backend Designeři</b>\t\t\t\t|<b>Frontend Designéři</b>\t\t\t\t|<b>Návrhář Testů</b>
+        \n|Dovydas Rupšys\t\t\t\t\t\t\t|Martin Kubat\t\t\t\t\t\t\t\t\t\t\t|Max Karasiński
+        \n|Oliver Philip Höhn\t\t\t\t\t|Tim Beswick
+        \n\n|<b>Překladatelské Přispěvatelé</b>
+        \n|Laimonas Juodis, Julija Gaidelyte,</string>
+
+    <string name="msg_TutorialFirstMove">
+        <b>První tah:</b>\nVe hře Sungka hráči začínají současně hrát. Když odpočítávání skončí, oba hráči udělají svůj první tah co možná nejrychleji. Hráč, který dokončí svůj tah jako první, v příštím kole začíná. \nVšimni si, že výběrem kelímku nejvíce vlevo dostaneš další extra krok, který se musí ukončit, aby bylo možné dokončit svůj tah. \nTvoje kelímky jsou v dolní části obrazovky. Klepni na obrazovku a začne odpočítávání!
+</string>
+
+    <string name="msg_TutorialFirstMoveEnd">
+        <b>Konec Cvičení:</b> Tohle je konec tutoriálu, vrať se zpátky do hlavního menu stisknutím tlačítka ve středu obrazovky.
+</string>
+
+    <string name="msg_TutorialExtraMoves1">
+        <b>Extra Tahy: </b>
+	   \nTento tutoriál vysvětlí jak fungují extra tahy. Extra tah ti umožní hrát vícekrát za sebou. Je možné ho získat, když poslední kolečko dopadne do tvého trezoru.
+	   \nVyber si kelímek úplně napravo, a všimni si, že poslední rozdané kolečko dopadne do tvého trezoru. To znamená, že získáš další tah.</string>
+
+    <string name="msg_TutorialExtraMoves2">
+
+	   <b>Extra Tahy:</b>
+        \nOba dva kelímky úplně napravo na tvé straně ti můžou získat extra tahy, ale záleží na pořadí, kdy budou vybrané.
+        \nPro účely tohoto tutoriálu si vyber svůj druhý kelímek zprava. Všimni si kelímek úplně napravo už ti nemůže poskytnout extra tah.
+ 	   \nOba kelímky by ti mohly poskytnout extra tahy, jen kdyby byly vybrané ve správném pořadí.
+		</string>
+
+    <string name="msg_TutorialExtraMoves3">
+
+	   <b>Extra Tahy</b>
+	   \nSleduj dalších několik pohybů a všimni si, že je možné postupně dostat další po sobě následující extra tahy.
+    </string>
+
+    <string name="msg_TutorialExtraMoves4">
+	   <b>Extra Tahy: </b>
+	   \nMožná jsi si všiml velké hromady koleček v jednom z tvých kelímků. Vyber si tento kelímek a všimni si, co se stane. Vzpomeň si na pravidlo extra tahů - v případě, že poslední kolečko přistane ve tvém trezoru, dostaneš další tah.
+ </string>
+
+    <string name="msg_TutorialRobbing1">
+	<b>Okrádání protihráče:</b>
+        \nJedno z pravidel hry Sungka umožňuje hráči ukrást všechna kolečka ze soupeřova kelímku. Když poslední kolečko v jednom tahu dopadne do jednoho z tvých prázdných kelímků (kromě tvého trezoru!), tak to poslední kolečko a všechny kolečka v kelímku na opačné straně desky jsou přesunuty do tvého trezoru.
+	   \nTed si to vyzkoušej - vyber ten zvýrazněný kelímek a všimni si, co se stane.
+
+    </string>
+
+    <string name="msg_TutorialRobbing2">
+
+        <b>Okrádání protihráče:</b>
+        \nJe velice snadné si všimnout lehkých tahů, kterými můžeš okrást soupeře. Nicméně, buď opatrný, protože je velice snadné se soustředit na tyto tahy a v průběhu hry si můžeš uškodit.
+	   \nVyskoušej si to ještě jednou. Všimni si, že můžeš okrást protihráče, i když kolečka projdou kelímky tvého soupeře. Důležité je, aby poslední kolečko dopadlo do jednoho z tvých prázdných kelímků.
+</string>
+
+    <string name="msg_TutorialRobbing3">
+  <b>Robbing Mechanic:</b>
+        \nKdykoliv máš přesně 15 koleček v jednom kelímku, jeho výběr má za následek, že okradneš kelímek naproti. Vyber si kelímek úplně napravo a uvidíš, co se stane.
+       </string>
+
+    <string name="msg_TutorialEnd">
+   <b>Konec Cvičení:</b>
+   \nMůžeš pokračovat ve hře anebo se můžeš vrátit zpátky na hlavní stránku pomocí tlačítka \‘zpět\’. Na konci hry hráč s největším množstvím koleček ve svém trezoru vyhrává.
+       </string>
+
+    <string name="str_ExtraMovesTutorial">Extra Tahy</string>
+    <string name="str_FirstMoveTutorial">První Kolo</string>
+    <string name="str_RobbingMechanicTutorial">Jak Okrádnout Hrače</string>
+    <string name="ai_sensei">Sensei Sato</string>
+    <string name="student">Student</string>
+
+</resources>
