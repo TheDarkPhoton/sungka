@@ -38,14 +38,14 @@
     <string name="str_Zero">0</string>
     <string name="str_playerDisconnectedTitle">Protihráč se odpojil</string>
     <string name="str_tapAShells">Vyberte svojí první mušli</string>
-    <string name="str_tapWhenYourReady">Klepněte na obrazovku když budete připravený</string>
+    <string name="str_tapWhenYourReady">Klepni na obrazovku když budete připravený</string>
     <string name="str_no_stats_data">Nejsou k dizpozici žádná data. Zkus hrát více her!</string>
     <string name="str_YouRobbedOtherPlayer">OKRADL JSI PROTIHRÁČE</string>
     <string name="str_YouRobbedOtherPlayersFinalMove">OKRADL JSI PROTIHRÁČŮV POSLEDNI TAH</string>
     <string name="str_YouWereRobbed">BYL JSI OKRAZENÍ</string>
     <string name="str_YouWereRobbedOfFinalMove">BYL JSI OKRAZEN O SVŮJ POSLEDNÍ TAH</string>
     <string name="str_YouWon">VYHRÁL JSI</string>
-    <string name="str_YourTurn">TVOJE KOLO</string>
+    <string name="str_YourTurn">TY HRAJEŠ</string>
     <string name="str_playerDisconnected">Vypadá to, že druhý hráč odešel.</string>
     <string name="str_Tutorial">Cvičení</string>
     <string name="msg_Help">
@@ -56,71 +56,61 @@
         \n|Laimonas Juodis, Julija Gaidelyte,</string>
 
     <string name="msg_TutorialFirstMove">
-        <b> První tah:</b>\nHra Sungka začíná v režimu současného pohybu. Když odpočítávání skončí, oba hráči udělají svoje první tahy co nejrychleji, jak je to možné. Důvodem je, že hráč, který dokončí svůj tah první, začíná první v příštím kole., že výběr pomocí levé nejvíce šálek vám poskytne další krok, který znamená, že budete muset dokončit, že kromě vyčerpání všech vašich pohybů. \nVaše poháry, jsou v dolní části obrazovky. Klepněte na obrazovce začne odpočítávání!
-
-        <b>First Move:</b>
-        \nThe game of Sungka begins in a simultaneous move mode. After the countdown finishes, both players make their first moves as fast as possible. This is because the player that finishes their move first mode gets to start in the next round.
-        \nNote that choosing your left most cup will grant you an extra move, which means you would have to finish that in addition to exhausting all of your moves.
-        \nYour cups are at the bottom of the screen. Tap on the screen to begin the countdown!</string>
+        <b>První tah:</b>\nVe hře Sungka hráči začínají současně hrát. Když odpočítávání skončí, oba hráči udělají svůj první tah co možná nejrychleji. Hráč, který dokončí svůj tah jako první, v příštím kole začíná. \nVšimni si, že výběrem kelímku nejvíce vlevo dostaneš další extra krok, který se musí ukončit, aby bylo možné dokončit svůj tah. \nTvoje kelímky jsou v dolní části obrazovky. Klepni na obrazovku a začne odpočítávání!
+</string>
 
     <string name="msg_TutorialFirstMoveEnd">
-        <b> První Přesunout Tutorial Konec: </b> To je konec tutoriálu, vraťte se do hlavního menu stiskem tlačítka ve středu obrazovky.
-
-        <b>First Move Tutorial End:</b>
-        \nThis is the end of the tutorial, go back to the main menu by pressing the button in the center of the screen.</string>
+        <b>Konec Cvičení:</b> Tohle je konec tutoriálu, vrať se zpátky do hlavního menu stisknutím tlačítka ve středu obrazovky.
+</string>
 
     <string name="msg_TutorialExtraMoves1">
-        <b> Extra Moves: </b> V tomto kurzu vysvětlí mechaniku navíc tahů. Extra krok umožňuje hrát podruhé za sebou, než soupeř dostane do hry. To je získala v případě, že poslední plášť pohybu je spadl do hráčů obchodě. \nNTAP na nejvíce vlevo pohár, Všimněte si, že poslední shell distribuován skončí ve vašem obchodě. To znamená, že dostanete další obrat.
-
-        <b>Extra Moves:</b>
-        \nThis tutorial will explain the mechanics of extra moves. An extra move allows you to play for a second time in a row before the opponent gets to play. This is gained if the last shell of the move is dropped in the players store.
-        \nTap on the left most cup, notice that the last shell distributed ends up in your store. This means that you will get an extra turn.</string>
+        <b>Extra Tahy: </b>
+	   \nTento tutoriál vysvětlí jak fungují extra tahy. Extra tah ti umožní hrát vícekrát za sebou. Je možné ho získat, když poslední kolečko dopadne do tvého trezoru.
+	   \nVyber si kelímek úplně napravo, a všimni si, že poslední rozdané kolečko dopadne do tvého trezoru. To znamená, že získáš další tah.</string>
 
     <string name="msg_TutorialExtraMoves2">
-        <b> Extra Moves: </b> \n dva nejvíce vpravo šálky na vaší straně desky by oba vedou k extra tah však pořadí, ve kterém jste je klepnutím na čem záleží. \nPro účely tohoto výukového programu, vyberte druhý šálek zprava. Všimněte si, že nejvíce vpravo pohár nebudete již dát další tah. \nObě tyto poháry vám může dát další tah, pokud využit ve správném pořadí.
 
-        <b>Extra Moves:</b>
-        \nThe two right most cups on your side of the board would both lead to an extra move however the order in which you tap them matters.
-        \nFor the purpose of this tutorial, select the second cup from the right. Notice that the right most cup will no longer give you an extra move.
-        \nBoth of these cups can give you an extra move if tapped in the proper order.</string>
+	   <b>Extra Tahy:</b>
+        \nOba dva kelímky úplně napravo na tvé straně ti můžou získat extra tahy, ale záleží na pořadí, kdy budou vybrané.
+        \nPro účely tohoto tutoriálu si vyber svůj druhý kelímek zprava. Všimni si kelímek úplně napravo už ti nemůže poskytnout extra tah.
+ 	   \nOba kelímky by ti mohly poskytnout extra tahy, jen kdyby byly vybrané ve správném pořadí.
+		</string>
 
     <string name="msg_TutorialExtraMoves3">
-        <b> Extra Moves: </b> Sledujte další pár pohybů a všimněte si, jak vícenásobné zvláštní pohyby mohou být připoutaný jeden po druhém.
 
-        <b>Extra Moves:</b>
-        \nFollow the next couple of moves and notice how multiple extra moves can be chained one after another.</string>
+	   <b>Extra Tahy</b>
+	   \nSleduj dalších několik pohybů a všimni si, že je možné postupně dostat další po sobě následující extra tahy.
+    </string>
 
     <string name="msg_TutorialExtraMoves4">
-        <b> Extra Moves: </b> tím, že konečně jste si možná všimli, že masivní hromadu skořápek v jednom z vašich šálků. Klepněte na tento kalich, pozorovat, co se děje a zapamatujte pravidlo extra pohybu (v případě, že poslední shell přistane ve vašem obchodě dostanete další tah).
-
-        <b>Extra Moves:</b>
-        \nFinally you may have noticed that massive pile of shells in one of your cups. Tap on this cup, observe what happens and remember the rule of an extra move (if the last shell lands in your store you will get an extra move).</string>
+	   <b>Extra Tahy: </b>
+	   \nMožná jsi si všiml velké hromady koleček v jednom z tvých kelímků. Vyber si tento kelímek a všimni si, co se stane. Vzpomeň si na pravidlo extra tahů - v případě, že poslední kolečko přistane ve tvém trezoru, dostaneš další tah.
+ </string>
 
     <string name="msg_TutorialRobbing1">
-        <b> Robbing Mechanik: </b> \nŽádný z pravidel ve hře Sungka umožňuje hráči ukrást všechny skořápky od soupeřova pohár. Toto pravidlo říká, že v případě, že poslední plášť pohybu objevil v jedné ze svých prázdných šálků (s výjimkou úložiště!), Pak poslední nádrž a všechny skořápky z pohárku na opačné straně desky jsou přesunuty do obchodu. \nZkuste to sami, vyberte zvýrazněnou pohár a uvidíme, co se stane.
+	<b>Okrádání protihráče:</b>
+        \nJedno z pravidel hry Sungka umožňuje hráči ukrást všechna kolečka ze soupeřova kelímku. Když poslední kolečko v jednom tahu dopadne do jednoho z tvých prázdných kelímků (kromě tvého trezoru!), tak to poslední kolečko a všechny kolečka v kelímku na opačné straně desky jsou přesunuty do tvého trezoru.
+	   \nTed si to vyzkoušej - vyber ten zvýrazněný kelímek a všimni si, co se stane.
 
-        <b>Robbing Mechanic:</b>
-        \nOne of the rules in the game of Sungka allows the player to steal all shells from the opponent’s cup. This rule says that if the last shell of the move lands in one of your empty cups (except your store!), then the last shell and all the shells from the cup on the opposite side of the board are moved to your store.
-        \nTry this out yourself, select the highlighted cup and see what happens.</string>
+    </string>
 
     <string name="msg_TutorialRobbing2">
-        <b> Robbing Mechanik: </b> \nnJe je velmi snadné, aby oznámení zjevné pohyby, které vedou k okrádání. Nicméně, měli byste být opatrní, protože je velmi snadné soustředit se příliš na tyto pohyby av procesu miss negativních vlivů z nich. \nZkuste si to ještě jednou. Všimněte si, že stejné pravidlo platí iv případě, že jde přes své soupeře poháry, tak dlouho, jak to skončí ve vaší prázdný šálek.
 
-        <b>Robbing Mechanic:</b>
-        \nIt is very easy to notice obvious moves that lead to robbing. However, you should be careful as it is very easy to focus too much on these moves and in the process miss negative effects of them.
-        \nTry it one more time. Notice that the same rule applies even when it goes through your opponents cups, as long as it ends in your empty cup.</string>
+        <b>Okrádání protihráče:</b>
+        \nJe velice snadné si všimnout lehkých tahů, kterými můžeš okrást soupeře. Nicméně, buď opatrný, protože je velice snadné se soustředit na tyto tahy a v průběhu hry si můžeš uškodit.
+	   \nVyskoušej si to ještě jednou. Všimni si, že můžeš okrást protihráče, i když kolečka projdou kelímky tvého soupeře. Důležité je, aby poslední kolečko dopadlo do jednoho z tvých prázdných kelímků.
+</string>
 
     <string name="msg_TutorialRobbing3">
-        <b> Robbing Mechanik: </b> \nKdykoli máte 15 skořápky v jedné ze svých pohárů a poklepal na tomto pohár bude vždy mít za následek okrádání opačný pohár. Stiskněte tlačítko na levé krajní poháru a uvidíme, co se stane.
-
-        <b>Robbing Mechanic:</b>
-        \nWhenever you have 15 shells in one of your cups, tapping on that cup will always result in robbing the opposite cup. Press on your leftmost cup and see what happens.</string>
+  <b>Robbing Mechanic:</b>
+        \nKdykoliv máš přesně 15 koleček v jednom kelímku, jeho výběr má za následek, že okradneš kelímek naproti. Vyber si kelímek úplně napravo a uvidíš, co se stane.
+       </string>
 
     <string name="msg_TutorialEnd">
-        <b> Konec Cvičení: </b>Můžete pokračovat ve hře nebo můžete opustit pomocí tlačítka zpět. Hráč s nejvíce množstvím skořápek v obchodě hráčů vyhrává hru.
+   <b>Konec Cvičení:</b>
+   \nMůžeš pokračovat ve hře anebo se můžeš vrátit zpátky na hlavní stránku pomocí tlačítka \‘zpět\’. Na konci hry hráč s největším množstvím koleček ve svém trezoru vyhrává.
+       </string>
 
-        <b>End of Tutorial:</b>
-        \nYou can continue playing or you can exit by using the back button. The player with the most amount of shells in the players store wins the game.</string>
     <string name="str_ExtraMovesTutorial">Extra Tahy</string>
     <string name="str_FirstMoveTutorial">První Kolo</string>
     <string name="str_RobbingMechanicTutorial">Jak Okrádnout Hrače</string>
