@@ -57,6 +57,12 @@
     <string name="str_tapWhenYourReady">TAP WHEN YOU\'RE READY FOR COUNTDOWN!</string>
     <string name="str_tapAShells">CHOOSE YOUR STARTING CUP</string>
     <string name="str_ConnectionEst">Connection Established</string>
+    <string name="msg_Help">
+        \n|<b>Backend Designers</b>\t\t\t\t|<b>Frontend Designers</b>\t\t\t\t|<b>Tests Master</b>
+        \n|Dovydas Rupšys\t\t\t\t\t\t\t|Martin Kubat\t\t\t\t\t\t\t\t\t\t\t|Max Karasiński
+        \n|Oliver Philip Höhn\t\t\t\t\t|Tim Beswick
+        \n\n|<b>Language Contributors</b>
+        \n|Laimonas Juodis, Julija Gaidelyte,</string>
 
     <string name="msg_TutorialFirstMove"><b>First Move:</b>
         \nThe game of Sungka begins in a simultaneous move mode. After the countdown finishes, both players make their first moves as fast as possible. This is because the player that finishes their move first gets to start in the next round.
