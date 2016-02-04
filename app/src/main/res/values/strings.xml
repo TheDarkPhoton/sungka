@@ -100,4 +100,23 @@
 
     <string name="msg_TutorialEnd"><b>End of Tutorial:</b>
         \nThe player with the most amount of shells in the players store wins the game. You can continue playing or you can exit by using the back button.</string>
+    <string name="title_activity_credits">CreditsActivity</string>
+
+    <string name="hello_world">Hello world!</string>
+
+    <string name="credits_backend">Back-end Developers</string>
+    <string name="developer1">Dovydas Rupšys</string>
+    <string name="developer2">Oliver Philip Höhn</string>
+
+    <string name="credits_frontend">Front-end Developers</string>
+    <string name="developer3">Martin Kubat</string>
+    <string name="developer4">Tim Beswick</string>
+
+    <string name="credits_tests">Automated Tests Developers</string>
+    <string name="developer5">Max Karasiński</string>
+
+    <string name="credits_contributors">Language Contributors</string>
+    <string name="contributor1">Laimonas Juodis</string>
+    <string name="contributor2">Julija Gaidelyte</string>
+
 </resources>

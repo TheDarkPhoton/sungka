@@ -415,7 +415,10 @@ public class MenuActivity extends Activity {
             @Override
             public void onClick(View v) {
                 vb.vibrate(25);
-                makeDialog(R.string.msg_Help, Gravity.LEFT, 15, true);
+//                makeDialog(R.string.msg_Help, Gravity.LEFT, 15, true);
+                Intent intent = new Intent(v.getContext(), CreditsActivity.class);
+                _switchingActivities = true;
+                startActivity(intent);
             }
         });
     }
