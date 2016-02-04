@@ -36,15 +36,16 @@
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.DeviceDefault.Light.NoActionBar.Fullscreen" >
         </activity>
+        <activity
+            android:name=".CreditsActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.DeviceDefault.Light.NoActionBar.Fullscreen" >
+        </activity>
 
         <service
             android:name="helpers.frontend.MusicService"
             android:enabled="true" />
-
-        <activity
-            android:name=".CreditsActivity"
-            android:label="@string/title_activity_credits" >
-        </activity>
     </application>
 
 </manifest>
