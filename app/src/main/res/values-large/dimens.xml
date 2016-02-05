@@ -1,3 +1,6 @@
 <resources>
     <dimen name="your_turn_text_size">22dp</dimen>
+
+    <dimen name="credits_title">35sp</dimen>
+    <dimen name="credits_name">25sp</dimen>
 </resources>
