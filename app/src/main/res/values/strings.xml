@@ -1,0 +1,122 @@
+<resources>
+    <string name="app_name">Sungka</string>
+    <string name="action_settings">Settings</string>
+    <string name="str_Zero">0</string>
+    <string name="str_SinglePlayer">Single Player</string>
+    <string name="str_YourTurn">YOUR TURN</string>
+    <string name="str_Statistics">STATISTICS</string>
+    <string name="str_AverageMoveTime">Average Move Time</string>
+    <string name="str_HighestCaptureInOneTurn">Highest Capture in One Turn</string>
+    <string name="str_AverageScorePerGame">Average Score per Game</string>
+    <string name="str_HighestNumberOfConsecutiveTurns">Highest Number of Consecutive Turns</string>
+    <string name="str_YouWon">YOU WON</string>
+    <string name="str_YouLost">YOU LOST</string>
+    <string name="str_ItsADraw">IT\'S A DRAW</string>
+    <string name="str_AnotherTurn">YOU GET ANOTHER TURN</string>
+    <string name="str_YouWereRobbed">YOU WERE ROBBED</string>
+    <string name="str_YouRobbedOtherPlayer">YOU ROBBED THE OTHER PLAYER</string>
+    <string name="str_YouWereRobbedOfFinalMove">YOU WERE ROBBED OF YOUR FINAL MOVE</string>
+    <string name="str_YouRobbedOtherPlayersFinalMove">YOU ROBBED OTHER PLAYER\'S FINAL MOVE</string>
+    <string name="str_Play">Play</string>
+    <string name="str_Leaderboard">Leaderboard</string>
+    <string name="str_Tutorial">Tutorial</string>
+    <string name="str_FirstMoveTutorial">First Move</string>
+    <string name="str_ExtraMovesTutorial">Extra Moves</string>
+    <string name="str_RobbingMechanicTutorial">Robbing Rule</string>
+    <string name="str_Options">Options</string>
+    <string name="str_playerDisconnectedTitle">Player Disconnected</string>
+    <string name="str_playerDisconnected">It seems the other player left (rage quit).</string>
+    <string name="str_Player">Player</string>
+    <string name="str_NameHolder">Name</string>
+    <string name="str_IPHolder">IP Address</string>
+    <string name="str_VS">VS</string>
+    <string name="str_Ai">AI</string>
+    <string name="str_Remote">Remote</string>
+    <string name="str_AiDiff">AI Difficulty</string>
+    <string name="str_Name">Name:</string>
+    <string name="str_Join">Join</string>
+    <string name="str_Host">Host</string>
+    <string name="str_IP">IP:</string>
+    <string name="str_Waiting">Waiting for player</string>
+    <string name="str_Select">Select</string>
+    <string name="str_Back">Back</string>
+    <string name="msg_PlayerName">Please enter player name!</string>
+    <string name="msg_Player1Name">Please enter player 1 name!</string>
+    <string name="msg_Player2Name">Please enter player 2 name!</string>
+    <string name="msg_IPAddress">Please enter an IP address!</string>
+    <string name="msg_ReturnToMenu">Return to Main Menu</string>
+    <string name="str_no_stats_data">There are no data available. Try playing more games!</string>
+    <string name="str_Mute">Mute\nMusic</string>
+    <string-array name="ai_names">
+        <item>Easy Pete</item>
+        <item>Average Alan</item>
+        <item>TrollMaster 9000</item>
+    </string-array>
+    <string name="ai_sensei">Sensei Sato</string>
+    <string name="student">Student</string>
+    <string name="str_tapWhenYourReady">TAP WHEN YOU\'RE READY FOR COUNTDOWN!</string>
+    <string name="str_tapAShells">CHOOSE YOUR STARTING CUP</string>
+    <string name="str_ConnectionEst">Connection Established</string>
+    <string name="msg_Help">
+        \n|<b>Backend Designers</b>\t\t\t\t|<b>Frontend Designers</b>\t\t\t\t|<b>Tests Master</b>
+        \n|Dovydas Rupšys\t\t\t\t\t\t\t|Martin Kubat\t\t\t\t\t\t\t\t\t\t\t|Max Karasiński
+        \n|Oliver Philip Höhn\t\t\t\t\t|Tim Beswick
+        \n\n|<b>Language Contributors</b>
+        \n|Laimonas Juodis, Julija Gaidelyte,</string>
+
+    <string name="msg_TutorialFirstMove"><b>First Move:</b>
+        \nThe game of Sungka begins in a simultaneous move mode. After the countdown finishes, both players make their first moves as fast as possible. This is because the player that finishes their move first gets to start in the next round.
+        \nNote that choosing your left most cup will grant you an extra move, which means you would have to finish that in addition to exhausting all of your moves.
+        \nYour cups are at the bottom of the screen. Tap on the screen to begin the countdown!</string>
+
+    <string name="msg_TutorialFirstMoveEnd"><b>First Move Tutorial End:</b>
+        \nThis is the end of the tutorial, go back to the main menu by pressing the button in the center of the screen.</string>
+
+    <string name="msg_TutorialExtraMoves1"><b>Extra Moves:</b>
+        \nThis tutorial will explain the mechanics of extra moves. An extra move allows you to perform multiple consecutive actions. An extra move is gained if the last shell of the move is dropped in the players store.
+        \nTap on the left most cup, notice that the last shell distributed ends up in your store. This means that you will get an extra turn.</string>
+
+    <string name="msg_TutorialExtraMoves2"><b>Extra Moves:</b>
+        \nThe two right most cups on your side of the board would both lead to an extra move however the order in which you tap them matters.
+        \nFor the purpose of this tutorial, select the second cup from the right. Notice that the right most cup will no longer give you an extra move.
+        \nBoth of these cups can give you an extra move if tapped in the proper order.</string>
+
+    <string name="msg_TutorialExtraMoves3"><b>Extra Moves:</b>
+        \nFollow the next couple of moves and notice how multiple extra moves can be chained one after another.</string>
+
+    <string name="msg_TutorialExtraMoves4"><b>Extra Moves:</b>
+        \nFinally you may have noticed that massive pile of shells in one of your cups. Tap on this cup, observe what happens and remember the rule of an extra move (if the last shell lands in your store you will get an extra move).</string>
+
+    <string name="msg_TutorialRobbing1"><b>Robbing Rule:</b>
+        \nOne of the rules in the game of Sungka allows the player to steal all shells from the opponent’s cup. This rule says that if the last shell of the move lands in one of your empty cups (except your store!), then the last shell and all the shells from the cup on the opposite side of the board are moved to your store.
+        \nTry this out yourself, select the highlighted cup and see what happens.</string>
+
+    <string name="msg_TutorialRobbing2"><b>Robbing Rule:</b>
+        \nIt is very easy to notice obvious moves that lead to robbing. However, you should be careful as it is very easy to focus too much on these moves and in the process miss negative effects of them.
+        \nTry it one more time. Notice that the same rule applies even when it goes through your opponents cups, as long as it ends in your empty cup.</string>
+
+    <string name="msg_TutorialRobbing3"><b>Robbing Rule:</b>
+        \nWhenever you have 15 shells in one of your cups, tapping on that cup will always result in robbing the opposite cup. Press on your leftmost cup and see what happens.</string>
+
+    <string name="msg_TutorialEnd"><b>End of Tutorial:</b>
+        \nThe player with the most amount of shells in the players store wins the game. You can continue playing or you can exit by using the back button.</string>
+    <string name="title_activity_credits">CreditsActivity</string>
+
+    <string name="hello_world">Hello world!</string>
+
+    <string name="credits_backend">Back-end Developers</string>
+    <string name="credits_frontend">Front-end Developers</string>
+    <string name="credits_tests">Automated Tests Developer</string>
+    <string name="credits_contributors">Language Contributors</string>
+
+    <string name="developer1">Dovydas Rupšys</string>
+    <string name="developer2">Oliver Philip Höhn</string>
+    <string name="developer3">Martin Kubat</string>
+    <string name="developer4">Tim Beswick</string>
+    <string name="developer5">Max Karasiński</string>
+
+    <!--Language Contributors-->
+    <string name="contributor1">Laimonas Juodis</string>
+    <string name="contributor2">Julija Gaidelyte</string>
+
+</resources>

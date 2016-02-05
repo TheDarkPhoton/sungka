@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item type="id" name="cup1_1" />
+    <item type="id" name="cup1_2" />
+    <item type="id" name="cup1_3" />
+    <item type="id" name="cup1_4" />
+    <item type="id" name="cup1_5" />
+    <item type="id" name="cup1_6" />
+    <item type="id" name="cup1_7" />
+    <item type="id" name="cup1_store" />
+    <item type="id" name="cup2_1" />
+    <item type="id" name="cup2_2" />
+    <item type="id" name="cup2_3" />
+    <item type="id" name="cup2_4" />
+    <item type="id" name="cup2_5" />
+    <item type="id" name="cup2_6" />
+    <item type="id" name="cup2_7" />
+    <item type="id" name="cup2_store" />
+    <item type="id" name="btn_ReturnToMenu" />
+    <item type="id" name="moveTextPlayer1" />
+    <item type="id" name="moveTextPlayer2" />
+    <item type="id" name="readyTopView" />
+    <item type="id" name="readyBottomView" />
+    <item type="id" name="statsEmptyText" />
+    <item type="id" name="statsGamesWon" />
+    <item type="id" name="statsGamesLost" />
+    <item type="id" name="statsGamesDrawn" />
+    <item type="id" name="statsPctWon" />
+    <item type="id" name="statsGamesPlayed" />
+    <item type="id" name="statsRanking" />
+    <item type="id" name="statsMoveTime" />
+    <item type="id" name="statsShells" />
+    <item type="id" name="statsNumMoves" />
+    <array name="statsScores">
+        <item>@id/statsGamesWon</item>
+        <item>@id/statsGamesLost</item>
+        <item>@id/statsGamesDrawn</item>
+        <item>@id/statsPctWon</item>
+        <item>@id/statsGamesPlayed</item>
+        <item>@id/statsRanking</item>
+        <item>@id/statsMoveTime</item>
+        <item>@id/statsShells</item>
+        <item>@id/statsNumMoves</item>
+    </array>
+</resources>
