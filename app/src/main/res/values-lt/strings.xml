@@ -103,4 +103,8 @@
     <string name="msg_TutorialEnd"><b>Instructazo Pabaiga:</b>
         \nŽaidėjęs surinkęs daugiau kamuoliukų savo saugykloje, žaidimo pabaigoje, laimi. Galite tęsti šį žaidimą arba išeikite paspaudus mygtuką atgal.</string>
 
+    <string name="credits_backend">Logikos Kūrėjai</string>
+    <string name="credits_frontend">Grafikos Kūrėjai</string>
+    <string name="credits_tests">Automatinių Testų Kūrėjas</string>
+    <string name="credits_contributors">Prisidėjo Vertėjai</string>
 </resources>
