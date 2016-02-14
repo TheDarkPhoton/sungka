@@ -25,6 +25,7 @@
                 android:layout_marginBottom="@dimen/activity_vertical_margin">
 
                 <TextView
+                    android:id="@+id/title_backend"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
@@ -32,6 +33,7 @@
                     android:text="@string/credits_backend"/>
 
                 <TextView
+                    android:id="@+id/dev_dovydas"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmall"
@@ -39,6 +41,7 @@
                     android:text="@string/developer1"/>
 
                 <TextView
+                    android:id="@+id/dev_oliver"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmall"
@@ -56,6 +59,7 @@
                 android:layout_marginBottom="@dimen/activity_vertical_margin">
 
                 <TextView
+                    android:id="@+id/title_frontend"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
@@ -63,6 +67,7 @@
                     android:text="@string/credits_frontend"/>
 
                 <TextView
+                    android:id="@+id/dev_martin"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmall"
@@ -70,6 +75,7 @@
                     android:text="@string/developer3"/>
 
                 <TextView
+                    android:id="@+id/dev_tim"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmall"
@@ -87,6 +93,7 @@
                 android:layout_marginBottom="@dimen/activity_vertical_margin">
 
                 <TextView
+                    android:id="@+id/title_testing"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
@@ -94,6 +101,7 @@
                     android:text="@string/credits_tests"/>
 
                 <TextView
+                    android:id="@+id/dev_max"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmall"
@@ -111,6 +119,7 @@
                 android:layout_marginBottom="@dimen/activity_vertical_margin">
 
                 <TextView
+                    android:id="@+id/title_contributors"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
@@ -118,6 +127,7 @@
                     android:text="@string/credits_contributors"/>
 
                 <TextView
+                    android:id="@+id/contributor_laimonas"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmall"
@@ -125,6 +135,7 @@
                     android:text="@string/contributor1"/>
 
                 <TextView
+                    android:id="@+id/contributor_julija"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmall"
