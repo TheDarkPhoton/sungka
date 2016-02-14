@@ -18,12 +18,10 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.text.format.Formatter;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,7 +31,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import helpers.frontend.CupButton;
+import org.w3c.dom.Text;
+
 import helpers.frontend.MusicService;
 
 public class MenuActivity extends Activity {
@@ -43,10 +42,12 @@ public class MenuActivity extends Activity {
     public static Vibrator vb;
     private Drawable[] _muteIcons;
     private int _muteIndex;
-    
+    private boolean _isTutorialScreenOpen = false;
+
     //Main menu elements
     private RelativeLayout _mainMenu;
-    private Button _play, _leaderboard, _mute, _help;
+    private Button _firstButton, _secondButton, _thirdButton, _mute, _help;
+    private TextView _titleView;
 
     //Sub menu elements
     private RelativeLayout _alpha;
@@ -132,10 +133,12 @@ public class MenuActivity extends Activity {
      */
     private void getElements() {
         _mainMenu = (RelativeLayout) findViewById(R.id.mainMenu);
-        _play = (Button) findViewById(R.id.btnPlay);
-        _leaderboard = (Button) findViewById(R.id.btnLeaderboard);
+        _firstButton = (Button) findViewById(R.id.btnPlay);
+        _secondButton = (Button) findViewById(R.id.btnTutorial);
+        _thirdButton = (Button) findViewById(R.id.btnLeaderboard);
         _mute = (Button) findViewById(R.id.btnMute);
         _help = (Button) findViewById(R.id.btnHelp);
+        _titleView = (TextView) findViewById(R.id.title);
 
         _alpha = (RelativeLayout) findViewById(R.id.alphaLayer);
         _subMenu = (RelativeLayout) findViewById(R.id.playSub);
@@ -194,25 +197,7 @@ public class MenuActivity extends Activity {
 
         final String placeHolder = getResources().getString(R.string.str_NameHolder);
 
-        _leaderboard.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                _switchingActivities = true;
-                vb.vibrate(25);
-                Intent intent = new Intent(MenuActivity.this, StatisticsActivity.class);
-                String file = null;
-                intent.putExtra(StatisticsActivity.DATA_FILE, file);
-                startActivity(intent);
-            }
-        });
-
-        _play.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                _index = 1;
-                _prevIndex = 0;
-                vb.vibrate(25);
-                updateView();
-            }
-        });
+        setupHomescreen();
 
         _btnPlayer.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
@@ -277,7 +262,8 @@ public class MenuActivity extends Activity {
         });
 
         _btnJoin.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
+            @Override
+            public void onClick(View v) {
                 _index = 6;
                 _prevIndex = 4;
                 vb.vibrate(25);
@@ -288,20 +274,7 @@ public class MenuActivity extends Activity {
         _previous.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                _index = _prevIndex;
-                vb.vibrate(25);
-                updateView();
-                if (_index == 1) {
-                    _prevIndex = 0;
-                }
-                if (_index == 4) {
-                    _prevIndex = 1;
-                }
-                //if its hosting
-                if (GameActivity.getUsersConnection() != null) {
-                    GameActivity.getUsersConnection().cancel(true);//if its hosting a game and you press back, cancel it
-                    _waiting.setText(R.string.str_Waiting);//set the text back to its original state
-                }
+                back();
             }
         });
 
@@ -350,7 +323,7 @@ public class MenuActivity extends Activity {
 
                 if (player1Name.equals(placeHolder) || player1Name.equals("")) {
                     makeDialog(R.string.msg_Player1Name, Gravity.CENTER, 25, false);
-                } else if(player2Name.equals(placeHolder) || player2Name.equals("")) {
+                } else if (player2Name.equals(placeHolder) || player2Name.equals("")) {
                     makeDialog(R.string.msg_Player2Name, Gravity.CENTER, 25, false);
                 } else {
                     //do 2 player play method
@@ -358,6 +331,7 @@ public class MenuActivity extends Activity {
                     Intent intent = new Intent(v.getContext(), GameActivity.class);
                     bundle.putString(GameActivity.PLAYER_ONE, player1Name);
                     bundle.putString(GameActivity.PLAYER_TWO, player2Name);
+                    bundle.putInt(GameActivity.AI_DIFF,0);
                     intent.putExtras(bundle);
 
                     System.out.println("2 player play");
@@ -370,7 +344,8 @@ public class MenuActivity extends Activity {
 
         // starts a human vs AI game
         _btnAiPlay.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
+            @Override
+            public void onClick(View v) {
                 vb.vibrate(25);
                 int difficulty = _aiDiff.getProgress() + 50;
                 String player1Name = _player1Name.getText().toString();
@@ -396,13 +371,14 @@ public class MenuActivity extends Activity {
         });
 
         _btnJoinIpAddress.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
+            @Override
+            public void onClick(View v) {
                 vb.vibrate(25);
                 String firstPlayerName = _player1Name.getText().toString();
                 String ipAddress = _ipAddressToJoin.getText().toString();
                 if (firstPlayerName.equals(placeHolder) || firstPlayerName.equals("")) {
                     makeDialog(R.string.msg_PlayerName, Gravity.CENTER, 25, false);
-                } else if(ipAddress.equals(placeHolder) || ipAddress.equals("")) {
+                } else if (ipAddress.equals(placeHolder) || ipAddress.equals("")) {
                     makeDialog(R.string.msg_IPAddress, Gravity.CENTER, 25, false);
                 } else {
                     //do remote play method
@@ -436,9 +412,140 @@ public class MenuActivity extends Activity {
         });
 
         _help.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
+            @Override
+            public void onClick(View v) {
                 vb.vibrate(25);
-                makeDialog(R.string.msg_Help, Gravity.LEFT, 15, true);
+//                makeDialog(R.string.msg_Help, Gravity.LEFT, 15, true);
+                Intent intent = new Intent(v.getContext(), CreditsActivity.class);
+                _switchingActivities = true;
+                startActivity(intent);
+            }
+        });
+    }
+
+    private void setupTutorialScreen() {
+        _isTutorialScreenOpen = true;
+        _titleView.setBackground(getResources().getDrawable(R.drawable.tutorials));
+
+        _firstButton.setText(R.string.str_FirstMoveTutorial);
+        _secondButton.setText(R.string.str_ExtraMovesTutorial);
+        _thirdButton.setText(R.string.str_RobbingMechanicTutorial);
+
+        _firstButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                launchTutorial(v, "FirstMove");
+            }
+        });
+
+        _secondButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                launchTutorial(v, "ExtraMoves");
+            }
+        });
+
+        _thirdButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                launchTutorial(v, "Robbing");
+            }
+        });
+    }
+
+    /**
+     * Launches the tutorial selection screen
+     * @param v the view
+     * @param id the id of the tutorial
+     */
+    private void launchTutorial(View v, String id) {
+        vb.vibrate(25);
+        Intent intent = new Intent(v.getContext(), GameActivity.class);
+
+        bundle.putString(GameActivity.IS_TUTORIAL, id);
+        intent.putExtras(bundle);
+
+        _switchingActivities = true;
+
+        startActivity(intent);
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        if (_isTutorialScreenOpen) {
+            // If tutorial screen is open, go to homescreen
+            setupHomescreen();
+        } else if (_index != 0) {
+            // If not in home screen or tutorial screen, activate back in config screen
+            back();
+        } else {
+            // If in home screen, exit the app
+            super.onBackPressed();
+        }
+    }
+
+    /**
+     * What happens when you go back one level in the configuration screen
+     */
+    private void back() {
+        _index = _prevIndex;
+        vb.vibrate(25);
+        updateView();
+        if (_index == 1) {
+            _prevIndex = 0;
+        }
+        if (_index == 4) {
+            _prevIndex = 1;
+        }
+        //if its hosting
+        if (GameActivity.getUsersConnection() != null) {
+            GameActivity.getUsersConnection().cancel(true);//if its hosting a game and you press back, cancel it
+            GameActivity.setConnection(null);
+            bundle.putBoolean(GameActivity.IS_ONLINE,false);
+            _waiting.setText(R.string.str_Waiting);//set the text back to its original state
+        }
+    }
+
+    private void setupHomescreen() {
+        _isTutorialScreenOpen = false;
+        _titleView.setBackground(getResources().getDrawable(R.drawable.title));
+
+        _firstButton.setText(R.string.str_Play);
+        _secondButton.setText(R.string.str_Tutorial);
+        _thirdButton.setText(R.string.str_Leaderboard);
+
+
+        _firstButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                _index = 1;
+                _prevIndex = 0;
+                vb.vibrate(25);
+                updateView();
+            }
+        });
+
+        _secondButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                vb.vibrate(25);
+
+                setupTutorialScreen();
+
+            }
+        });
+
+
+        _thirdButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                _switchingActivities = true;
+                vb.vibrate(25);
+                Intent intent = new Intent(MenuActivity.this, StatisticsActivity.class);
+                String file = null;
+                intent.putExtra(StatisticsActivity.DATA_FILE, file);
+                startActivity(intent);
             }
         });
     }
@@ -472,7 +579,8 @@ public class MenuActivity extends Activity {
             dialog.getWindow().setAttributes(params);
         }
         TextView msg = (TextView) dialog.findViewById(android.R.id.message);
-        msg.setGravity(gravity); msg.setTextColor(Color.BLACK); msg.setTextSize(textSize);    }
+        msg.setGravity(gravity); msg.setTextColor(Color.BLACK); msg.setTextSize(textSize);
+    }
 
     /**
      * updates the menu to show and hide elements

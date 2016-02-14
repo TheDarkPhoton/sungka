@@ -90,8 +90,8 @@ public abstract class Player {
         if(_currentMove != null) {
             _currentMove.endMove(System.currentTimeMillis());
             _currentMove.calculateMoveDuration();//calculate the duration of the move and store it in the object
-            Log.v("Player","Previous store: "+prevStoreCount);//previous  store count
-            Log.v("Player","Current store: "+_store.getCount());//current store count
+            /*Log.v("Player","Previous store: "+prevStoreCount);//previous  store count
+            Log.v("Player","Current store: "+_store.getCount());//current store count*/
             int shellsCollected = _store.getCount()-prevStoreCount;//shells collected in this turn
             _currentMove.setNumOfShellsCollected(shellsCollected);
             Log.v("Player","Shells collected: "+shellsCollected);
@@ -156,6 +156,10 @@ public abstract class Player {
      */
     public String getName(){
         return _name;
+    }
+
+    public void setName(String name){
+        _name = name;
     }
 
     /**

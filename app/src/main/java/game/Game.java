@@ -9,6 +9,7 @@ import game.player.Human;
 import game.player.Player;
 import game.player.PlayerActionListener;
 import game.player.RemoteHuman;
+import game.tutorial.Tutorial;
 
 
 /**
@@ -22,6 +23,16 @@ public class Game {
     private String firstPlayer;
     private String secondPlayer;
 
+    public Game(Tutorial tutorial, PlayerActionListener listener){
+        playerActionListener = listener;
+        playerOne = tutorial.getPlayerA();
+        playerOne.setPlayerActionListener(playerActionListener);
+        playerTwo = tutorial.getPlayerB();
+        playerTwo.setPlayerActionListener(playerActionListener);
+        board = tutorial;
+        firstPlayer = tutorial.getPlayerA().getName();
+        secondPlayer = tutorial.getPlayerB().getName();
+    }
 
     public Game(PlayerActionListener playerActionListener,boolean isOnlineGame, String firstName, String secondName, int aiDiff) {
         this.playerActionListener = playerActionListener;
